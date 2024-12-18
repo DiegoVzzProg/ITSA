@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import payments from '../../assets/img/payments.png'
+import payments from '../assets/img/payments.png'
 import { onMounted } from 'vue';
 onMounted(() => {
     const contenedor: any = document.getElementById("main_contenedor");

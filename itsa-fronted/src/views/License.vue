@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import license from '../../assets/img/license.png'
+import license from '../assets/img/license.png'
 import { onMounted } from 'vue';
 onMounted(() => {
     const contenedor: any = document.getElementById("main_contenedor");

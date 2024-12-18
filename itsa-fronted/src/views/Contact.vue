@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import contact from '../../assets/img/contact.png'
+import contact from '../assets/img/contact.png'
 import { onMounted } from 'vue';
 onMounted(() => {
     const contenedor: any = document.getElementById("main_contenedor");

@@ -13,27 +13,17 @@ class CUsuarios extends Controller
     public static function fn_login(Request $request)
     {
         try {
-            // 1. Validación de entrada
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required|string|min:3',
-            ]);
-
-            if ($validator->fails()) {
-                return CGeneral::CreateMessage('Invalid data', 599, 'info', $validator->errors());
-            }
-
             $email = $request->input('email');
             $password = $request->input('password');
 
-            $usuario = TUsuarios::where('email', $email)->first();
+            $usuario = TUsuarios::where('email', $email)->where('activo', true)->first();
 
-            if (!$usuario || !Hash::check(Hash::make($password), $usuario->passwrd)) {
-                return CGeneral::CreateMessage('Incorrect credentials', 599, 'info', null);
+            if (!$usuario || !Hash::check($password, $usuario->password)) {
+                return CGeneral::CreateMessage('Incorrect credentials', 200, 'info', null);
             }
 
             return CGeneral::CreateMessage('', 200, 'success', [
-                'id' => $usuario->id,
+                'id_usuario' => $usuario->id_usuario,
                 'email' => $usuario->email,
                 'nombre' => $usuario->nombre,
             ]);

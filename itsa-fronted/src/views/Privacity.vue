@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import privacy_policy from '../../assets/img/privacy_policy.png'
+import privacy_policy from '../assets/img/privacy_policy.png'
 import { onMounted } from 'vue';
 onMounted(() => {
     const contenedor: any = document.getElementById("main_contenedor");

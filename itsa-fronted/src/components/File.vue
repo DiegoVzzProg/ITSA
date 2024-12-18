@@ -8,7 +8,7 @@ defineProps<{
 }>();
 
 const getImagePath = (nombreArchivo: string) => {
-    return new URL(`../../assets/img/${nombreArchivo}`, import.meta.url).href;
+    return new URL(`../assets/img/${nombreArchivo}`, import.meta.url).href;
 };
 
 onMounted(() => {

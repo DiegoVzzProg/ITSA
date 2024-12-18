@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import freshicons_slogan from '../../assets/img/freshicons_slogan.png'
-import usefulmockups_slogans from '../../assets/img/usefulmockups_slogans.png'
-import collillustration_slogans from '../../assets/img/collillustration_slogans.png'
-import lovelytype_slogans from '../../assets/img/lovelytype_slogans.png'
-import slogan_principal from '../../assets/img/slogan_principal.png'
 import { onMounted, ref } from 'vue';
-import { getProductos } from '../../services/s_productos/s_productos'
-import Loading from '../controls/Loading.vue'
-import File from '../controls/File.vue'
+import freshicons_slogan from '../assets/img/freshicons_slogan.png'
+import usefulmockups_slogans from '../assets/img/usefulmockups_slogans.png'
+import collillustration_slogans from '../assets/img/collillustration_slogans.png'
+import lovelytype_slogans from '../assets/img/lovelytype_slogans.png'
+import slogan_principal from '../assets/img/slogan_principal.png'
+import { getProductos } from '../services/s_productos/s_productos'
+import Loading from '../components/Loading.vue'
+import File from '../components/File.vue'
 
 const productos: any = ref([]);
 
@@ -73,9 +73,9 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex items-start justify-end w-full">
-                    <button class="text-white bg-black py-2 rounded-full px-7 poppins-font font-bold text-[1.7em]">
+                    <RouterLink :to="producto.url" class="text-white bg-black py-2 rounded-full px-7 poppins-font font-bold text-[1.7em]">
                         {{ parseFloat(producto.precio) > 0 ? producto.precio : 'free' }}
-                    </button>
+                    </RouterLink>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">

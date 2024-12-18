@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { postLogin } from '../../services/s_login/s_login';
+import { postLogin } from '../services/s_login/s_login';
+import Cookies from "js-cookie";
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const email = ref('');
 const password = ref('');
@@ -12,7 +17,7 @@ const passwordError = ref('');
 const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
-        emailError.value = 'El correo no es válido';
+        emailError.value = 'The email is invalid';
     } else {
         emailError.value = '';
     }
@@ -21,7 +26,7 @@ const validateEmail = (value: string) => {
 // Función para validar la contraseña
 const validatePassword = (value: string) => {
     if (value.length < 3) {
-        passwordError.value = 'La contraseña debe tener al menos 6 caracteres';
+        passwordError.value = 'Password must be at least 3 characters long';
     } else {
         passwordError.value = '';
     }
@@ -49,11 +54,31 @@ const Login = async () => {
             email: email.value,
             password: password.value
         };
+        const response = await postLogin(data);
 
-        console.log((await postLogin(data)).data);
+        if (response.message != '') {
+            const notyf = new Notyf({
+                duration: 5000,
+                position: {
+                    x: 'right',
+                    y: 'top',
+                }
+            });
+            notyf.error(response.message)
+            return;
+        }
+
+        Cookies.set('user_data', JSON.stringify(response.data), {
+            expires: 7,
+            secure: true,
+            sameSite: 'Strict',
+            path: '/',
+        });
+
+        router.push('/');
 
     } catch (error) {
-        console.error('Error al obtener productos:', error);
+        console.error('Error: ', error);
     }
 };
 </script>
@@ -104,7 +129,7 @@ const Login = async () => {
             <p class="px-[clamp(18px,3vw,28px)]">
                 need an account
             </p>
-            <router-link to="/register" class="bg-white border border-black py-5 px-3 rounded-full">
+            <router-link to="/register" class="bg-white border border-black py-5 px-3 rounded-full text-center">
                 create account
             </router-link>
         </div>

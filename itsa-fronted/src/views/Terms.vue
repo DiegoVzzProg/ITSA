@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import terms_and_conditions from '../../assets/img/terms_and_conditions.png'
+import terms_and_conditions from '../assets/img/terms_and_conditions.png'
 import { onMounted } from 'vue';
 onMounted(() => {
     const contenedor: any = document.getElementById("main_contenedor");

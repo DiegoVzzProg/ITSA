@@ -1,9 +1,46 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import logo from '../../assets/svg/logo.svg'
+import { onMounted, ref } from 'vue';
+import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
+import { useRouter } from 'vue-router';
+
+
+// EJEMPLO DE AGREGAR UNA COOKIE
+//
+// Cookies.set('id_usuario', response.data["id_usuario"], {
+//     expires: 30,         // Expira en 7 días
+//     secure: true,       // Solo se envía en conexiones HTTPS
+//     sameSite: 'Strict', // Previene el envío en solicitudes de terceros
+//     path: '/',          // Disponible en toda la web
+// });
+
+// EJEMPLO REMOVER UNA COOKIE
+//
+// Cookies.remove('id_usuario', { path: '/' }); // Necesario si estableciste un path
+
+// EJEMPLO LEER UNA COOKIE
+//
+// Cookies.get('id_usuario');
+
+const id_usuario = ref(0);
+const router = useRouter();
+
+const LogOut = () => {
+    const allCookies = Cookies.get();
+    Object.keys(allCookies).forEach((cookieName) => {
+        Cookies.remove(cookieName);
+    });
+    id_usuario.value = 0;
+    router.push('/');
+}
 
 onMounted(() => {
+
+    const userData = Cookies.get('user_data');
+    if (userData) {
+        const parsedData = JSON.parse(userData);
+        id_usuario.value = parsedData.id_usuario || 0;
+    }
 
 });
 </script>
@@ -16,7 +53,7 @@ onMounted(() => {
             </router-link>
             <nav class="flex flex-row justify-end gap-3 min-w-[164px]">
                 <router-link to="/login" class="flex flex-col items-center justify-center text-center h-full"
-                    v-if="!Cookies.get('id_usuario')">
+                    v-if="id_usuario == 0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         class="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation">
@@ -27,21 +64,20 @@ onMounted(() => {
                         <path d="M19 22v.01" />
                     </svg>
                     <span class="text-[.7rem] font-semibold">
-                        Iniciar sesion
+                        Login
                     </span>
                 </router-link>
-                <router-link to="/" class="flex flex-col items-center justify-center text-center h-full" v-else>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
-                        class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+                <button @click="LogOut" class="flex flex-col items-center justify-center text-center h-full" v-else>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
+                        fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-user">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                        <path d="M12 2a5 5 0 1 1 -5 5l.005 -.217a5 5 0 0 1 4.995 -4.783z" />
+                        <path d="M14 14a5 5 0 0 1 5 5v1a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-1a5 5 0 0 1 5 -5h4z" />
                     </svg>
-                    <span class="text-[.7rem] font-semibold">
-                        Iniciar sesion
+                    <span class="text-[.7rem] font-semibold truncate">
+                        Logout
                     </span>
-                </router-link>
+                </button>
                 <router-link to="/" class="flex flex-col items-center justify-center text-center h-full">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
@@ -52,7 +88,7 @@ onMounted(() => {
                         <path d="M17 17h-11v-14h-2" />
                         <path d="M6 5l14 1l-1 7h-13" />
                     </svg>
-                    <span class="text-[.70rem] rounded-full bg-[rgb(228,226,226)] font-semibold min-w-[20px]">
+                    <span class="text-[.70rem] font-semibold min-w-[20px]">
                         0
                     </span>
                 </router-link>
