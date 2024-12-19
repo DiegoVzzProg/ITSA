@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\URL;
 
 class CGeneral extends Controller
 {
-    public static function ObtenerUrlArchEncriptada($folder, $filename)
+    public static function ObtenerUrlArchEncriptada($filename)
     {
         try {
             $url = URL::temporarySignedRoute(
                 'photo.show',
                 now()->addMinutes(5),
-                ['folder' => $folder, 'filename' => Crypt::encrypt($filename)]
+                ['filename' => Crypt::encrypt($filename)]
             );
 
             return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray([

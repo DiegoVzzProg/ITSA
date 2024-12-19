@@ -10,11 +10,13 @@ const route = useRoute();
 </script>
 
 <template>
-    <License v-if="route.params.select == 'license'" />
-    <Payments v-if="route.params.select == 'payments'" />
-    <Terms v-if="route.params.select == 'terms'" />
-    <Privacity v-if="route.params.select == 'privacity'" />
-    <Contact v-if="route.params.select == 'contact'" />
+    <div class="flex flex-col pt-[76px]">
+        <License v-if="route.params.select == 'license'" />
+        <Payments v-if="route.params.select == 'payments'" />
+        <Terms v-if="route.params.select == 'terms'" />
+        <Privacity v-if="route.params.select == 'privacity'" />
+        <Contact v-if="route.params.select == 'contact'" />
+    </div>
 </template>
 
 <style scoped></style>

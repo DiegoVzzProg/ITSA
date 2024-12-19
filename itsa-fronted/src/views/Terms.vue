@@ -2,8 +2,7 @@
 import terms_and_conditions from '../assets/img/terms_and_conditions.png'
 import { onMounted } from 'vue';
 onMounted(() => {
-    const contenedor: any = document.getElementById("main_contenedor");
-    contenedor.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
 

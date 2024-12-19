@@ -2,8 +2,7 @@
 import license from '../assets/img/license.png'
 import { onMounted } from 'vue';
 onMounted(() => {
-    const contenedor: any = document.getElementById("main_contenedor");
-    contenedor.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 </script>
 

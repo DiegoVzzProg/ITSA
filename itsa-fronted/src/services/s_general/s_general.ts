@@ -1,10 +1,10 @@
 import api from '../api';
 
-export const fileEncrypted = async (folder: string, filename: string) => {
+export const fileEncrypted = async (filename: string) => {
     try {
-        return (await api.get(`/get/${folder}/${filename}`)).data;
+        return (await api.get(`/archivo/${filename}`)).data;
     } catch (error) {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error: ', error);
         throw error;
     }
 };

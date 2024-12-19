@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import Main from './layouts/Main.vue';
 import Auth from './layouts/Auth.vue';
+import { fileEncrypted } from './services/s_general/s_general';
 
 
 const route = useRoute();

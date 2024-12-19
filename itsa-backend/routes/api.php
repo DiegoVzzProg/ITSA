@@ -22,11 +22,11 @@ Route::post('/login', function (Request $request) {
     return CUsuarios::fn_login($request);
 });
 
-Route::get('/archivo/{folder}/{filename}', function ($folder, $filename) {
-    return CGeneral::ObtenerUrlArchEncriptada($folder, $filename);
+Route::get('/archivo/{filename}', function ($filename) {
+    return CGeneral::ObtenerUrlArchEncriptada($filename);
 });
 
 
-Route::get('/get/{folder}/{filename}', function ($filename, $carpeta) {
-    return response()->file(storage_path('app/public/' . $carpeta . '/' . Crypt::decrypt($filename)));
+Route::get('/get/{filename}', function ($filename) {
+    return response()->file(storage_path('app/public/' . Crypt::decrypt($filename)));
 })->name('photo.show')->middleware('signed');

@@ -8,6 +8,7 @@ import slogan_principal from '../assets/img/slogan_principal.png'
 import { getProductos } from '../services/s_productos/s_productos'
 import Loading from '../components/Loading.vue'
 import File from '../components/File.vue'
+import { replaceClass } from '../utils/site';
 
 const productos: any = ref([]);
 
@@ -25,38 +26,40 @@ const Productos = async () => {
 
 onMounted(() => {
     Productos();
-
-    const contenedor: any = document.getElementById("main_contenedor");
-    contenedor.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const header: any = document.getElementById('header') as HTMLElement;
+    const footer: any = document.getElementById('footer') as HTMLElement;
+    replaceClass(header, "bg-transparent", "bg-white");
+    replaceClass(footer, "hidden", "flex");
 });
 </script>
 
 <template>
-    <div class="flex items-center justify-center w-full min-h-full snap-center">
+    <div class="flex items-center justify-center w-full min-h-screen snap-center">
         <span class="flex flex-col items-center w-full">
-            <img :src="freshicons_slogan" alt="_" srcset="" loading="lazy" class=" w-full max-w-[240px]">
-            <img :src="slogan_principal" alt="_" srcset="" loading="lazy" class=" w-full max-w-[550px]">
+            <img :src="freshicons_slogan" alt="_" loading="lazy" class=" w-full max-w-[240px]">
+            <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
         </span>
     </div>
-    <div class="flex items-center justify-center w-full min-h-full snap-center">
+    <div class="flex items-center justify-center w-full min-h-screen snap-center">
         <span class="flex flex-col items-center w-full">
-            <img :src="usefulmockups_slogans" alt="_" srcset="" loading="lazy" class=" w-full max-w-[240px]">
-            <img :src="slogan_principal" alt="_" srcset="" loading="lazy" class=" w-full max-w-[550px]">
+            <img :src="usefulmockups_slogans" alt="_" loading="lazy" class=" w-full max-w-[240px]">
+            <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
         </span>
     </div>
-    <div class="flex items-center justify-center w-full min-h-full snap-center">
+    <div class="flex items-center justify-center w-full min-h-screen snap-center">
         <span class="flex flex-col items-center w-full">
-            <img :src="collillustration_slogans" alt="_" srcset="" loading="lazy" class=" w-full max-w-[240px]">
-            <img :src="slogan_principal" alt="_" srcset="" loading="lazy" class=" w-full max-w-[550px]">
+            <img :src="collillustration_slogans" alt="_" loading="lazy" class=" w-full max-w-[240px]">
+            <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
         </span>
     </div>
-    <div class="flex items-center justify-center w-full min-h-full snap-center">
+    <div class="flex items-center justify-center w-full min-h-screen snap-center">
         <span class="flex flex-col items-center w-full">
-            <img :src="lovelytype_slogans" alt="_" srcset="" loading="lazy" class=" w-full max-w-[230px]">
-            <img :src="slogan_principal" alt="_" srcset="" loading="lazy" class=" w-full max-w-[550px]">
+            <img :src="lovelytype_slogans" alt="_" loading="lazy" class=" w-full max-w-[230px]">
+            <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
         </span>
     </div>
-    <div class="flex flex-row max-[768px]:flex-col max-[768px]:items-center w-full min-h-full gap-2 py-5 transition-all grow shrink-0 snap-center"
+    <div class="flex flex-row max-[768px]:flex-col max-[768px]:items-center w-full min-h-screen gap-2 py-5 transition-all grow shrink-0 snap-center"
         v-if="productos.length > 0">
         <div v-for="(producto, index) in productos" :key="index"
             class="bg-[rgb(244,242,239)] w-full max-w-[508px] h-full max-h-[508px] rounded-[12px] p-5 flex flex-col group hover:bg-[rgba(201,117,249,0.4)]">
@@ -73,19 +76,20 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex items-start justify-end w-full">
-                    <RouterLink :to="producto.url" class="text-white bg-black py-2 rounded-full px-7 poppins-font font-bold text-[1.7em]">
+                    <RouterLink :to="producto.url"
+                        class="text-white bg-black py-2 rounded-full px-7 poppins-font font-bold text-[1.7em]">
                         {{ parseFloat(producto.precio) > 0 ? producto.precio : 'free' }}
                     </RouterLink>
                 </div>
             </div>
             <div class="flex items-center justify-center w-full h-full">
                 <span class="flex w-full max-w-[320px]">
-                    <File :url="producto.imagen" type="img" :encrypted="false" />
+                    <File :file="producto.imagen" type="img" :encrypted="true" />
                 </span>
             </div>
         </div>
     </div>
-    <div class="flex items-center justify-center w-full min-h-full snap-center" v-else>
+    <div class="flex items-center justify-center w-full min-h-screen snap-center" v-else>
         <Loading />
     </div>
 </template>

@@ -4,7 +4,6 @@ import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
 import { useRouter } from 'vue-router';
 
-
 // EJEMPLO DE AGREGAR UNA COOKIE
 //
 // Cookies.set('id_usuario', response.data["id_usuario"], {
@@ -35,19 +34,19 @@ const LogOut = () => {
 }
 
 onMounted(() => {
-
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const userData = Cookies.get('user_data');
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;
     }
-
 });
 </script>
 
 <template>
-    <header class="flex w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center">
-        <div class="flex items-center justify-between w-full h-full border-b border-black">
+    <header id="header"
+        class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center fixed top-0 left-0 bg-white z-[9999]">
+        <div class="flex items-center justify-between w-full h-full border-b border-black" id="header_div">
             <router-link to="/" class="flex w-full h-full max-w-[165px]">
                 <img :src="logo" alt="" srcset="">
             </router-link>
@@ -95,10 +94,10 @@ onMounted(() => {
             </nav>
         </div>
     </header>
-    <main class="flex flex-col w-full h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" style="content-visibility: auto;">
-        <div class="flex flex-col w-full items-start justify-start h-full overflow-y-auto snap-y" id="main_contenedor">
+    <main class="flex flex-col w-full h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]">
+        <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0" id="main_contenedor">
             <slot></slot>
-            <footer class="flex flex-col w-full grow shrink-0 min-h-[calc(100vh-76px)] snap-end">
+            <footer id="footer" class="flex flex-col w-full grow shrink-0 min-h-[calc(100vh-76px)] snap-end">
                 <div
                     class="flex flex-col items-center justify-center w-full h-full find-us-mensaje app-findus-animation-timeline">
                     <p class="text-pretty w-full max-w-[500px] text-center">
