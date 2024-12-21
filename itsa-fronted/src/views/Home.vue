@@ -31,6 +31,8 @@ onMounted(() => {
     const footer: any = document.getElementById('footer') as HTMLElement;
     replaceClass(header, "bg-transparent", "bg-white");
     replaceClass(footer, "hidden", "flex");
+    const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
+    replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]")
 });
 </script>
 
@@ -62,16 +64,16 @@ onMounted(() => {
     <div class="flex flex-row max-[768px]:flex-col max-[768px]:items-center w-full min-h-screen gap-2 py-5 transition-all grow shrink-0 snap-center"
         v-if="productos.length > 0">
         <div v-for="(producto, index) in productos" :key="index"
-            class="bg-[rgb(244,242,239)] w-full max-w-[508px] h-full max-h-[508px] rounded-[12px] p-5 flex flex-col group hover:bg-[rgba(201,117,249,0.4)]">
+            class="bg-[rgb(244,242,239)] w-full max-w-[508px] h-full max-h-[508px] min-h-[508px] max-[620px]:min-h-[408px] max-[620px]:max-h-[408px] rounded-[12px] p-5 flex flex-col group hover:bg-[rgba(201,117,249,0.4)]">
             <div class="flex flex-row group-hover:text-white">
                 <div class="flex flex-col w-full gap-1">
-                    <p class="font-itsa-bold text-[clamp(1em,5vw,2.5em)] mb-[-18px]">
+                    <p class="font-itsa-bold text-[clamp(1.8em,5vw,2.5em)] mb-[-18px] leading-8">
                         {{ producto.titulo }}
                     </p>
-                    <span class="w-full max-w-[230px] leading-6 ms-2">
-                        <i class="times-new-roman-font text-[clamp(1em,5vw,2em)]">{{ producto.subtitulo }}</i>
+                    <span class="w-full max-w-[230px] leading-6 ms-1 mt-4">
+                        <i class="times-new-roman-font text-[clamp(1.4em,5vw,2em)]">{{ producto.subtitulo }}</i>
                     </span>
-                    <p class="text-[.7em]">
+                    <p class="text-[clamp(.6em,2vw,.7em)]">
                         {{ producto.descripcion }}
                     </p>
                 </div>

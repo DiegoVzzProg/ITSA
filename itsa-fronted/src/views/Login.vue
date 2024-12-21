@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import { useRouter } from 'vue-router';
+import { isNotified } from '../utils/site';
 const router = useRouter();
 
 const email = ref('');
@@ -69,7 +70,11 @@ const Login = async () => {
         }
 
         Cookies.set('user_data', JSON.stringify(response.data), {
-            expires: 7,
+            secure: true,
+            sameSite: 'Strict',
+            path: '/',
+        });
+        Cookies.set('logged_in_successfully', 'false', {
             secure: true,
             sameSite: 'Strict',
             path: '/',

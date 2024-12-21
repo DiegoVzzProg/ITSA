@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUpdated, ref, watch } from 'vue';
 import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
 import { useRouter } from 'vue-router';
+import { Notyf } from 'notyf';
+import { isNotified } from '../utils/site';
 
 // EJEMPLO DE AGREGAR UNA COOKIE
 //
@@ -39,6 +41,21 @@ onMounted(() => {
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;
+        if (!isNotified) {
+            const notyf = new Notyf({
+                duration: 5000,
+                position: {
+                    x: 'right',
+                    y: 'top',
+                }
+            });
+            notyf.success("Logged in successfully");
+            Cookies.set('logged_in_successfully', 'true', {
+                secure: true,
+                sameSite: 'Strict',
+                path: '/',
+            });
+        }
     }
 });
 </script>
@@ -94,8 +111,8 @@ onMounted(() => {
             </nav>
         </div>
     </header>
-    <main class="flex flex-col w-full h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]">
-        <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0" id="main_contenedor">
+    <main class="flex flex-col w-full h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" id="main_contenedor">
+        <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0">
             <slot></slot>
             <footer id="footer" class="flex flex-col w-full grow shrink-0 min-h-[calc(100vh-76px)] snap-end">
                 <div

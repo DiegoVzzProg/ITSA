@@ -11,3 +11,7 @@ export function replaceClass(element: HTMLElement, oldClass: string, newClass: s
         element.classList.add(newClass);
     }
 }
+
+import Cookies from "js-cookie";
+// Variable reactiva compartida
+export const isNotified = Cookies.get('logged_in_successfully');

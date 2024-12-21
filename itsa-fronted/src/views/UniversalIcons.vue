@@ -16,6 +16,7 @@ onMounted(() => {
     const header: any = document.getElementById('header') as HTMLElement;
     const footer: any = document.getElementById('footer') as HTMLElement;
     const overflow: any = document.getElementById('overflow') as HTMLElement;
+    const overflow2: any = document.getElementById('overflow2') as HTMLElement;
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
     const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
@@ -29,11 +30,11 @@ onMounted(() => {
     div_contenedor_gallery_basics_1.addEventListener('scroll', () => {
 
         if (div_contenedor_gallery_basics_1.scrollTop >= (targetRect.height - 100)) {
-            replaceClass(overflow, "bg-[rgba(183,164,237,0.45)]", "bg-[rgba(25,18,44,0.7)]")
+            replaceClass(overflow2, "opacity-0", "opacity-60")
             replaceClass(footer, "hidden", "flex");
             replaceClass(div_contenedor_gallery_basics_2, "hidden", "flex");
         } else {
-            replaceClass(overflow, "bg-[rgba(25,18,44,0.7)]", "bg-[rgba(183,164,237,0.45)]")
+            replaceClass(overflow2, "opacity-60", "opacity-0")
             replaceClass(header, "bg-white", "bg-transparent");
             replaceClass(footer, "flex", "hidden");
             replaceClass(div_contenedor_gallery_basics_2, "flex", "hidden");
@@ -60,29 +61,35 @@ onMounted(() => {
         <File :file="icon_morado_3" type="img" :encrypted="false"
             class="flex w-full max-w-[clamp(130px,18vw,245px)] max-[680px]:hidden" />
     </div>
-    <div class="flex absolute top-0 left-0 h-screen bg-[rgba(183,164,237,0.45)] transition-all w-full" id="overflow">
+    <div class="flex absolute top-0 left-0 h-screen bg-[rgb(0,0,0)] transition-all w-full opacity-0" id="overflow2">
+    </div>
+    <div class="flex absolute top-0 left-0 h-screen bg-[rgb(116,171,253)] transition-all w-full opacity-60"
+        id="overflow">
     </div>
     <div id="div_contenedor_gallery_basics_1"
         class="flex flex-col min-h-screen h-screen overflow-y-auto w-full snap-y snap-mandatory relative pt-[76px] scroll-none">
         <div id="div_sub_contenedor_1"
             class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
             <div class="flex flex-col w-full justify-center items-center">
-                <p class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[78px] flex text-white z-10">
-                    basics icon set
+                <p
+                    class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
+                    universal <br> icon pack
                 </p>
-                <p class="text-[clamp(1em,3vw,4em)] text-center text-white">
-                    a sleek & minimalist collection <br> of geometric-style icons.
+                <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
+                    a sleek & minimalist collection solid <br> of minimalist style icons.
                 </p>
             </div>
         </div>
         <div id="div_sub_contenedor_2"
             class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
-            <div class="flex flex-col w-full justify-center items-center">
-                <p class="font-itsa-bold text-[clamp(35px,10vw,208px)] leading-[78px] font-bold flex text-white z-10">
-                    +50 elements
+            <div class="flex flex-col w-full justify-center items-center leading-[clamp(35px,10vw,120px)]">
+                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] font-bold flex text-white z-10">
+                    +500 elements
                 </p>
-                <p
-                    class="font-itsa-bold text-[clamp(20px,7vw,108px)] max-[480px]:translate-y-[-20px] text-center font-bold flex text-white z-10">
+                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] text-center font-bold flex text-white z-10">
+                    fully editable
+                </p>
+                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] text-center font-bold flex text-white z-10">
                     personal & comercial use
                 </p>
             </div>
@@ -92,7 +99,7 @@ onMounted(() => {
         id="div_contenedor_gallery_basics_2">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">
-                fresh icons
+                universal icon
             </p>
             <div class="flex rounded-[2em] overflow-hidden">
                 <File :file="gif_coleccion_1" type="img" :encrypted="false"></File>
@@ -137,42 +144,16 @@ onMounted(() => {
             </p>
             <div class="w-[90%] flex items-center h-full wrapper max-h-[200px] max-w-[1536px] relative overflow-hidden"
                 style="margin-inline: auto; content-visibility: auto;">
-                <div v-for="i in 57" :key="i"
-                    class="flex p-[40px] app-item-scroll-infinite-basic-icons absolute rounded bg-[rgb(213,169,239)] left-[max(calc(200px*8),100%)]"
-                    :style="{ animationDelay: `calc(7s / 8 * (8 - ${i}) * -1)` }">
-                    <File :file="`basic set-${i}.png`" type="img" :encrypted="true"
-                        class="w-full h-full max-w-[60px] min-w-[60px] max-h-[60px]"></File>
-                </div>
+
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col">
-            <CardProduct titulo="basics icon set" subtitulo="this pack is free"
-                descripcion="57 items available as: illustrator, figma & svg commercial & personal use" precio="0">
+            <CardProduct titulo="get this pack" subtitulo="universal icon pack"
+                descripcion="524 items available as: illustrator, figma, svg & pdf commercial & personal use"
+                precio="455">
             </CardProduct>
         </div>
     </div>
 </template>
 
-<style scoped>
-.wrapper {
-    mask-image: linear-gradient(to right,
-            rgba(0, 0, 0, 0),
-            rgba(0, 0, 0, 1) 20%,
-            rgba(0, 0, 0, 1) 80%,
-            rgba(0, 0, 0, 0));
-}
-
-@keyframes scrollLeft {
-    to {
-        left: -200px;
-    }
-}
-
-.app-item-scroll-infinite-basic-icons {
-    position: absolute;
-    animation-name: scrollLeft;
-    animation-duration: 7s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-</style>
+<style scoped></style>
