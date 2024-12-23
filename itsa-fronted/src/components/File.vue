@@ -4,25 +4,26 @@ import { fileEncrypted } from '../services/s_general/s_general';
 import Loading from './Loading.vue';
 
 const props = defineProps<{
+    folder: string;
     file: string;
     type: string;
     encrypted: boolean;
 }>();
 
-const imageUrl = ref<string>('');
+const archivo = ref<string>('');
 
-const getImagePath = async (): Promise<void> => {
+const getArchivo = async (): Promise<void> => {
     if (props.encrypted) {
-        const response = await fileEncrypted(props.file);
-        imageUrl.value = response.data.url;
+        const response = await fileEncrypted(props.folder, props.file);
+        archivo.value = response.data.url;
     } else {
 
-        imageUrl.value = new URL(`${props.file}`, import.meta.url).href
+        archivo.value = new URL(`${props.file}`, import.meta.url).href
     }
 };
 
 onMounted(() => {
-    getImagePath();
+    getArchivo();
 });
 
 onBeforeMount(() => {
@@ -31,10 +32,12 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <div class="flex" v-if="imageUrl != ''">
-        <div class="flex" v-if="props.type == 'img'">
-            <img :src="imageUrl" alt="Imagen" class="object-contain" />
-        </div>
+
+    <div class="flex" v-if="props.type == 'img' && archivo != ''">
+        <img :src="archivo" alt="_" loading="lazy" class="object-contain" />
+    </div>
+    <div v-else-if="props.type == 'video' && archivo != ''">
+        <video :src="archivo" loop autoplay muted alt="_" loading="lazy" class="w-full h-full"></video>
     </div>
     <div class="flex w-full justify-center" v-else>
         <Loading />

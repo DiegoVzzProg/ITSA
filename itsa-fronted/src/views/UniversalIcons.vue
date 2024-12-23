@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { replaceClass } from '../utils/site';
-import icon_morado_1 from '../assets/img/gallery/basicsIcons/icon_morado_1.png'
-import icon_morado_2 from '../assets/img/gallery/basicsIcons/icon_morado_2.png'
-import icon_morado_3 from '../assets/img/gallery/basicsIcons/icon_morado_3.png'
-import PDF from '../assets/img/gallery/basicsIcons/PDF.png'
-import AI from '../assets/img/gallery/basicsIcons/Ai.png'
-import SVG from '../assets/img/gallery/basicsIcons/SVG.png'
-import basic_set_50 from '../assets/img/gallery/basicsIcons/basic_set_50.png'
-import gif_coleccion_1 from '../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
 import File from '../components/File.vue'
 import CardProduct from '../components/CardProduct.vue';
 
@@ -53,13 +45,14 @@ onMounted(() => {
 </script>
 
 <template>
+    <a href="#card_section"
+        class="flex fixed bottom-[10px] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
+        get this pack!
+    </a>
     <div
         class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between items-center gap-8">
-        <File :file="icon_morado_1" type="img" :encrypted="false"
-            class="flex w-full max-w-[clamp(130px,18vw,310px)] max-[680px]:hidden" />
-        <File :file="icon_morado_2" type="img" :encrypted="false" class="flex w-full max-w-[560px]" />
-        <File :file="icon_morado_3" type="img" :encrypted="false"
-            class="flex w-full max-w-[clamp(130px,18vw,245px)] max-[680px]:hidden" />
+        <File folder="universal-icons" file="universalicon_cover.png" type="img" :encrypted="true"
+            class="max-[680px]:hidden" />
     </div>
     <div class="flex absolute top-0 left-0 h-screen bg-[rgb(0,0,0)] transition-all w-full opacity-0" id="overflow2">
     </div>
@@ -101,15 +94,20 @@ onMounted(() => {
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">
                 universal icon
             </p>
-            <div class="flex rounded-[2em] overflow-hidden">
-                <File :file="gif_coleccion_1" type="img" :encrypted="false"></File>
+            <p
+                class="w-full text-center translate-y-[-30px] max-[520px]:translate-y-[-20px] py-1 text-[clamp(.8rem,3vw,1rem)] text-pretty">
+                this plus pack consists of 500 essential icons in solid, forming an essential <br>
+                collection fit for you personal and professional projects
+            </p>
+            <div class="flex rounded-[2em] w-full max-w-screen-md overflow-hidden">
+                <File folder="universal-icons" file="universalicon_02.png" type="img" :encrypted="true"></File>
             </div>
         </div>
         <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0">
             <div
                 class="flex flex-col h-full w-full items-start max-[680px]:justify-start max-[680px]:items-center max-[680px]:text-center justify-center">
                 <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]  leading-[100px]">
-                    outline
+                    solid
                 </p>
                 <div class="flex flex-col">
                     <p class="flex w-full">
@@ -122,33 +120,64 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
-                    <File :file="AI" class="w-full max-w-[44px]" type="img" :encrypted="false"></File>
-                    <File :file="SVG" class="w-full max-w-[34px]" type="img" :encrypted="false"></File>
-                    <File :file="PDF" class="w-full max-w-[34px]" type="img" :encrypted="false"></File>
+                    <File folder="basics-icons" file="Ai.png" class="w-full max-w-[44px]" type="img" :encrypted="true">
+                    </File>
+                    <File folder="basics-icons" file="SVG.png" class="w-full max-w-[34px]" type="img" :encrypted="true">
+                    </File>
+                    <File folder="basics-icons" file="PDF.png" class="w-full max-w-[34px]" type="img" :encrypted="true">
+                    </File>
                 </div>
             </div>
             <div class="flex flex-col h-full w-full items-center justify-center">
-                <div
-                    class="flex items-center justify-center rounded-[1em] p-5 w-full max-w-[532px] h-full max-h-[532px] bg-[rgba(115,64,255,0.45)]">
-                    <File :file="basic_set_50" type="img" class="flex w-full max-w-[220px]" :encrypted="false"></File>
+                <div class="flex items-center justify-center rounded-[1em] w-full max-w-[532px] h-full max-h-[532px]">
+                    <File folder="universal-icons" file="universalicon_03.png" type="img" :encrypted="true"></File>
                 </div>
             </div>
         </div>
-        <div class="min-h-screen justify-center grow shrink-0 flex flex-col text-center">
+        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
             <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
-                57 items
+                524 items
             </p>
-            <p>
+            <p class="text-[clamp(.8rem,3vw,1rem)] translate-y-[-30px] max-[520px]:translate-y-[-20px]">
                 a large library of basic elements including <br>
                 social media, weather, store and much more.
             </p>
-            <div class="w-[90%] flex items-center h-full wrapper max-h-[200px] max-w-[1536px] relative overflow-hidden"
-                style="margin-inline: auto; content-visibility: auto;">
-
+            <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
+                <File file="video1-universal icon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
             </div>
         </div>
-        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col">
-            <CardProduct titulo="get this pack" subtitulo="universal icon pack"
+        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
+            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
+                print & digital use
+            </p>
+            <div class="flex w-full justify-center items-center translate-y-[-30px] max-[520px]:translate-y-[-20px]">
+                <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
+                    all files are royalty-free and one time fee. you can use them in any number of personal and
+                    commercial
+                    projects for yourself or a client and you can do any ind of design work with them.
+                </p>
+            </div>
+            <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
+                <File file="video2-universalicon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
+            </div>
+        </div>
+        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
+            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
+                universal icon pack
+            </p>
+            <div class="flex w-full justify-center items-center translate-y-[-30px] max-[520px]:translate-y-[-20px]">
+                <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
+                    all files are royalty-free and one time fee. you can use them in any number of personal and
+                    commercial
+                    projects for yourself or a client and you can do any ind of design work with them.
+                </p>
+            </div>
+            <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
+                <File file="video3-universalicon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
+            </div>
+        </div>
+        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
+            <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon pack"
                 descripcion="524 items available as: illustrator, figma, svg & pdf commercial & personal use"
                 precio="455">
             </CardProduct>

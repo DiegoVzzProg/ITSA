@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUpdated, ref, watch } from 'vue';
+import { onMounted, onUnmounted, onUpdated, ref, watch } from 'vue';
 import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { Notyf } from 'notyf';
 import { isNotified } from '../utils/site';
+import { fn_l_carrito_cliente } from '../services/s_cart';
 
 // EJEMPLO DE AGREGAR UNA COOKIE
 //
@@ -25,6 +26,27 @@ import { isNotified } from '../utils/site';
 
 const id_usuario = ref(0);
 const router = useRouter();
+const numberCart = ref<string>('');
+
+const fetchNumberCart = async () => {
+    const userData = Cookies.get('user_data');
+    if (userData) {
+        const parsedData = JSON.parse(userData);
+        const data = {
+            id_usuario: parsedData.id_usuario
+        };
+
+        try {
+            const response = await fn_l_carrito_cliente(data);
+            localStorage.setItem('numberCart', response.data.length.toString());
+        } catch (error) {
+            console.error('Error:', error);
+            localStorage.setItem('numberCart', '0');
+        }
+    }
+    numberCart.value = localStorage.getItem('numberCart') || '0';
+};
+
 
 const LogOut = () => {
     const allCookies = Cookies.get();
@@ -32,8 +54,23 @@ const LogOut = () => {
         Cookies.remove(cookieName);
     });
     id_usuario.value = 0;
+
+    localStorage.clear();
+    sessionStorage.clear();
+    fetchNumberCart();
+
     router.push('/');
 }
+
+const route = useRoute();
+
+watch(
+    () => route.path,
+    () => {
+        fetchNumberCart();
+    }
+);
+
 
 onMounted(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -56,8 +93,12 @@ onMounted(() => {
                 path: '/',
             });
         }
+
     }
+
+    fetchNumberCart();
 });
+
 </script>
 
 <template>
@@ -104,9 +145,7 @@ onMounted(() => {
                         <path d="M17 17h-11v-14h-2" />
                         <path d="M6 5l14 1l-1 7h-13" />
                     </svg>
-                    <span class="text-[.70rem] font-semibold min-w-[20px]">
-                        0
-                    </span>
+                    <span class="text-[.70rem] font-semibold min-w-[20px]" v-text="numberCart"></span>
                 </router-link>
             </nav>
         </div>

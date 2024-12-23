@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { postLogin } from '../services/s_login/s_login';
+import { fnLogin } from '../services/s_login/s_login';
 import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import { useRouter } from 'vue-router';
-import { isNotified } from '../utils/site';
+
 const router = useRouter();
 
 const email = ref('');
@@ -14,7 +14,6 @@ const password = ref('');
 const emailError = ref('');
 const passwordError = ref('');
 
-// Función para validar el email
 const validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
@@ -24,7 +23,6 @@ const validateEmail = (value: string) => {
     }
 };
 
-// Función para validar la contraseña
 const validatePassword = (value: string) => {
     if (value.length < 3) {
         passwordError.value = 'Password must be at least 3 characters long';
@@ -33,7 +31,6 @@ const validatePassword = (value: string) => {
     }
 };
 
-// Watchers para escuchar cambios y validar automáticamente
 watch(email, (newValue) => {
     validateEmail(newValue);
 });
@@ -43,48 +40,42 @@ watch(password, (newValue) => {
 });
 
 const Login = async () => {
-    try {
-        validateEmail(email.value);
-        validatePassword(password.value);
+    validateEmail(email.value);
+    validatePassword(password.value);
 
-        // Si no hay errores, enviamos el formulario
-        if (emailError.value && passwordError.value)
-            return;
+    if (emailError.value && passwordError.value)
+        return;
 
-        const data = {
-            email: email.value,
-            password: password.value
-        };
-        const response = await postLogin(data);
+    const data = {
+        email: email.value,
+        password: password.value
+    };
+    const response = await fnLogin(data);
 
-        if (response.message != '') {
-            const notyf = new Notyf({
-                duration: 5000,
-                position: {
-                    x: 'right',
-                    y: 'top',
-                }
-            });
-            notyf.error(response.message)
-            return;
-        }
-
-        Cookies.set('user_data', JSON.stringify(response.data), {
-            secure: true,
-            sameSite: 'Strict',
-            path: '/',
+    if (response.message != '') {
+        const notyf = new Notyf({
+            duration: 5000,
+            position: {
+                x: 'right',
+                y: 'top',
+            }
         });
-        Cookies.set('logged_in_successfully', 'false', {
-            secure: true,
-            sameSite: 'Strict',
-            path: '/',
-        });
-
-        router.push('/');
-
-    } catch (error) {
-        console.error('Error: ', error);
+        notyf.error(response.message)
+        return;
     }
+
+    Cookies.set('user_data', JSON.stringify(response.data.user_data), {
+        secure: true,
+        sameSite: 'Strict',
+        path: '/',
+    });
+    Cookies.set('logged_in_successfully', 'false', {
+        secure: true,
+        sameSite: 'Strict',
+        path: '/',
+    });
+
+    router.push('/');
 };
 </script>
 

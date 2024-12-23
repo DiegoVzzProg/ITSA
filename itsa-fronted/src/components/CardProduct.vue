@@ -1,12 +1,36 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-
+import { fn_a_carrito_cliente } from '../services/s_cart';
+import { useRouter } from 'vue-router';
+import Cookies from "js-cookie";
+const router = useRouter();
 const props = defineProps<{
+    id_producto: number;
     titulo: string;
     subtitulo: string;
     precio: string;
     descripcion: string;
 }>();
+
+const AddCartCostumer = async () => {
+    const userData = Cookies.get('user_data');
+    if (userData) {
+        const parsedData = JSON.parse(userData);
+        const data = {
+            id_usuario: parsedData.id_usuario,
+            id_producto: props.id_producto,
+            descripcion: ''
+        }
+
+        const response = await fn_a_carrito_cliente(data);
+
+        if (response.message == '') {
+            router.push('/');
+        }
+    } else {
+        router.push('/login');
+    }
+}
 
 
 onMounted(() => {
@@ -30,7 +54,7 @@ onMounted(() => {
             {{ descripcion }}
         </p>
         <div class="flex pb-12">
-            <button
+            <button @click="AddCartCostumer"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
                 <p v-if="Number(precio) > 0">
                     buy

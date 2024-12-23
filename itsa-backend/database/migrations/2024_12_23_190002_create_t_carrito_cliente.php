@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('t_carrito_cliente', function (Blueprint $table) {
-            $table->increments('id_carrito');
+            $table->increments('id_carrito_cliente');
             $table->integer('id_usuario');
-            $table->integer('cantidad_carrito');
-            $table->timestamp('fecha_registro');
-            $table->boolean('borrado');
+            $table->integer('id_producto');
+            $table->string('descripcion')->nullable()->default(null);
+            $table->timestamp('fecha_creacion');
+            $table->boolean('borrado')->default(false);
         });
     }
 

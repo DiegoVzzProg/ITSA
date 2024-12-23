@@ -6,26 +6,56 @@ use App\Models\TUsuarios;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 
 class CUsuarios extends Controller
 {
     public static function fn_login(Request $request)
     {
         try {
-            $email = $request->input('email');
-            $password = $request->input('password');
 
-            $usuario = TUsuarios::where('email', $email)->where('activo', true)->first();
+            $credentials = $request->only('email', 'password');
 
-            if (!$usuario || !Hash::check($password, $usuario->password)) {
-                return CGeneral::CreateMessage('Incorrect credentials', 200, 'info', null);
+            $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
+
+            if (!$usuario) {
+                return CGeneral::CreateMessage('User not found or inactive', 200, 'info', null);
             }
+
+            if (!Hash::check($credentials['password'], $usuario->password)) {
+                return CGeneral::CreateMessage('Incorrect password', 200, 'info', null);
+            }
+
+            $token = $usuario->createToken('auth_token', ['*'], now()->addDay())->plainTextToken;
+
+            return CGeneral::CreateMessage('', 200, 'success', [
+                "user_data" => [
+                    'id_usuario' => $usuario->id_usuario,
+                    'email' => $usuario->email,
+                    'nombre' => $usuario->nombre,
+                ],
+                "token" => $token
+            ]);
+        } catch (Exception $ex) {
+            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+        }
+    }
+
+    public static function fn_register(Request $request)
+    {
+        try {
+
+            $credentials = $request->only('nombre', 'email', 'password');
+
+            $usuario = TUsuarios::create([
+                'nombre' => $credentials['nombre'],
+                'email' => $credentials['email'],
+                'password' => Hash::make($credentials['password']),
+            ]);
 
             return CGeneral::CreateMessage('', 200, 'success', [
                 'id_usuario' => $usuario->id_usuario,
-                'email' => $usuario->email,
                 'nombre' => $usuario->nombre,
+                'email' => $usuario->email
             ]);
         } catch (Exception $ex) {
             return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);

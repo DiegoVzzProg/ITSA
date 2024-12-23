@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
-class TUsuarios extends Model
+class TUsuarios extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable, HasApiTokens;
 
     // Especificar el nombre de la tabla si no sigue la convención de nombres de Laravel
     protected $table = 't_usuarios';
@@ -29,7 +32,11 @@ class TUsuarios extends Model
         'nombre',
         'email',
         'password',
-        'activo',
+        'activo'
+    ];
+
+    protected $hidden = [
+        'password'
     ];
 
     protected $attributes = [];

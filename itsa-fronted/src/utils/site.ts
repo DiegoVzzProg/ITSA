@@ -13,5 +13,6 @@ export function replaceClass(element: HTMLElement, oldClass: string, newClass: s
 }
 
 import Cookies from "js-cookie";
+import { fn_l_carrito_cliente } from "../services/s_cart";
 // Variable reactiva compartida
 export const isNotified = Cookies.get('logged_in_successfully');

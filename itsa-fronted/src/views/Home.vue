@@ -13,15 +13,10 @@ import { replaceClass } from '../utils/site';
 const productos: any = ref([]);
 
 const Productos = async () => {
-    try {
-        const data = {
-            id_producto: 0
-        };
-        productos.value = (await getProductos(data)).data;
-
-    } catch (error) {
-        console.error('Error al obtener productos:', error);
-    }
+    const data = {
+        id_producto: 0
+    };
+    productos.value = (await getProductos(data)).data;
 };
 
 onMounted(() => {
@@ -86,7 +81,7 @@ onMounted(() => {
             </div>
             <div class="flex items-center justify-center w-full h-full">
                 <span class="flex w-full max-w-[320px]">
-                    <File :file="producto.imagen" type="img" :encrypted="true" />
+                    <File folder="basics-icons" :file="producto.imagen" type="img" :encrypted="true" />
                 </span>
             </div>
         </div>

@@ -54,11 +54,11 @@ onMounted(() => {
 <template>
     <div
         class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between items-center gap-8">
-        <File :file="icon_morado_1" type="img" :encrypted="false"
+        <img :src="icon_morado_1" alt="_" loading="lazy"
             class="flex w-full max-w-[clamp(130px,18vw,310px)] max-[680px]:hidden" />
-        <File :file="icon_morado_2" type="img" :encrypted="false" class="flex w-full max-w-[560px]" />
-        <File :file="icon_morado_3" type="img" :encrypted="false"
-            class="flex w-full max-w-[clamp(130px,18vw,245px)] max-[680px]:hidden" />
+        <img :src="icon_morado_2" alt="_" loading="lazy" class="w-full flex max-w-[560px]" />
+        <img :src="icon_morado_3" alt="_" loading="lazy"
+            class="w-full flex max-w-[clamp(130px,18vw,245px)] max-[680px]:hidden" />
     </div>
     <div class="flex absolute top-0 left-0 h-screen bg-[rgba(183,164,237,0.45)] transition-all w-full" id="overflow">
     </div>
@@ -95,7 +95,7 @@ onMounted(() => {
                 fresh icons
             </p>
             <div class="flex rounded-[2em] overflow-hidden">
-                <File :file="gif_coleccion_1" type="img" :encrypted="false"></File>
+                <img :src="gif_coleccion_1" alt="_" loading="lazy" class="object-contain" />
             </div>
         </div>
         <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0">
@@ -115,15 +115,15 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
-                    <File :file="AI" class="w-full max-w-[44px]" type="img" :encrypted="false"></File>
-                    <File :file="SVG" class="w-full max-w-[34px]" type="img" :encrypted="false"></File>
-                    <File :file="PDF" class="w-full max-w-[34px]" type="img" :encrypted="false"></File>
+                    <img :src="AI" alt="_" loading="lazy" class="w-full max-w-[44px]" />
+                    <img :src="SVG" alt="_" loading="lazy" class="w-full max-w-[34px]" />
+                    <img :src="PDF" alt="_" loading="lazy" class="w-full max-w-[34px]" />
                 </div>
             </div>
             <div class="flex flex-col h-full w-full items-center justify-center">
                 <div
                     class="flex items-center justify-center rounded-[1em] p-5 w-full max-w-[532px] h-full max-h-[532px] bg-[rgba(115,64,255,0.45)]">
-                    <File :file="basic_set_50" type="img" class="flex w-full max-w-[220px]" :encrypted="false"></File>
+                    <img :src="basic_set_50" alt="_" loading="lazy" class="flex w-full max-w-[220px]" />
                 </div>
             </div>
         </div>
@@ -140,13 +140,13 @@ onMounted(() => {
                 <div v-for="i in 57" :key="i"
                     class="flex p-[40px] app-item-scroll-infinite-basic-icons absolute rounded bg-[rgb(213,169,239)] left-[max(calc(200px*8),100%)]"
                     :style="{ animationDelay: `calc(7s / 8 * (8 - ${i}) * -1)` }">
-                    <File :file="`basic set-${i}.png`" type="img" :encrypted="true"
+                    <File :file="`basic set-${i}.png`" folder="basics-icons" type="img" :encrypted="true"
                         class="w-full h-full max-w-[60px] min-w-[60px] max-h-[60px]"></File>
                 </div>
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col">
-            <CardProduct titulo="basics icon set" subtitulo="this pack is free"
+            <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="this pack is free"
                 descripcion="57 items available as: illustrator, figma & svg commercial & personal use" precio="0">
             </CardProduct>
         </div>
