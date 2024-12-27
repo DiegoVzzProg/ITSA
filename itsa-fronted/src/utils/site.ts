@@ -13,6 +13,31 @@ export function replaceClass(element: HTMLElement, oldClass: string, newClass: s
 }
 
 import Cookies from "js-cookie";
-import { fn_l_carrito_cliente } from "../services/s_cart";
 // Variable reactiva compartida
 export const isNotified = Cookies.get('logged_in_successfully');
+
+import { Notyf } from "notyf";
+export const notify = new Notyf({
+    duration: 5000,
+    position: {
+        x: 'right',
+        y: 'top',
+    }
+});
+
+export const IsNullOrEmpty = (value: any): boolean => {
+    return value == null || value == undefined || value == '';
+};
+
+import CryptoJS from "crypto-js";
+
+export const encryptValue = (value: string): string => {
+    const secretKey: any = localStorage.getItem('secretKey');
+    console.log(secretKey);
+
+    if (!IsNullOrEmpty(secretKey)) {
+        return "";
+    }
+
+    return CryptoJS.AES.encrypt(value, String(secretKey)).toString();
+}

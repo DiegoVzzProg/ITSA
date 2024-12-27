@@ -3,6 +3,9 @@ import { onMounted, ref } from 'vue';
 import { fn_a_carrito_cliente } from '../services/s_cart';
 import { useRouter } from 'vue-router';
 import Cookies from "js-cookie";
+import { MySQLInfo } from '../interface/mysql.interface';
+import { IsNullOrEmpty, notify } from '../utils/site';
+
 const router = useRouter();
 const props = defineProps<{
     id_producto: number;
@@ -22,11 +25,15 @@ const AddCartCostumer = async () => {
             descripcion: ''
         }
 
-        const response = await fn_a_carrito_cliente(data);
+        await fn_a_carrito_cliente(data);
 
-        if (response.message == '') {
-            router.push('/');
+        if (!IsNullOrEmpty(MySQLInfo.message)) {
+            notify.error(MySQLInfo.message)
+            return;
         }
+
+        router.push('/');
+
     } else {
         router.push('/login');
     }

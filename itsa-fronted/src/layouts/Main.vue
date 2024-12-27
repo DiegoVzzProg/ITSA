@@ -4,8 +4,10 @@ import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
 import { useRoute, useRouter } from 'vue-router';
 import { Notyf } from 'notyf';
-import { isNotified } from '../utils/site';
+import { encryptValue, isNotified } from '../utils/site';
 import { fn_l_carrito_cliente } from '../services/s_cart';
+import { MySQLInfo } from '../interface/mysql.interface';
+import { IsNullOrEmpty, notify } from '../utils/site';
 
 // EJEMPLO DE AGREGAR UNA COOKIE
 //
@@ -26,9 +28,11 @@ import { fn_l_carrito_cliente } from '../services/s_cart';
 
 const id_usuario = ref(0);
 const router = useRouter();
-const numberCart = ref<string>('');
+const numberCart = ref<string>('0');
+const route = useRoute();
 
 const fetchNumberCart = async () => {
+    let response: any = null;
     const userData = Cookies.get('user_data');
     if (userData) {
         const parsedData = JSON.parse(userData);
@@ -36,15 +40,19 @@ const fetchNumberCart = async () => {
             id_usuario: parsedData.id_usuario
         };
 
-        try {
-            const response = await fn_l_carrito_cliente(data);
-            localStorage.setItem('numberCart', response.data.length.toString());
-        } catch (error) {
-            console.error('Error:', error);
-            localStorage.setItem('numberCart', '0');
+        response = await fn_l_carrito_cliente(data);
+
+        if (!IsNullOrEmpty(MySQLInfo.message)) {
+            notify.error(MySQLInfo.message)
+            return;
         }
+
+        numberCart.value = response.data.length.toString();
+
+
     }
-    numberCart.value = localStorage.getItem('numberCart') || '0';
+
+
 };
 
 
@@ -62,7 +70,10 @@ const LogOut = () => {
     router.push('/');
 }
 
-const route = useRoute();
+function GoCheckOut() { 
+    
+}
+
 
 watch(
     () => route.path,
@@ -135,7 +146,7 @@ onMounted(() => {
                         Logout
                     </span>
                 </button>
-                <router-link to="/" class="flex flex-col items-center justify-center text-center h-full">
+                <router-link :to="GoCheckOut()" class="flex flex-col items-center justify-center text-center h-full">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">

@@ -2,9 +2,11 @@
 import { ref, watch } from 'vue';
 import { fnLogin } from '../services/s_login/s_login';
 import Cookies from "js-cookie";
-import { Notyf } from 'notyf';
 import 'notyf/notyf.min.css';
 import { useRouter } from 'vue-router';
+import { MySQLInfo } from '../interface/mysql.interface';
+import { IsNullOrEmpty, notify } from '../utils/site';
+import { SecretKey } from '../services/s_general/s_general';
 
 const router = useRouter();
 
@@ -50,17 +52,11 @@ const Login = async () => {
         email: email.value,
         password: password.value
     };
+
     const response = await fnLogin(data);
 
-    if (response.message != '') {
-        const notyf = new Notyf({
-            duration: 5000,
-            position: {
-                x: 'right',
-                y: 'top',
-            }
-        });
-        notyf.error(response.message)
+    if (!IsNullOrEmpty(MySQLInfo.message)) {
+        notify.error(MySQLInfo.message)
         return;
     }
 

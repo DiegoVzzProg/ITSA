@@ -16,6 +16,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/agregar/carrito', function (Request $request) {
         return CCarritoCliente::fn_a_carrito_cliente($request);
     });
+
+    Route::get('/scret/key', function () {
+        return bin2hex(random_bytes(10));
+    });
 });
 
 Route::post('/login', function (Request $request) {

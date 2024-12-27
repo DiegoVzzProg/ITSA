@@ -8,7 +8,8 @@ import slogan_principal from '../assets/img/slogan_principal.png'
 import { getProductos } from '../services/s_productos/s_productos'
 import Loading from '../components/Loading.vue'
 import File from '../components/File.vue'
-import { replaceClass } from '../utils/site';
+import { IsNullOrEmpty, notify, replaceClass } from '../utils/site';
+import { MySQLInfo } from '../interface/mysql.interface';
 
 const productos: any = ref([]);
 
@@ -16,7 +17,15 @@ const Productos = async () => {
     const data = {
         id_producto: 0
     };
-    productos.value = (await getProductos(data)).data;
+
+    const respone: any = await getProductos(data);
+
+    if (!IsNullOrEmpty(MySQLInfo.message)) {
+        notify.error(MySQLInfo.message);
+        return;
+    }
+
+    productos.value = respone.data;
 };
 
 onMounted(() => {
