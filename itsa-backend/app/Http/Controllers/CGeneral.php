@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\URL;
 
 class CGeneral extends Controller
@@ -57,5 +58,10 @@ class CGeneral extends Controller
             'message' => $message,
             'data' => $data
         ], status: $status);
+    }
+
+    public static function EncryptValue($value)
+    {
+        return Hash::make($value);
     }
 }

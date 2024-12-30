@@ -50,6 +50,8 @@ const fetchNumberCart = async () => {
         numberCart.value = response.data.length.toString();
 
 
+    } else {
+        numberCart.value = '0';
     }
 
 
@@ -70,8 +72,14 @@ const LogOut = () => {
     router.push('/');
 }
 
-function GoCheckOut() { 
-    
+function GoCheckOut() {
+    const userData = Cookies.get('user_data');
+    if (userData) {
+        router.push({
+            name: 'checkout',
+            params: { id: encryptValue(String(id_usuario.value)) },
+        });
+    }
 }
 
 
@@ -146,7 +154,7 @@ onMounted(() => {
                         Logout
                     </span>
                 </button>
-                <router-link :to="GoCheckOut()" class="flex flex-col items-center justify-center text-center h-full">
+                <button @click="GoCheckOut()" class="flex flex-col items-center justify-center text-center h-full">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
@@ -157,7 +165,7 @@ onMounted(() => {
                         <path d="M6 5l14 1l-1 7h-13" />
                     </svg>
                     <span class="text-[.70rem] font-semibold min-w-[20px]" v-text="numberCart"></span>
-                </router-link>
+                </button>
             </nav>
         </div>
     </header>

@@ -29,11 +29,8 @@ export const fnLogin = async (data: Record<string, any>) => {
             MySQLInfo.message = "Internal Error"
         }
 
-        console.log(response_secret_key);
-
-
         if (IsNullOrEmpty(MySQLInfo.message)) {
-            localStorage.setItem('secretKey', String(response_secret_key.data));
+            localStorage.setItem('secretKey', String(response_secret_key));
         } else {
             localStorage.setItem('secretKey', '');
         }

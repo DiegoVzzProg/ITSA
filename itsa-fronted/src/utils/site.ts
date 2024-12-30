@@ -33,11 +33,21 @@ import CryptoJS from "crypto-js";
 
 export const encryptValue = (value: string): string => {
     const secretKey: any = localStorage.getItem('secretKey');
-    console.log(secretKey);
 
-    if (!IsNullOrEmpty(secretKey)) {
+    if (IsNullOrEmpty(secretKey)) {
         return "";
     }
 
-    return CryptoJS.AES.encrypt(value, String(secretKey)).toString();
+    return CryptoJS.AES.encrypt(value, secretKey).toString();
 }
+
+export const decryptValue = (encryptedValue: string) => {
+    const secretKey: any = localStorage.getItem('secretKey');
+
+    if (IsNullOrEmpty(secretKey)) {
+        return "";
+    }
+
+    const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+};
