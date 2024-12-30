@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/gallery/basics-icons', name: 'basicsicons', component: BasicsIcons, meta: { layout: "Main" } },
     { path: '/gallery/universal-icons', name: 'universalicons', component: UniversalIcons, meta: { layout: "Main" } },
     { path: '/information/:select', name: 'info', component: Information, meta: { layout: "Main" } },
-    { path: '/checkout/:id', name: 'checkout', component: CheckOut, meta: { layout: "Main" }, props: true },
+    { path: '/checkout', name: 'checkout', component: CheckOut, meta: { layout: "Main" }, props: true },
     { path: '/login', name: 'login', component: Login, meta: { layout: "Auth" } }
 ];
 

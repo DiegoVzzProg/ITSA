@@ -37,3 +37,21 @@ export const fn_a_carrito_cliente = async (data: Record<string, any>) => {
 
     return response.data.data;
 }
+
+export const fn_l_precio_carrito_cliente = async (data: Record<string, any>) => {
+    var response: any = null
+
+    try {
+        response = await api.get(`/precio/${data.id_usuario}`);
+    }
+    catch (error: any) {
+        MySQLInfo.message = "Internal Error"
+    }
+
+    if (!IsNullOrEmpty(MySQLInfo.message))
+        return response;
+
+    MySQLInfo.message = response.data.message;
+
+    return response.data.data;
+}

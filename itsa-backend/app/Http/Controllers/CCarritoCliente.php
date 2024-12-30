@@ -38,4 +38,17 @@ class CCarritoCliente extends Controller
             return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
         }
     }
+
+    static function fn_l_precio_carrito_cliente($id_usuario)
+    {
+        try {
+            $precio = TCarritoCliente::where('id_usuario', $id_usuario)->where('borrado', false)->sum('precio');;
+
+            return CGeneral::CreateMessage('', 200, 'success', [
+                "precio" => $precio
+            ]);
+        } catch (Exception $ex) {
+            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+        }
+    }
 }

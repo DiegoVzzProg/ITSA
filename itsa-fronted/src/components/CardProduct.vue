@@ -22,7 +22,7 @@ const AddCartCostumer = async () => {
         const data = {
             id_usuario: parsedData.id_usuario,
             id_producto: props.id_producto,
-            descripcion: ''
+            descripcion: props.descripcion
         }
 
         await fn_a_carrito_cliente(data);

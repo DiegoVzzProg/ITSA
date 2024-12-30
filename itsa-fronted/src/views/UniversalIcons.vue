@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { replaceClass } from '../utils/site';
+import { Init, replaceClass } from '../utils/site';
 import File from '../components/File.vue'
 import CardProduct from '../components/CardProduct.vue';
 
@@ -50,7 +50,7 @@ onMounted(() => {
         get this pack!
     </a>
     <div
-        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between items-center gap-8">
+        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-center items-center gap-8">
         <File folder="universal-icons" file="universalicon_cover.png" type="img" :encrypted="true"
             class="max-[680px]:hidden" />
     </div>

@@ -2,26 +2,59 @@
 import Cookies from "js-cookie";
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { decryptValue } from '../utils/site';
+import { decryptValue, Init, IsNullOrEmpty, notify } from '../utils/site';
+import { getProductos } from "../services/s_productos/s_productos";
+import { MySQLInfo } from "../interface/mysql.interface";
+import { fn_l_carrito_cliente, fn_l_precio_carrito_cliente } from "../services/s_cart";
 
 const route = useRoute();
 const userData = ref<any>({});
+const productPrecio = ref<string>("");
+const productData = ref<any>({});
 const name = ref<string>('');
+
+const productos = async () => {
+    const usuario = JSON.parse(Cookies.get('user_data') || "{}");
+    if (usuario) {
+        let response: any = await fn_l_carrito_cliente({
+            id_usuario: usuario.id_usuario
+        });
+
+        if (!IsNullOrEmpty(MySQLInfo.message)) {
+            notify.error(MySQLInfo.message)
+            return;
+        }
+
+        productData.value = response.data;
+
+        response = await fn_l_precio_carrito_cliente({
+            id_usuario: usuario.id_usuario
+        });
+
+        if (!IsNullOrEmpty(MySQLInfo.message)) {
+            notify.error(MySQLInfo.message)
+            return;
+        }
+        productPrecio.value = response.precio;
+    }
+}
+
 onMounted(() => {
-    decryptValue(route.params.id.toString());
+    // var usuario = decryptValue(route.params.id.toString());
     userData.value = JSON.parse(Cookies.get('user_data') || "{}");
+    productos();
 });
 
 </script>
 
 <template>
-    <div class="flex flex-row justify-between w-full min-h-full grow shrink-0 pt-[76px]">
-        <div class="flex flex-col w-full max-w-xs pt-[clamp(30px,5vw,100px)]">
+    <div class="flex flex-row justify-between  w-full min-h-[calc(100vh-76px)] grow shrink-0 pt-[76px]">
+        <div class="flex flex-col w-full max-w-xs justify-center">
             <p>
                 hi, {{ userData["nombre"] }}!
             </p>
         </div>
-        <div class="flex flex-col max-w-md gap-3 w-full pt-[clamp(30px,5vw,100px)]">
+        <div class="flex flex-col max-w-md justify-center  gap-3 w-full">
             <div class="flex flex-col gap-3">
                 <p class="px-[clamp(18px,3vw,28px)]">
                     your details
@@ -83,9 +116,54 @@ onMounted(() => {
                     </svg>
                 </span>
             </button>
+            <button type="button" class="bg-black py-5 px-3 rounded-full text-white">
+                continue
+            </button>
         </div>
-        <div class="flex flex-col w-full max-w-md pt-[clamp(30px,5vw,100px)]">
-
+        <div class="flex items-center justify-center flex-col w-full ps-[clamp(12px,5vw,80px)]">
+            <div
+                class="flex flex-col w-full min-h-96 justify-center px-[clamp(15px,5vw,80px)] border overflow-hidden border-black rounded-xl">
+                <div class="flex flex-row justify-between border-b gap-3 border-b-black">
+                    <p>
+                        item
+                    </p>
+                    <p>
+                        total
+                    </p>
+                </div>
+                <div class="flex flex-col py-2 gap-2 border-b h-[185px] overflow-y-auto border-b-black">
+                    <div class="flex flex-row items-center gap-2 justify-between"
+                        v-for="(producto, index) in productData" :key="index">
+                        <div class="flex flex-row gap-2 items-center">
+                            <div class="flex bg-green-300 w-20 h-20"></div>
+                            <p>
+                                {{ producto.descripcion }}
+                            </p>
+                        </div>
+                        <p>
+                            ${{ producto.precio }}
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-row justify-between w-full py-2 border-b-black border-b">
+                    <div class="flex flex-row gap-2">
+                        <p>
+                            tax
+                        </p>
+                        <p>
+                            (16%)
+                        </p>
+                    </div>
+                </div>
+                <div class="flex flex-row justify-between py-2">
+                    <p>
+                        total
+                    </p>
+                    <p>
+                        ${{ productPrecio }}
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
 </template>

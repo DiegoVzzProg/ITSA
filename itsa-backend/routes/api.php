@@ -17,7 +17,11 @@ Route::middleware('auth:sanctum')->group(function () {
         return CCarritoCliente::fn_a_carrito_cliente($request);
     });
 
-    Route::get('/scret/key/{value}', function ($value) {
+    Route::get("/precio/{id_usuario}", function ($id_usuario) {
+        return CCarritoCliente::fn_l_precio_carrito_cliente($id_usuario);
+    });
+
+    Route::get('/scret/key', function () {
         return bin2hex(random_bytes(10));
     });
 });

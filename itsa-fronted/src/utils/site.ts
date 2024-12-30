@@ -51,3 +51,12 @@ export const decryptValue = (encryptedValue: string) => {
     const bytes = CryptoJS.AES.decrypt(encryptedValue, secretKey);
     return bytes.toString(CryptoJS.enc.Utf8);
 };
+
+export const Init = () => {
+    const header: any = document.getElementById('header') as HTMLElement;
+    const footer: any = document.getElementById('footer') as HTMLElement;
+    replaceClass(header, "bg-transparent", "bg-white");
+    replaceClass(footer, "hidden", "flex");
+    const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
+    replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]")
+}

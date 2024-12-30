@@ -4,7 +4,7 @@ import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
 import { useRoute, useRouter } from 'vue-router';
 import { Notyf } from 'notyf';
-import { encryptValue, isNotified } from '../utils/site';
+import { encryptValue, Init, isNotified, replaceClass } from '../utils/site';
 import { fn_l_carrito_cliente } from '../services/s_cart';
 import { MySQLInfo } from '../interface/mysql.interface';
 import { IsNullOrEmpty, notify } from '../utils/site';
@@ -74,10 +74,11 @@ const LogOut = () => {
 
 function GoCheckOut() {
     const userData = Cookies.get('user_data');
+    Init();
     if (userData) {
         router.push({
             name: 'checkout',
-            params: { id: encryptValue(String(id_usuario.value)) },
+            // params: { id: encryptValue(String(id_usuario.value)) },
         });
     }
 }
@@ -87,6 +88,8 @@ watch(
     () => route.path,
     () => {
         fetchNumberCart();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        Init();
     }
 );
 

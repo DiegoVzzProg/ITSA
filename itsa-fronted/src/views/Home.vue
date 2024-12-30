@@ -8,7 +8,7 @@ import slogan_principal from '../assets/img/slogan_principal.png'
 import { getProductos } from '../services/s_productos/s_productos'
 import Loading from '../components/Loading.vue'
 import File from '../components/File.vue'
-import { IsNullOrEmpty, notify, replaceClass } from '../utils/site';
+import { Init, IsNullOrEmpty, notify, replaceClass } from '../utils/site';
 import { MySQLInfo } from '../interface/mysql.interface';
 
 const productos: any = ref([]);
@@ -30,13 +30,6 @@ const Productos = async () => {
 
 onMounted(() => {
     Productos();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    const header: any = document.getElementById('header') as HTMLElement;
-    const footer: any = document.getElementById('footer') as HTMLElement;
-    replaceClass(header, "bg-transparent", "bg-white");
-    replaceClass(footer, "hidden", "flex");
-    const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
-    replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]")
 });
 </script>
 
