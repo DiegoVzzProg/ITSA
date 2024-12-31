@@ -32,7 +32,9 @@ class TUsuarios extends Authenticatable
         'nombre',
         'email',
         'password',
-        'activo'
+        'activo',
+        'leyo_terms',
+        'creacion'
     ];
 
     protected $hidden = [

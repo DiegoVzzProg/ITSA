@@ -5,6 +5,7 @@ import Login from './views/Login.vue';
 import BasicsIcons from './views/BasicsIcons.vue';
 import UniversalIcons from './views/UniversalIcons.vue';
 import CheckOut from './views/CheckOut.vue';
+import Register from './views/Register.vue';
 
 const routes: Array<RouteRecordRaw> = [
     { path: '/', name: 'Home', component: Home, meta: { layout: "Main" } },
@@ -12,7 +13,8 @@ const routes: Array<RouteRecordRaw> = [
     { path: '/gallery/universal-icons', name: 'universalicons', component: UniversalIcons, meta: { layout: "Main" } },
     { path: '/information/:select', name: 'info', component: Information, meta: { layout: "Main" } },
     { path: '/checkout', name: 'checkout', component: CheckOut, meta: { layout: "Main" }, props: true },
-    { path: '/login', name: 'login', component: Login, meta: { layout: "Auth" } }
+    { path: '/login', name: 'login', component: Login, meta: { layout: "Auth" } },
+    { path: '/register', name: 'register', component: Register, meta: { layout: "Auth" } }
 ];
 
 const router = createRouter({

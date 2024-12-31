@@ -41,13 +41,15 @@ export const fnLogin = async (data: Record<string, any>) => {
 
 };
 
-export const fnRegister = async (data: Record<string, any>) => {
+export const fn_register = async (data: Record<string, any>) => {
     var response: any = null
 
     try {
         response = await api.post('/register', data);
     } catch (error: any) {
         MySQLInfo.message = "Internal Error"
+        console.log(error);
+
     }
 
     if (!IsNullOrEmpty(MySQLInfo.message))

@@ -26,8 +26,8 @@ const validateEmail = (value: string) => {
 };
 
 const validatePassword = (value: string) => {
-    if (value.length < 3) {
-        passwordError.value = 'Password must be at least 3 characters long';
+    if (value.length < 4) {
+        passwordError.value = 'Password must be at least 4 characters long';
     } else {
         passwordError.value = '';
     }
@@ -102,7 +102,7 @@ const Login = async () => {
                 </span>
             </div>
             <div class="flex flex-col gap-1">
-                <input v-model="password" type="text" class="border border-black py-5 px-3 rounded-full"
+                <input v-model="password" type="password" class="border border-black py-5 px-3 rounded-full"
                     placeholder="password">
 
                 <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
