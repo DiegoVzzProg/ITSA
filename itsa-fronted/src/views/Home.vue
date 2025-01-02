@@ -75,7 +75,7 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex items-start justify-end w-full">
-                    <RouterLink :to="producto.url"
+                    <RouterLink :to="{ name: producto.url }"
                         class="text-white bg-black py-2 rounded-full px-7 poppins-font font-bold text-[1.7em]">
                         {{ parseFloat(producto.precio) > 0 ? producto.precio : 'free' }}
                     </RouterLink>
@@ -83,7 +83,8 @@ onMounted(() => {
             </div>
             <div class="flex items-center justify-center w-full h-full">
                 <span class="flex w-full max-w-[320px]">
-                    <File folder="basics-icons" :file="producto.imagen" type="img" :encrypted="true" />
+                    <File folder="../assets/img/gallery/basicsIcons" :file="producto.imagen" type="img"
+                        :encrypted="false" />
                 </span>
             </div>
         </div>

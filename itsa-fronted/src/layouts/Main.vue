@@ -46,8 +46,9 @@ const fetchNumberCart = async () => {
             notify.error(MySQLInfo.message)
             return;
         }
-
-        numberCart.value = response.data.length.toString();
+        if (!IsNullOrEmpty(response.data)) {
+            numberCart.value = response.data.length.toString();
+        }
 
 
     } else {
@@ -75,7 +76,7 @@ const LogOut = () => {
 function GoCheckOut() {
     const userData = Cookies.get('user_data');
     Init();
-    if (userData) {
+    if (userData && Number(numberCart.value) > 0) {
         router.push({
             name: 'checkout',
             // params: { id: encryptValue(String(id_usuario.value)) },

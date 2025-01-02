@@ -5,6 +5,8 @@ import { useRouter } from 'vue-router';
 import Cookies from "js-cookie";
 import { MySQLInfo } from '../interface/mysql.interface';
 import { IsNullOrEmpty, notify } from '../utils/site';
+import { DownloadFile } from '../services/s_general/s_general';
+import { getProductos } from '../services/s_productos/s_productos';
 
 const router = useRouter();
 const props = defineProps<{
@@ -39,6 +41,19 @@ const AddCartCostumer = async () => {
     }
 }
 
+const Download = async () => {
+    //basicsicons
+    const responseProductos: any = await getProductos({
+        id_producto: props.id_producto
+    });
+
+    if (!IsNullOrEmpty(MySQLInfo.message)) {
+        notify.error(MySQLInfo.message)
+        return;
+    }
+    console.log(responseProductos.data);
+
+}
 
 onMounted(() => {
 
@@ -62,13 +77,14 @@ onMounted(() => {
         </p>
         <div class="flex pb-12">
             <button @click="AddCartCostumer"
-                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
-                <p v-if="Number(precio) > 0">
-                    buy
-                </p>
-                <p v-else>
-                    download free
-                </p>
+                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
+                v-if="Number(precio) > 0">
+                buy
+            </button>
+            <button @click="Download"
+                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
+                v-else>
+                download free
             </button>
         </div>
     </div>

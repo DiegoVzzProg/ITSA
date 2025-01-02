@@ -11,6 +11,18 @@ use Illuminate\Support\Facades\URL;
 
 class CGeneral extends Controller
 {
+    static function DescargarArchivo($arch)
+    {
+        $path = storage_path('app/private/' . $arch);
+
+        if (!file_exists($path)) {
+            return CGeneral::CreateMessage("File not found", 599, 'error', null);
+        }
+
+        return CGeneral::CreateMessage("", 200, 'success', [
+            "response" => response()->download($path, 'basicsicons')
+        ]);
+    }
     public static function generarUrlFirmada($folder, $filename)
     {
         try {

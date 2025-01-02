@@ -24,8 +24,7 @@ const getArchivo = async (): Promise<void> => {
         }
         archivo.value = response.data.url;
     } else {
-
-        archivo.value = new URL(`${props.file}`, import.meta.url).href
+        archivo.value = new URL(`${props.folder}/${props.file}`, import.meta.url).href
     }
 };
 

@@ -36,3 +36,24 @@ export const SecretKey = async () => {
 
     return response.data;
 }
+
+
+export const DownloadFile = async (arch: string) => {
+    var response: any = null
+
+    try {
+        response = await api.get(`/downloadfile/${arch}`, {
+            responseType: 'blob',
+        });
+    }
+    catch (error: any) {
+        MySQLInfo.message = "Internal Error"
+    }
+
+    if (!IsNullOrEmpty(MySQLInfo.message))
+        return response;
+
+    MySQLInfo.message = response.data.message;
+
+    return response.data;
+}

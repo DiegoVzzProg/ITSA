@@ -53,12 +53,12 @@ onMounted(() => {
 
 <template>
     <div
-        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between items-center gap-8">
+        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between max-[1090px]:justify-center items-center gap-8">
         <img :src="icon_morado_1" alt="_" loading="lazy"
-            class="flex w-full max-w-[clamp(130px,18vw,310px)] max-[680px]:hidden" />
+            class="flex w-full max-w-[clamp(130px,18vw,310px)] max-[1090px]:hidden" />
         <img :src="icon_morado_2" alt="_" loading="lazy" class="w-full flex max-w-[560px]" />
         <img :src="icon_morado_3" alt="_" loading="lazy"
-            class="w-full flex max-w-[clamp(130px,18vw,245px)] max-[680px]:hidden" />
+            class="w-full flex max-w-[clamp(130px,18vw,245px)] max-[1090px]:hidden" />
     </div>
     <div class="flex absolute top-0 left-0 h-screen bg-[rgba(183,164,237,0.45)] transition-all w-full" id="overflow">
     </div>
@@ -140,8 +140,8 @@ onMounted(() => {
                 <div v-for="i in 57" :key="i"
                     class="flex p-[40px] app-item-scroll-infinite-basic-icons absolute rounded bg-[rgb(213,169,239)] left-[max(calc(200px*8),100%)]"
                     :style="{ animationDelay: `calc(7s / 8 * (8 - ${i}) * -1)` }">
-                    <File :file="`basic set-${i}.png`" folder="basics-icons" type="img" :encrypted="true"
-                        class="w-full h-full max-w-[60px] min-w-[60px] max-h-[60px]"></File>
+                    <File :file="`basic set-${i}.png`" folder="../assets/img/gallery/basicsIcons/icons" type="img"
+                        :encrypted="false" class="w-full h-full max-w-[60px] min-w-[60px] max-h-[60px]"></File>
                 </div>
             </div>
         </div>

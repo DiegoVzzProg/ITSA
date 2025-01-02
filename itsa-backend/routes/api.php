@@ -26,6 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+Route::get('/downloadfile/{arch}', function ($arch) {
+    return CGeneral::DescargarArchivo($arch);
+});
+
 Route::post('/login', function (Request $request) {
     return CUsuarios::fn_login($request);
 });
