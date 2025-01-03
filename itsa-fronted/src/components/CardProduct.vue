@@ -42,7 +42,6 @@ const AddCartCostumer = async () => {
 }
 
 const Download = async () => {
-    //basicsicons
     const responseProductos: any = await getProductos({
         id_producto: props.id_producto
     });
@@ -51,8 +50,28 @@ const Download = async () => {
         notify.error(MySQLInfo.message)
         return;
     }
-    console.log(responseProductos.data);
+    let archivo: string = responseProductos.data.archivo;
 
+    const responseDownload: any = await DownloadFile(archivo);
+
+    if (!IsNullOrEmpty(MySQLInfo.message)) {
+        notify.error(MySQLInfo.message)
+        return;
+    }
+
+    console.log(responseDownload.data);
+
+
+    //Crear un enlace para descargar el archivo
+    const url = window.URL.createObjectURL(new Blob([responseDownload.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', "basicsicons"); // Nombre del archivo
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpiar el objeto Blob
+    window.URL.revokeObjectURL(url);
 }
 
 onMounted(() => {

@@ -51,8 +51,10 @@ onMounted(() => {
     </a>
     <div
         class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-center items-center gap-8">
-        <File folder="universal-icons" file="universalicon_cover.png" type="img" :encrypted="true"
+        <File folder="../assets/img/gallery/universalicons" file="universalicon_cover.png" type="img" :encrypted="false"
             class="max-[680px]:hidden" />
+        <File folder="../assets/img/gallery/universalicons" file="universalicon_cover_1_icon.png" type="img"
+            :encrypted="false" class="max-[680px]:block hidden" />
     </div>
     <div class="flex absolute top-0 left-0 h-screen bg-[rgb(0,0,0)] transition-all w-full opacity-0" id="overflow2">
     </div>
@@ -100,7 +102,8 @@ onMounted(() => {
                 collection fit for you personal and professional projects
             </p>
             <div class="flex rounded-[2em] w-full max-w-screen-md overflow-hidden">
-                <File folder="universal-icons" file="universalicon_02.png" type="img" :encrypted="true"></File>
+                <File folder="../assets/img/gallery/universalicons" file="universalicon_02.png" type="img"
+                    :encrypted="false"></File>
             </div>
         </div>
         <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0">
@@ -120,17 +123,21 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
-                    <File folder="basics-icons" file="Ai.png" class="w-full max-w-[44px]" type="img" :encrypted="true">
+                    <File folder="../assets/img/gallery/basicsIcons" file="Ai.png" class="w-full max-w-[44px]"
+                        type="img" :encrypted="false">
                     </File>
-                    <File folder="basics-icons" file="SVG.png" class="w-full max-w-[34px]" type="img" :encrypted="true">
+                    <File folder="../assets/img/gallery/basicsIcons" file="SVG.png" class="w-full max-w-[34px]"
+                        type="img" :encrypted="false">
                     </File>
-                    <File folder="basics-icons" file="PDF.png" class="w-full max-w-[34px]" type="img" :encrypted="true">
+                    <File folder="../assets/img/gallery/basicsIcons" file="PDF.png" class="w-full max-w-[34px]"
+                        type="img" :encrypted="false">
                     </File>
                 </div>
             </div>
             <div class="flex flex-col h-full w-full items-center justify-center">
                 <div class="flex items-center justify-center rounded-[1em] w-full max-w-[532px] h-full max-h-[532px]">
-                    <File folder="universal-icons" file="universalicon_03.png" type="img" :encrypted="true"></File>
+                    <File folder="../assets/img/gallery/universalicons" file="universalicon_03.png" type="img"
+                        :encrypted="false"></File>
                 </div>
             </div>
         </div>
@@ -143,7 +150,8 @@ onMounted(() => {
                 social media, weather, store and much more.
             </p>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video1-universal icon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
+                <File file="video1-universal icon.gif" folder="../assets/img/gallery/universalicons" type="img"
+                    :encrypted="false"></File>
             </div>
         </div>
         <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
@@ -158,7 +166,8 @@ onMounted(() => {
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video2-universalicon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
+                <File file="video2-universalicon.gif" folder="../assets/img/gallery/universalicons" type="img"
+                    :encrypted="false"></File>
             </div>
         </div>
         <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
@@ -173,7 +182,8 @@ onMounted(() => {
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video3-universalicon.mp4" folder="universal-icons" type="video" :encrypted="true"></File>
+                <File file="video3-universalicon.gif" folder="../assets/img/gallery/universalicons" type="img"
+                    :encrypted="false"></File>
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">

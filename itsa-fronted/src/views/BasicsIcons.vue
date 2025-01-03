@@ -52,6 +52,10 @@ onMounted(() => {
 </script>
 
 <template>
+    <a href="#card_section"
+        class="flex fixed bottom-[10px] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
+        get this pack!
+    </a>
     <div
         class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between max-[1090px]:justify-center items-center gap-8">
         <img :src="icon_morado_1" alt="_" loading="lazy"
@@ -145,7 +149,7 @@ onMounted(() => {
                 </div>
             </div>
         </div>
-        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col">
+        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
             <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="this pack is free"
                 descripcion="57 items available as: illustrator, figma & svg commercial & personal use" precio="0">
             </CardProduct>
