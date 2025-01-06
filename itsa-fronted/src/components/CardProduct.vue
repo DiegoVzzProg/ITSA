@@ -4,7 +4,7 @@ import { fn_a_carrito_cliente } from '../services/s_cart';
 import { useRouter } from 'vue-router';
 import Cookies from "js-cookie";
 import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, notify } from '../utils/site';
+import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
 import { DownloadFile } from '../services/s_general/s_general';
 import { getProductos } from '../services/s_productos/s_productos';
 
@@ -24,7 +24,7 @@ const AddCartCostumer = async () => {
         const data = {
             id_usuario: parsedData.id_usuario,
             id_producto: props.id_producto,
-            descripcion: props.descripcion
+            descripcion: props.subtitulo
         }
 
         await fn_a_carrito_cliente(data);
@@ -34,10 +34,10 @@ const AddCartCostumer = async () => {
             return;
         }
 
+        Navegar('home');
         router.push('/');
-
     } else {
-        router.push('/login');
+        Navegar('login');
     }
 }
 

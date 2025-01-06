@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import contact from '../assets/img/contact.png'
-import { onMounted } from 'vue';
-onMounted(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+
 </script>
 
 <template>

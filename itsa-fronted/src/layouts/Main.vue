@@ -1,14 +1,4 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, onUpdated, ref, watch } from 'vue';
-import logo from '../assets/svg/logo.svg'
-import Cookies from "js-cookie";
-import { useRoute, useRouter } from 'vue-router';
-import { Notyf } from 'notyf';
-import { encryptValue, Init, isNotified, replaceClass } from '../utils/site';
-import { fn_l_carrito_cliente } from '../services/s_cart';
-import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, notify } from '../utils/site';
-
 // EJEMPLO DE AGREGAR UNA COOKIE
 //
 // Cookies.set('id_usuario', response.data["id_usuario"], {
@@ -26,38 +16,13 @@ import { IsNullOrEmpty, notify } from '../utils/site';
 //
 // Cookies.get('id_usuario');
 
+import { onMounted, ref } from 'vue';
+import logo from '../assets/svg/logo.svg'
+import Cookies from "js-cookie";
+import { Notyf } from 'notyf';
+import { GasapFadeInUpEffect, isNotified, Navegar, numberCart } from '../utils/site';
+
 const id_usuario = ref(0);
-const router = useRouter();
-const numberCart = ref<string>('0');
-const route = useRoute();
-
-const fetchNumberCart = async () => {
-    let response: any = null;
-    const userData = Cookies.get('user_data');
-    if (userData) {
-        const parsedData = JSON.parse(userData);
-        const data = {
-            id_usuario: parsedData.id_usuario
-        };
-
-        response = await fn_l_carrito_cliente(data);
-
-        if (!IsNullOrEmpty(MySQLInfo.message)) {
-            notify.error(MySQLInfo.message)
-            return;
-        }
-        if (!IsNullOrEmpty(response.data)) {
-            numberCart.value = response.data.length.toString();
-        }
-
-
-    } else {
-        numberCart.value = '0';
-    }
-
-
-};
-
 
 const LogOut = () => {
     const allCookies = Cookies.get();
@@ -68,36 +33,22 @@ const LogOut = () => {
 
     localStorage.clear();
     sessionStorage.clear();
-    fetchNumberCart();
 
-    router.push('/');
+    Navegar('home');
 }
 
 function GoCheckOut() {
     const userData = Cookies.get('user_data');
-    Init();
     if (userData && Number(numberCart.value) > 0) {
-        router.push({
-            name: 'checkout',
-            // params: { id: encryptValue(String(id_usuario.value)) },
-        });
+        Navegar('checkout');
     }
 }
 
 
-watch(
-    () => route.path,
-    () => {
-        fetchNumberCart();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        Init();
-    }
-);
-
-
 onMounted(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    GasapFadeInUpEffect();
     const userData = Cookies.get('user_data');
+
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;
@@ -118,8 +69,6 @@ onMounted(() => {
         }
 
     }
-
-    fetchNumberCart();
 });
 
 </script>
@@ -128,11 +77,11 @@ onMounted(() => {
     <header id="header"
         class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center fixed top-0 left-0 bg-white z-[9999]">
         <div class="flex items-center justify-between w-full h-full border-b border-black" id="header_div">
-            <router-link to="/" class="flex w-full h-full max-w-[165px]">
+            <button @click="Navegar('home')" class="flex w-full h-full items-center max-w-[165px]">
                 <img :src="logo" alt="" srcset="">
-            </router-link>
+            </button>
             <nav class="flex flex-row justify-end gap-3 min-w-[164px]">
-                <router-link to="/login" class="flex flex-col items-center justify-center text-center h-full"
+                <button @click="Navegar('login')" class="flex flex-col items-center justify-center text-center h-full"
                     v-if="id_usuario == 0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
@@ -146,8 +95,9 @@ onMounted(() => {
                     <span class="text-[.7rem] font-semibold">
                         Login
                     </span>
-                </router-link>
-                <button @click="LogOut" class="flex flex-col items-center justify-center text-center h-full" v-else>
+                </button>
+                <button @click="Navegar('home', undefined, () => { LogOut() })"
+                    class="flex flex-col items-center justify-center text-center h-full" v-else>
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
                         fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-user">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -198,22 +148,22 @@ onMounted(() => {
                             information
                         </p>
                         <div class="flex flex-col items-start find-us-description gap-[5px]">
-                            <router-link :to="{ name: 'info', params: { select: 'license' } }"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its">
+                            <button @click="Navegar('info', { select: 'license' })"
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 license
-                            </router-link>
-                            <router-link :to="{ name: 'info', params: { select: 'payments' } }"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its">
+                            </button>
+                            <button @click="Navegar('info', { select: 'payments' })"
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 payments & refunds
-                            </router-link>
-                            <router-link :to="{ name: 'info', params: { select: 'terms' } }"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its">
+                            </button>
+                            <button @click="Navegar('info', { select: 'terms' })"
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 terms & conditions
-                            </router-link>
-                            <router-link :to="{ name: 'info', params: { select: 'privacity' } }"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its">
+                            </button>
+                            <button @click="Navegar('info', { select: 'privacity' })"
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 privacity policy
-                            </router-link>
+                            </button>
                         </div>
                     </section>
                     <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px]  gap-[7px]">
@@ -223,15 +173,15 @@ onMounted(() => {
                         </p>
                         <div class="flex flex-col find-us-description gap-[5px]">
                             <a href="https://www.instagram.com/itsastudio_mx/?igsh=N284M2I0ZjBreWUy"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its" target="_blank">
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all" target="_blank">
                                 instagram
                             </a>
                             <a href="https://www.behance.net/itsastudio"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its" target="_blank">
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all" target="_blank">
                                 behance
                             </a>
                             <a href="https://www.tiktok.com/@itsa.studio?lang=es"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its" target="_blank">
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all" target="_blank">
                                 tiktok
                             </a>
                         </div>
@@ -242,10 +192,10 @@ onMounted(() => {
                             support
                         </p>
                         <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">
-                            <router-link :to="{ name: 'info', params: { select: 'contact' } }"
-                                class="hover:bg-[rgb(244, 242, 239)] transition-all-its">
+                            <button @click="Navegar('info', { select: 'contact' })"
+                                class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 contact
-                            </router-link>
+                            </button>
                         </div>
                     </section>
                 </div>

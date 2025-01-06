@@ -17,7 +17,6 @@ onMounted(() => {
     const footer: any = document.getElementById('footer') as HTMLElement;
     const overflow: any = document.getElementById('overflow') as HTMLElement;
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
     const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
     replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]")
 
@@ -27,7 +26,6 @@ onMounted(() => {
     const targetRect = div_sub_contenedor_2.getBoundingClientRect();
 
     div_contenedor_gallery_basics_1.addEventListener('scroll', () => {
-
         if (div_contenedor_gallery_basics_1.scrollTop >= (targetRect.height - 100)) {
             replaceClass(overflow, "bg-[rgba(183,164,237,0.45)]", "bg-[rgba(25,18,44,0.7)]")
             replaceClass(footer, "hidden", "flex");

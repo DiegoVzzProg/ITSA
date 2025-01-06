@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fn_register, fnLogin } from '../services/s_login/s_login';
+import { fn_register } from '../services/s_login/s_login';
 import Cookies from "js-cookie";
 import 'notyf/notyf.min.css';
 import { useRouter } from 'vue-router';
 import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, notify } from '../utils/site';
-import { SecretKey } from '../services/s_general/s_general';
+import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
 
 const router = useRouter();
 const email = ref('');
@@ -91,7 +90,6 @@ const Register = async () => {
 
     if (emailError.value || passwordError.value || passwordConfirmError.value || leyoTermsError.value || nameError.value)
         return;
-    console.log("entro");
 
     const data = {
         nombre: name.value,
@@ -117,15 +115,14 @@ const Register = async () => {
         sameSite: 'Strict',
         path: '/',
     });
-
-    router.push('/');
+    Navegar('home');
 };
 </script>
 
 <template>
     <div class="flex w-full max-w-md h-full flex-col justify-center gap-3">
         <div class="flex flex-col gap-3 pb-6">
-            <router-link to="/" class="w-full flex flex-row justify-end">
+            <button @click="Navegar('home')" class="w-full flex flex-row justify-end">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left">
@@ -137,7 +134,7 @@ const Register = async () => {
                 <p>
                     regresar
                 </p>
-            </router-link>
+            </button>
             <p class="px-[clamp(18px,3vw,28px)]">
                 create a new user
             </p>
@@ -181,8 +178,8 @@ const Register = async () => {
                     </label>
                     <p>
                         i agree to the
-                        <router-link :to="{ name: 'info', params: { select: 'terms' } }"
-                            class="underline underline-offset-1">terms</router-link>
+                        <button @click="Navegar('info', { select: 'terms' })"
+                            class="underline underline-offset-1">terms</button>
                     </p>
                 </div>
                 <span class="text-[rgb(216,70,70)] text-sm font-semibold" v-if="leyoTermsError">

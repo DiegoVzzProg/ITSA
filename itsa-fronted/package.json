@@ -11,12 +11,14 @@
   "dependencies": {
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
+    "gsap": "^3.12.5",
     "js-cookie": "^3.0.5",
     "notyf": "^3.10.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@types/aos": "^3.0.7",
     "@types/crypto-js": "^4.2.2",
     "@types/js-cookie": "^3.0.6",
     "@types/node": "^22.10.1",

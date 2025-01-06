@@ -69,7 +69,7 @@ class CUsuarios extends Controller
                 "token" => $token
             ]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            return CGeneral::CreateMessage($ex->getMessage(), 200, 'error', null);
         }
     }
 }

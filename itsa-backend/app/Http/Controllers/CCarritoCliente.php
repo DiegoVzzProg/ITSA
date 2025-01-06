@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\TCarritoCliente;
+use App\Models\TProducto;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -26,11 +27,14 @@ class CCarritoCliente extends Controller
     {
         try {
 
+            $producto = TProducto::where('id_producto', $request->id_producto)->first();
+
             TCarritoCliente::create([
                 'id_usuario' => $request->id_usuario,
                 'id_producto' => $request->id_producto,
                 'descripcion' => $request->descripcion,
-                'fecha_creacion' => now()
+                'fecha_creacion' => now(),
+                'precio' => $producto->precio
             ]);
 
             return CGeneral::CreateMessage('', 200, 'success', null);
@@ -42,8 +46,11 @@ class CCarritoCliente extends Controller
     static function fn_l_precio_carrito_cliente($id_usuario)
     {
         try {
-            $precio = TCarritoCliente::where('id_usuario', $id_usuario)->where('borrado', false)->sum('precio');;
+            $precio = TCarritoCliente::where('id_usuario', $id_usuario)->where('borrado', false)->sum('precio');
 
+            $montoImpuesto = ($precio * 16) / 100;
+
+            $precio = $precio + $montoImpuesto;
             return CGeneral::CreateMessage('', 200, 'success', [
                 "precio" => $precio
             ]);

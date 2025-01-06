@@ -2,8 +2,7 @@
 import Cookies from "js-cookie";
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { decryptValue, Init, IsNullOrEmpty, notify } from '../utils/site';
-import { getProductos } from "../services/s_productos/s_productos";
+import { IsNullOrEmpty, notify } from '../utils/site';
 import { MySQLInfo } from "../interface/mysql.interface";
 import { fn_l_carrito_cliente, fn_l_precio_carrito_cliente } from "../services/s_cart";
 

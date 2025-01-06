@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TTicketsErrorWeb;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -73,5 +74,21 @@ class CGeneral extends Controller
     public static function EncryptValue($value)
     {
         return Hash::make($value);
+    }
+
+    public static function CreateTicketError($error, $id_usuario)
+    {
+        try {
+            $ticket = TTicketsErrorWeb::create([
+                "error" => $error,
+                "id_usuario" => $id_usuario
+            ]);
+
+            return CGeneral::CreateMessage('', 599, 'error', [
+                "id_ticket" => $ticket->id_ticket
+            ]);
+        } catch (Exception $ex) {
+            return CGeneral::CreateMessage("Contact support", 599, 'error', null);
+        }
     }
 }

@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import terms_and_conditions from '../assets/img/terms_and_conditions.png'
-import { onMounted } from 'vue';
-onMounted(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+
 </script>
 
 <template>

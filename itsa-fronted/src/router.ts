@@ -8,7 +8,7 @@ import CheckOut from './views/CheckOut.vue';
 import Register from './views/Register.vue';
 
 const routes: Array<RouteRecordRaw> = [
-    { path: '/', name: 'Home', component: Home, meta: { layout: "Main" } },
+    { path: '/', name: 'home', component: Home, meta: { layout: "Main" } },
     { path: '/gallery/basics-icons', name: 'basicsicons', component: BasicsIcons, meta: { layout: "Main" } },
     { path: '/gallery/universal-icons', name: 'universalicons', component: UniversalIcons, meta: { layout: "Main" } },
     { path: '/information/:select', name: 'info', component: Information, meta: { layout: "Main" } },

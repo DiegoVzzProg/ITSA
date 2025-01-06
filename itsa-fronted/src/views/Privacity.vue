@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import privacy_policy from '../assets/img/privacy_policy.png'
-import { onMounted } from 'vue';
-onMounted(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+
 </script>
 
 <template>
