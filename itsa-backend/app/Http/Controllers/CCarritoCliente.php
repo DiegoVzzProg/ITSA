@@ -52,7 +52,8 @@ class CCarritoCliente extends Controller
 
             $precio = $precio + $montoImpuesto;
             return CGeneral::CreateMessage('', 200, 'success', [
-                "precio" => $precio
+                "precio" => $precio,
+                "impuesto" => $montoImpuesto
             ]);
         } catch (Exception $ex) {
             return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);

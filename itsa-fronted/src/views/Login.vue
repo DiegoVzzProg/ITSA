@@ -6,7 +6,6 @@ import 'notyf/notyf.min.css';
 import { useRouter } from 'vue-router';
 import { MySQLInfo } from '../interface/mysql.interface';
 import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
-import { SecretKey } from '../services/s_general/s_general';
 
 const router = useRouter();
 

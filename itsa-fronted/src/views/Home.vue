@@ -59,7 +59,7 @@ onMounted(() => {
             <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
         </span>
     </div>
-    <div class="flex dgav-fade-up flex-row max-[768px]:flex-col max-[768px]:items-center w-full gap-2 py-5 transition-all snap-center"
+    <div class="flex dgav-fade-up flex-row-reverse justify-end max-[768px]:flex-col max-[768px]:items-center w-full gap-2 py-5 transition-all snap-center"
         v-if="productos.length > 0">
         <div v-for="(producto, index) in productos" :key="index"
             class="bg-[rgb(244,242,239)] w-full max-w-[508px] h-full max-h-[508px] min-h-[508px] max-[620px]:min-h-[408px] max-[620px]:max-h-[408px] rounded-[12px] p-5 flex flex-col group hover:bg-[rgba(201,117,249,0.4)]">
@@ -85,7 +85,7 @@ onMounted(() => {
             </div>
             <div class="flex items-center justify-center w-full h-full">
                 <span class="flex w-full max-w-[320px]">
-                    <File folder="../assets/img/gallery/basicsIcons" :file="producto.imagen" type="img"
+                    <File folder="../assets/img/gallery" :file="producto.imagen" type="img"
                         :encrypted="false" />
                 </span>
             </div>

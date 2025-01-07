@@ -9,6 +9,7 @@ import { fn_l_carrito_cliente, fn_l_precio_carrito_cliente } from "../services/s
 const route = useRoute();
 const userData = ref<any>({});
 const productPrecio = ref<string>("");
+const impuesto = ref<string>("");
 const productData = ref<any>({});
 const name = ref<string>('');
 
@@ -35,6 +36,7 @@ const productos = async () => {
             return;
         }
         productPrecio.value = response.precio;
+        impuesto.value = response.impuesto;
     }
 }
 
@@ -47,121 +49,54 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex flex-row justify-between w-full min-h-[calc(100vh-76px)] grow shrink-0 pt-[76px] ">
-        <div
-            class="flex flex-row max-[1260px]:flex-col items-center max-[1260px]:items-start max-[1260px]:justify-center gap-3 w-full">
-            <div class="flex flex-col w-full min-h-[540px] max-w-xs justify-start">
-                <p class="font-bold">
-                    hi, {{ userData["nombre"] }}!
-                </p>
-            </div>
-            <div class="flex min-h-[540px] grow shrink-0 flex-col max-w-md justify-center gap-3 w-full">
-                <div class="flex flex-col">
-                    <p class="px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px]">
-                        your details
-                    </p>
-                    <p class="px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px]">
-                        billing
-                    </p>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <input type="text" disabled :value="userData['nombre']"
-                        class="border placeholder:text-[rgba(0,0,0,0.5)] border-black py-5 px-3 rounded-full"
-                        placeholder="name">
-                    <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px] font-semibold" v-if="emailError">
-                        {{ emailError }}
-                    </span> -->
-                </div>
-                <div class="flex flex-col gap-1">
-                    <input type="text"
-                        class="border placeholder:text-[rgba(0,0,0,0.5)] border-black py-5 px-3 rounded-full"
-                        placeholder="vat number">
-                    <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px] font-semibold" v-if="emailError">
-                        {{ emailError }}
-                    </span> -->
-                </div>
-                <div class="flex flex-col gap-1">
-                    <input type="text"
-                        class="border placeholder:text-[rgba(0,0,0,0.5)] border-black py-5 px-3 rounded-full"
-                        placeholder="address">
-                    <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px] font-semibold" v-if="emailError">
-                        {{ emailError }}
-                    </span> -->
-                </div>
-                <div class="flex flex-row gap-2">
-                    <div class="flex flex-col gap-1">
-                        <input type="text"
-                            class="border placeholder:text-[rgba(0,0,0,0.5)] border-black py-5 px-3 rounded-full"
-                            placeholder="postcode">
-                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px] font-semibold" v-if="emailError">
-                        {{ emailError }}
-                    </span> -->
-                    </div>
-                    <div class="flex flex-col gap-1">
-                        <input type="text"
-                            class="border placeholder:text-[rgba(0,0,0,0.5)] border-black py-5 px-3 rounded-full"
-                            placeholder="address">
-                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] max-[1260px]:px-[0px] font-semibold" v-if="emailError">
-                        {{ emailError }}
-                    </span> -->
-                    </div>
-                </div>
-                <button class="flex flex-row justify-between border border-black py-5 px-3 rounded-full">
-                    <p class="text-[rgba(0,0,0,0.5)]">
-                        country
-                    </p>
-                    <span class="flex h-full items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="icon icon-tabler icons-tabler-filled icon-tabler-triangle-inverted">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path
-                                d="M20.118 3h-16.225a2.914 2.914 0 0 0 -2.503 4.371l8.116 13.549a2.917 2.917 0 0 0 4.987 .005l8.11 -13.539a2.914 2.914 0 0 0 -2.486 -4.386z" />
-                        </svg>
-                    </span>
-                </button>
-                <button type="button" class="bg-black py-5 px-3 rounded-full text-white">
-                    continue
-                </button>
-            </div>
+    <div
+        class="flex flex-row max-[1130px]:flex-col-reverse max-[1130px]:justify-end justify-between items-center w-full min-h-screen grow shrink-0 pt-[76px]">
+        <div class="flex flex-row w-full">
+            a
         </div>
-        <div class="flex items-center justify-center flex-col w-full ps-[clamp(12px,5vw,80px)]">
+        <div class="flex flex-col w-full">
+            <p class="font-semibold text-[1.2rem] pb-5">
+                cart
+            </p>
             <div
-                class="flex flex-col w-full min-h-96 justify-center px-[clamp(15px,5vw,80px)] border overflow-hidden border-black rounded-xl">
-                <div class="flex flex-row justify-between border-b gap-3 border-b-black">
-                    <p>
+                class="flex flex-col rounded-xl border-black border w-full max-w-screen-md px-[clamp(18px,5vw,80px)] py-[clamp(18px,3vw,80px)] min-h-[400px]">
+                <div class="flex flex-row justify-between gap-3 border-b-black border-b pb-2">
+                    <p class="font-itsa-bold text-[1.5rem]">
                         item
                     </p>
-                    <p>
+                    <p class="font-itsa-bold text-[1.5rem]">
                         total
                     </p>
                 </div>
-                <div class="flex flex-col py-2 gap-2 border-b h-[185px] overflow-y-auto border-b-black">
-                    <div class="flex flex-row items-center gap-2 justify-between"
-                        v-for="(producto, index) in productData" :key="index">
-                        <div class="flex flex-row gap-2 items-center">
-                            <div class="flex bg-green-300 w-20 min-w-20 h-20"></div>
-                            <p class="text-[.7rem] font-extrabold">
-                                {{ producto.descripcion }}
+                <div class="flex flex-col overflow-auto max-h-[130px] gap-2 py-3 border-b-black border-b">
+                    <div class="flex flex-row gap-2 justify-between items-center"
+                        v-for="(productos, index) in productData" :key="index">
+                        <div class="flex flex-row items-center gap-2">
+                            <span class="h-[100px] bg-green-300 w-[100px]"></span>
+                            <p class="text-[clamp(.8rem,1vw,1rem)]">
+                                {{ productos.descripcion }}
                             </p>
                         </div>
-                        <p>
-                            ${{ producto.precio }}
+                        <p class="text-[1rem]">
+                            ${{ productos.precio }}
                         </p>
                     </div>
                 </div>
-                <div class="flex flex-row justify-between w-full py-2 border-b-black border-b">
-                    <div class="flex flex-row gap-2">
-                        <p>
+                <div class="flex border-b-black border-b flex-row justify-between py-3">
+                    <div class="flex flex-row items-center">
+                        <p class="font-itsa-bold text-[1.5rem]">
                             tax
                         </p>
-                        <p>
+                        <p class="text-[1rem] translate-y-[-1px]">
                             (16%)
                         </p>
                     </div>
+                    <p class="text-[1rem]">
+                        ${{ impuesto }}
+                    </p>
                 </div>
-                <div class="flex flex-row justify-between py-2">
-                    <p>
+                <div class="flex flex-row justify-between py-3">
+                    <p class="font-itsa-bold text-[1.5rem]">
                         total
                     </p>
                     <p>

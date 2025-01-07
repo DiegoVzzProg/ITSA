@@ -24,6 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/scret/key', function () {
         return bin2hex(random_bytes(10));
     });
+
+    Route::get('/countries', function () {
+        return CGeneral::fn_l_paises();
+    });
 });
 
 Route::get('/downloadfile/{arch}', function ($arch) {

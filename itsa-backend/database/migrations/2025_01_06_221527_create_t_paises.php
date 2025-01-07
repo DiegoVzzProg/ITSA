@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('t_paises', function (Blueprint $table) {
             $table->increments('id_pais');
             $table->string('nombre');
-            $table->decimal('iva');
             $table->boolean('activo')->default(true);
         });
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TPaises;
 use App\Models\TTicketsErrorWeb;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -86,6 +87,19 @@ class CGeneral extends Controller
 
             return CGeneral::CreateMessage('', 599, 'error', [
                 "id_ticket" => $ticket->id_ticket
+            ]);
+        } catch (Exception $ex) {
+            return CGeneral::CreateMessage("Contact support", 599, 'error', null);
+        }
+    }
+
+    static function fn_l_paises()
+    {
+        try {
+            $paises = TPaises::all();
+
+            return CGeneral::CreateMessage('', 200, 'error', [
+                "data_pais" => $paises
             ]);
         } catch (Exception $ex) {
             return CGeneral::CreateMessage("Contact support", 599, 'error', null);

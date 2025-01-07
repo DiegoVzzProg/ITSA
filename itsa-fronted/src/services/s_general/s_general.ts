@@ -57,3 +57,21 @@ export const DownloadFile = async (arch: string) => {
 
     return response.data;
 }
+
+export const fn_l_paises = async () => {
+    var response: any = null
+
+    try {
+        response = await api.get(`/countries`);
+    }
+    catch (error: any) {
+        MySQLInfo.message = "Internal Error"
+    }
+
+    if (!IsNullOrEmpty(MySQLInfo.message))
+        return response;
+
+    MySQLInfo.message = response.data.message;
+
+    return response.data;
+}
