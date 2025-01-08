@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router';
 import { IsNullOrEmpty, notify } from '../utils/site';
 import { MySQLInfo } from "../interface/mysql.interface";
 import { fn_l_carrito_cliente, fn_l_precio_carrito_cliente } from "../services/s_cart";
+import SelectCountry from "../components/SelectCountry.vue";
 
 const route = useRoute();
 const userData = ref<any>({});
@@ -50,16 +51,70 @@ onMounted(() => {
 
 <template>
     <div
-        class="flex flex-row max-[1130px]:flex-col-reverse max-[1130px]:justify-end justify-between items-center w-full min-h-screen grow shrink-0 pt-[76px]">
-        <div class="flex flex-row w-full">
-            a
+        class="flex flex-row max-[1397px]:flex-col-reverse gap-2 max-[1130px]:justify-end justify-between items-center w-full min-h-screen grow shrink-0 pt-[76px]">
+        <div class="flex flex-row max-[1397px]:flex-col w-full min-h-[464px]">
+            <div class="w-full flex justify-center pb-1">
+                <p class="w-full max-w-screen-sm">
+                    hi, {{ userData.nombre }}!
+                </p>
+            </div>
+            <div class="w-full flex justify-center min-w-[709px] max-[1397px]:min-w-full">
+                <div class="flex flex-col w-full max-w-[460px] gap-2">
+                    <div class="flex flex-col px-[clamp(18px,3vw,28px)]">
+                        <p>
+                            your details
+                        </p>
+                        <p>
+                            billing
+                        </p>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input type="text" disabled class="border border-black py-5 px-3 rounded-full"
+                            :value="userData.nombre">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="vat number">
+                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                            v-if="emailError">
+                            {{ emailError }}
+                        </span> -->
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="address">
+                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                            v-if="emailError">
+                            {{ emailError }}
+                        </span> -->
+                    </div>
+                    <div class="flex flex-row max-[1130px]:flex-col gap-2">
+                        <div class="flex flex-col w-full gap-1">
+                            <input type="text" class="border border-black py-5 px-3 rounded-full"
+                                placeholder="zip code">
+                            <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                                v-if="emailError">
+                                {{ emailError }}
+                            </span> -->
+                        </div>
+                        <div class="flex flex-col w-full gap-1">
+                            <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="state">
+                            <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                                v-if="emailError">
+                                {{ emailError }}
+                            </span> -->
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <SelectCountry></SelectCountry>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex flex-col w-full">
-            <p class="font-semibold text-[1.2rem] pb-5">
+        <div class="flex flex-col w-full max-w-screen-sm">
+            <p class="pb-5">
                 cart
             </p>
             <div
-                class="flex flex-col rounded-xl border-black border w-full max-w-screen-md px-[clamp(18px,5vw,80px)] py-[clamp(18px,3vw,80px)] min-h-[400px]">
+                class="flex flex-col rounded-xl border-black border w-full px-[clamp(18px,5vw,80px)] py-[clamp(18px,3vw,80px)] min-h-[400px]">
                 <div class="flex flex-row justify-between gap-3 border-b-black border-b pb-2">
                     <p class="font-itsa-bold text-[1.5rem]">
                         item
