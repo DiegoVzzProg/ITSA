@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fn_register } from '../services/s_login/s_login';
-import Cookies from "js-cookie";
+import { c_auth } from '../services/s_auth';
 import 'notyf/notyf.min.css';
-import { useRouter } from 'vue-router';
-import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
+import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 
-const router = useRouter();
 const email = ref('');
 const name = ref<string>('');
 const password = ref('');
@@ -38,6 +34,8 @@ const validatePassword = (value: string) => {
 };
 
 const validatePasswordConfirm = (value: string) => {
+    console.log(password.value, value);
+
     if (password.value != value) {
         passwordConfirmError.value = 'Password does not match';
     } else {
@@ -98,31 +96,22 @@ const Register = async () => {
         leyo_terms: leyo_terms.value
     };
 
-    const response = await fn_register(data);
+    await c_auth.fn_register(data);
 
-    if (!IsNullOrEmpty(MySQLInfo.message)) {
-        notify.error(MySQLInfo.message)
+    const message: string = dgav.dataBase.message;
+    if (!IsNullOrEmpty(message)) {
+        notify.error(message)
         return;
     }
 
-    Cookies.set('user_data', JSON.stringify(response.data.user_data), {
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',
-    });
-    Cookies.set('logged_in_successfully', 'false', {
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',
-    });
-    Navegar('home');
+    site.RedirectPage('home');
 };
 </script>
 
 <template>
     <div class="flex w-full max-w-md h-full flex-col justify-center gap-3">
         <div class="flex flex-col gap-3 pb-6">
-            <button @click="Navegar('home')" class="w-full flex flex-row justify-end">
+            <button @click="site.RedirectPage('home')" class="w-full flex flex-row justify-end">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left">
@@ -178,7 +167,7 @@ const Register = async () => {
                     </label>
                     <p>
                         i agree to the
-                        <button @click="Navegar('info', { select: 'terms' })"
+                        <button @click="site.RedirectPage('info', { select: 'terms' })"
                             class="underline underline-offset-1">terms</button>
                     </p>
                 </div>

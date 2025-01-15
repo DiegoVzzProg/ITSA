@@ -1,14 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { fn_a_carrito_cliente } from '../services/s_cart';
-import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
 import Cookies from "js-cookie";
-import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
-import { DownloadFile } from '../services/s_general/s_general';
-import { getProductos } from '../services/s_productos/s_productos';
+import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
+import { c_general } from '../services/s_general';
+import { c_productos } from '../services/s_productos';
+import { c_clientes } from '../services/s_clientes';
 
-const router = useRouter();
 const props = defineProps<{
     id_producto: number;
     titulo: string;
@@ -21,57 +18,62 @@ const AddCartCostumer = async () => {
     const userData = Cookies.get('user_data');
     if (userData) {
         const parsedData = JSON.parse(userData);
-        const data = {
+
+        await c_clientes.fn_a_carrito_cliente({
             id_usuario: parsedData.id_usuario,
             id_producto: props.id_producto,
             descripcion: props.subtitulo
-        }
+        });
 
-        await fn_a_carrito_cliente(data);
+        const response: any = dgav.dataBase;
 
-        if (!IsNullOrEmpty(MySQLInfo.message)) {
-            notify.error(MySQLInfo.message)
+        if (!IsNullOrEmpty(response.message)) {
+            notify.error(response.message)
             return;
         }
 
-        Navegar('home');
-        router.push('/');
+        site.RedirectPage("home");
+
     } else {
-        Navegar('login');
+        site.RedirectPage("login");
     }
 }
 
 const Download = async () => {
-    const responseProductos: any = await getProductos({
+    await c_productos.fn_l_productos({
         id_producto: props.id_producto
     });
 
-    if (!IsNullOrEmpty(MySQLInfo.message)) {
-        notify.error(MySQLInfo.message)
+
+    let response: any = dgav.dataBase;
+
+    if (!IsNullOrEmpty(response.message)) {
+        notify.error(response.message)
         return;
     }
-    let archivo: string = responseProductos.data.archivo;
+    let archivo: string = response.data.archivo;
 
-    const responseDownload: any = await DownloadFile(archivo);
+    c_general.DownloadFile(archivo);
 
-    if (!IsNullOrEmpty(MySQLInfo.message)) {
-        notify.error(MySQLInfo.message)
+    response = dgav.dataBase;
+    if (!IsNullOrEmpty(response.message)) {
+        notify.error(response.messag)
         return;
     }
 
-    console.log(responseDownload.data);
+    console.log(response.data);
 
 
-    //Crear un enlace para descargar el archivo
-    const url = window.URL.createObjectURL(new Blob([responseDownload.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', "basicsicons"); // Nombre del archivo
-    document.body.appendChild(link);
-    link.click();
+    // //Crear un enlace para descargar el archivo
+    // const url = window.URL.createObjectURL(new Blob([responseDownload.data]));
+    // const link = document.createElement('a');
+    // link.href = url;
+    // link.setAttribute('download', "basicsicons"); // Nombre del archivo
+    // document.body.appendChild(link);
+    // link.click();
 
-    // Limpiar el objeto Blob
-    window.URL.revokeObjectURL(url);
+    // // Limpiar el objeto Blob
+    // window.URL.revokeObjectURL(url);
 }
 
 onMounted(() => {

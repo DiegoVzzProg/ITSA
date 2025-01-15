@@ -5,23 +5,22 @@ import usefulmockups_slogans from '../assets/img/usefulmockups_slogans.png'
 import collillustration_slogans from '../assets/img/collillustration_slogans.png'
 import lovelytype_slogans from '../assets/img/lovelytype_slogans.png'
 import slogan_principal from '../assets/img/slogan_principal.png'
-import { getProductos } from '../services/s_productos/s_productos'
+import { c_productos } from '../services/s_productos'
 import Loading from '../components/Loading.vue'
 import File from '../components/File.vue'
-import { Init, IsNullOrEmpty, Navegar, notify, replaceClass } from '../utils/site';
-import { MySQLInfo } from '../interface/mysql.interface';
+import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 
 const productos: any = ref([]);
 
 const Productos = async () => {
-    const data = {
+    await c_productos.fn_l_productos({
         id_producto: 0
-    };
+    })
 
-    const respone: any = await getProductos(data);
+    const respone: any = dgav.dataBase;
 
-    if (!IsNullOrEmpty(MySQLInfo.message)) {
-        notify.error(MySQLInfo.message);
+    if (!IsNullOrEmpty(respone.message)) {
+        notify.error(respone.message);
         return;
     }
 
@@ -77,7 +76,7 @@ onMounted(() => {
                     </p>
                 </div>
                 <div class="flex items-start justify-end">
-                    <button @click="Navegar(String(producto.url))"
+                    <button @click="site.RedirectPage(String(producto.url))"
                         class="text-white bg-black py-2 rounded-full px-[clamp(15px,3vw,28px)] poppins-font font-bold text-[clamp(12px,3vw,20px)]">
                         {{ parseFloat(producto.precio) > 0 ? `$${producto.precio}` : 'free' }}
                     </button>
@@ -85,8 +84,7 @@ onMounted(() => {
             </div>
             <div class="flex items-center justify-center w-full h-full">
                 <span class="flex w-full max-w-[320px]">
-                    <File folder="../assets/img/gallery" :file="producto.imagen" type="img"
-                        :encrypted="false" />
+                    <File folder="../assets/img/gallery" :file="producto.imagen" type="img" :encrypted="false" />
                 </span>
             </div>
         </div>

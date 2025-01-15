@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { fnLogin } from '../services/s_login/s_login';
-import Cookies from "js-cookie";
+import { c_auth } from '../services/s_auth';
 import 'notyf/notyf.min.css';
-import { useRouter } from 'vue-router';
-import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, Navegar, notify } from '../utils/site';
-
-const router = useRouter();
+import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 
 const email = ref('');
 const password = ref('');
@@ -52,31 +47,22 @@ const Login = async () => {
         password: password.value
     };
 
-    const response = await fnLogin(data);
+    await c_auth.fn_login(data);
 
-    if (!IsNullOrEmpty(MySQLInfo.message)) {
-        notify.error(MySQLInfo.message)
+    const message: string = dgav.dataBase.message;
+    if (!IsNullOrEmpty(message)) {
+        notify.error(message)
         return;
     }
 
-    Cookies.set('user_data', JSON.stringify(response.data.user_data), {
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',
-    });
-    Cookies.set('logged_in_successfully', 'false', {
-        secure: true,
-        sameSite: 'Strict',
-        path: '/',
-    });
-    Navegar('home');
+    site.RedirectPage('home');
 };
 </script>
 
 <template>
     <div class="flex w-full max-w-md h-full flex-col justify-center gap-3">
         <div class="flex flex-col gap-3 pb-6">
-            <button @click="Navegar('home')" class="w-full flex flex-row justify-end">
+            <button @click="site.RedirectPage('home')" class="w-full flex flex-row justify-end">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left">

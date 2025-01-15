@@ -2,10 +2,9 @@
 import Cookies from "js-cookie";
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { IsNullOrEmpty, notify } from '../utils/site';
-import { MySQLInfo } from "../interface/mysql.interface";
-import { fn_l_carrito_cliente, fn_l_precio_carrito_cliente } from "../services/s_cart";
+import { dgav, IsNullOrEmpty, notify } from '../utils/site';
 import SelectCountry from "../components/SelectCountry.vue";
+import { c_clientes } from "../services/s_clientes";
 
 const route = useRoute();
 const userData = ref<any>({});
@@ -17,25 +16,30 @@ const name = ref<string>('');
 const productos = async () => {
     const usuario = JSON.parse(Cookies.get('user_data') || "{}");
     if (usuario) {
-        let response: any = await fn_l_carrito_cliente({
+        await c_clientes.fn_l_carrito_cliente({
             id_usuario: usuario.id_usuario
         });
 
-        if (!IsNullOrEmpty(MySQLInfo.message)) {
-            notify.error(MySQLInfo.message)
+        let response: any = dgav.dataBase;
+
+        if (!IsNullOrEmpty(response.message)) {
+            notify.error(response.message)
             return;
         }
 
         productData.value = response.data;
 
-        response = await fn_l_precio_carrito_cliente({
+        await c_clientes.fn_l_precio_carrito_cliente({
             id_usuario: usuario.id_usuario
         });
 
-        if (!IsNullOrEmpty(MySQLInfo.message)) {
-            notify.error(MySQLInfo.message)
+        response = dgav.dataBase;
+
+        if (!IsNullOrEmpty(response.message)) {
+            notify.error(response.message)
             return;
         }
+
         productPrecio.value = response.precio;
         impuesto.value = response.impuesto;
     }

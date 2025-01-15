@@ -20,7 +20,7 @@ import { onMounted, ref } from 'vue';
 import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
-import { GasapFadeInUpEffect, isNotified, Navegar, numberCart } from '../utils/site';
+import { GasapFadeInUpEffect, isNotified, numberCart, site } from '../utils/site';
 
 const id_usuario = ref(0);
 
@@ -34,13 +34,13 @@ const LogOut = () => {
     localStorage.clear();
     sessionStorage.clear();
 
-    Navegar('home');
+    site.RedirectPage('home');
 }
 
 function GoCheckOut() {
     const userData = Cookies.get('user_data');
     if (userData && Number(numberCart.value) > 0) {
-        Navegar('checkout');
+        site.RedirectPage('checkout');
     }
 }
 
@@ -48,6 +48,7 @@ function GoCheckOut() {
 onMounted(() => {
     GasapFadeInUpEffect();
     const userData = Cookies.get('user_data');
+    console.log(userData);
 
     if (userData) {
         const parsedData = JSON.parse(userData);
@@ -77,12 +78,12 @@ onMounted(() => {
     <header id="header"
         class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center fixed top-0 left-0 bg-white z-[9999]">
         <div class="flex items-center justify-between w-full h-full border-b border-black" id="header_div">
-            <button @click="Navegar('home')" class="flex w-full h-full items-center max-w-[165px]">
+            <button @click="site.RedirectPage('home')" class="flex w-full h-full items-center max-w-[165px]">
                 <img :src="logo" alt="" srcset="">
             </button>
             <nav class="flex flex-row justify-end gap-3 min-w-[164px]">
-                <button @click="Navegar('login')" class="flex flex-col items-center justify-center text-center h-full"
-                    v-if="id_usuario == 0">
+                <button @click="site.RedirectPage('login')"
+                    class="flex flex-col items-center justify-center text-center h-full" v-if="id_usuario == 0">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                         class="icon icon-tabler icons-tabler-outline icon-tabler-user-exclamation">
@@ -96,7 +97,7 @@ onMounted(() => {
                         Login
                     </span>
                 </button>
-                <button @click="Navegar('home', undefined, () => { LogOut() })"
+                <button @click="site.RedirectPage('home', undefined, () => { LogOut() })"
                     class="flex flex-col items-center justify-center text-center h-full" v-else>
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"
                         fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-user">
@@ -148,19 +149,19 @@ onMounted(() => {
                             information
                         </p>
                         <div class="flex flex-col items-start find-us-description gap-[5px]">
-                            <button @click="Navegar('info', { select: 'license' })"
+                            <button @click="site.RedirectPage('info', { select: 'license' })"
                                 class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 license
                             </button>
-                            <button @click="Navegar('info', { select: 'payments' })"
+                            <button @click="site.RedirectPage('info', { select: 'payments' })"
                                 class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 payments & refunds
                             </button>
-                            <button @click="Navegar('info', { select: 'terms' })"
+                            <button @click="site.RedirectPage('info', { select: 'terms' })"
                                 class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 terms & conditions
                             </button>
-                            <button @click="Navegar('info', { select: 'privacity' })"
+                            <button @click="site.RedirectPage('info', { select: 'privacity' })"
                                 class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 privacity policy
                             </button>
@@ -192,7 +193,7 @@ onMounted(() => {
                             support
                         </p>
                         <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">
-                            <button @click="Navegar('info', { select: 'contact' })"
+                            <button @click="site.RedirectPage('info', { select: 'contact' })"
                                 class="hover:bg-[rgb(244, 242, 239)] transition-all">
                                 contact
                             </button>

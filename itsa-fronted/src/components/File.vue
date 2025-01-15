@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref } from 'vue';
-import { fileEncrypted } from '../services/s_general/s_general';
+import { c_general } from '../services/s_general';
 import Loading from './Loading.vue';
-import { MySQLInfo } from '../interface/mysql.interface';
-import { IsNullOrEmpty, notify } from '../utils/site';
+import { dgav, IsNullOrEmpty, notify } from '../utils/site';
 
 const props = defineProps<{
     folder: string;
@@ -16,10 +15,16 @@ const archivo = ref<string>('');
 
 const getArchivo = async (): Promise<void> => {
     if (props.encrypted) {
-        const response = await fileEncrypted(props.folder, props.file);
+        await c_general.fileEncrypted(props.folder, props.file);
 
-        if (!IsNullOrEmpty(MySQLInfo.message)) {
-            notify.error(MySQLInfo.message)
+        if (!dgav.validateDataTable())
+            return;
+
+        const response: any = dgav.dataBase;
+        let message: string = response.message;
+
+        if (!IsNullOrEmpty(message)) {
+            notify.error(message)
             return;
         }
         archivo.value = response.data.url;

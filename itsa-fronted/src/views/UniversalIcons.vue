@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { Init, replaceClass } from '../utils/site';
+import { replaceClass } from '../utils/site';
 import File from '../components/File.vue'
 import CardProduct from '../components/CardProduct.vue';
 
