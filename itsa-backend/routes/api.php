@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/carritocliente', function (Request $request) {
+    Route::post('/carrito/cliente', function (Request $request) {
         return CCarritoCliente::fn_l_carrito_cliente($request);
     });
 
@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::get('/scret/key', function () {
-        return bin2hex(random_bytes(10));
+        return CGeneral::CreateMessage("", 200, "success", ['secretKey' => bin2hex(random_bytes(10))]);
     });
 
     Route::get('/countries', function () {
@@ -30,21 +30,23 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+Route::post('/auth/login', function (Request $request) {
+    return CUsuarios::fn_login($request);
+});
+
+Route::post('/auth/register', function (Request $request) {
+    return CUsuarios::fn_register($request);
+});
+
 Route::get('/downloadfile/{arch}', function ($arch) {
     return CGeneral::DescargarArchivo($arch);
 });
 
-Route::post('/login', function (Request $request) {
-    return CUsuarios::fn_login($request);
-});
 
 Route::post('/productos', function (Request $request) {
     return CProductos::fn_l_productos($request);
 });
 
-Route::post('/register', function (Request $request) {
-    return CUsuarios::fn_register($request);
-});
 
 Route::get('/archivo/{folder}/{filename}', function (Request $request, $folder, $filename) {
     if ($request->has('signed')) {

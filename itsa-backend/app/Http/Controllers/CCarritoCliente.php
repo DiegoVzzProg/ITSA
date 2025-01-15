@@ -15,7 +15,7 @@ class CCarritoCliente extends Controller
             if ($request->id_usuario > 0) {
                 $carrito_cliente = TCarritoCliente::where('id_usuario', $request->id_usuario)->where('borrado', false)->get();
             } else {
-                $carrito_cliente = TCarritoCliente::all();
+                $carrito_cliente = [];
             }
             return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray($carrito_cliente));
         } catch (Exception $ex) {
