@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import { c_auth } from '../services/s_auth';
 import 'notyf/notyf.min.css';
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
-
+import { c_general } from '../services/s_general';
 const email = ref('');
 const password = ref('');
 
@@ -39,23 +39,37 @@ const Login = async () => {
     validateEmail(email.value);
     validatePassword(password.value);
 
-    if (emailError.value && passwordError.value)
+    if (emailError.value || passwordError.value)
         return;
 
-    const data = {
+    let response: any = await c_auth.fn_login({
         email: email.value,
         password: password.value
-    };
+    });
 
-    await c_auth.fn_login(data);
+    if (response) {
 
-    const message: string = dgav.dataBase.message;
-    if (!IsNullOrEmpty(message)) {
-        notify.error(message)
-        return;
+        const message: string = dgav.dataBase.message;
+        if (!IsNullOrEmpty(message)) {
+            notify.error(message);
+            return;
+        }
+
+        site.setCookies({
+            "token": response.token,
+            "user_data": JSON.stringify(response.user_data),
+            "logged_in_successfully": 'false'
+        });
+
+        response = await c_general.SecretKey();
+        if (response) {
+            site.setCookies({
+                "secretKey": response.secretKey || ''
+            });
+
+            site.RedirectPage('home');
+        }
     }
-
-    site.RedirectPage('home');
 };
 </script>
 

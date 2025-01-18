@@ -16,32 +16,35 @@ const name = ref<string>('');
 const productos = async () => {
     const usuario = JSON.parse(Cookies.get('user_data') || "{}");
     if (usuario) {
-        await c_clientes.fn_l_carrito_cliente({
+        let response: any = await c_clientes.fn_l_carrito_cliente({
             id_usuario: usuario.id_usuario
         });
 
-        let response: any = dgav.dataBase;
+        let message: string = dgav.dataBase.message;
 
-        if (!IsNullOrEmpty(response.message)) {
-            notify.error(response.message)
-            return;
+        if (response) {
+            if (!IsNullOrEmpty(message)) {
+                notify.error(message)
+                return;
+            }
+
+            productData.value = response;
+
+            response = await c_clientes.fn_l_precio_carrito_cliente({
+                id_usuario: usuario.id_usuario
+            });
+
+            if (response) {
+                if (!IsNullOrEmpty(message)) {
+                    notify.error(message)
+                    return;
+                }
+
+                productPrecio.value = response.precio;
+                impuesto.value = response.impuesto;
+            }
         }
 
-        productData.value = response.data;
-
-        await c_clientes.fn_l_precio_carrito_cliente({
-            id_usuario: usuario.id_usuario
-        });
-
-        response = dgav.dataBase;
-
-        if (!IsNullOrEmpty(response.message)) {
-            notify.error(response.message)
-            return;
-        }
-
-        productPrecio.value = response.precio;
-        impuesto.value = response.impuesto;
     }
 }
 

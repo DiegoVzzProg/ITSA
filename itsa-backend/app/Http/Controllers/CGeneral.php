@@ -105,4 +105,18 @@ class CGeneral extends Controller
             return CGeneral::CreateMessage("Contact support", 599, 'error', null);
         }
     }
+
+    public static function manejarArchivo(Request $request, $folder, $filename)
+    {
+        if ($request->has('signed')) {
+            return self::entregarArchivoFirmado($folder, $filename);
+        } else {
+            return self::generarUrlFirmada($folder, $filename);
+        }
+    }
+
+    public static function generarSecretKey()
+    {
+        return self::CreateMessage("", 200, "success", ['secretKey' => bin2hex(random_bytes(10))]);
+    }
 }

@@ -25,10 +25,10 @@ const AddCartCostumer = async () => {
             descripcion: props.subtitulo
         });
 
-        const response: any = dgav.dataBase;
+        const message: any = dgav.dataBase.message;
 
-        if (!IsNullOrEmpty(response.message)) {
-            notify.error(response.message)
+        if (!IsNullOrEmpty(message)) {
+            notify.error(message)
             return;
         }
 
@@ -40,28 +40,28 @@ const AddCartCostumer = async () => {
 }
 
 const Download = async () => {
-    await c_productos.fn_l_productos({
-        id_producto: props.id_producto
-    });
+    // await c_productos.fn_l_productos({
+    //     id_producto: props.id_producto
+    // });
 
 
-    let response: any = dgav.dataBase;
+    // let response: any = dgav.dataBase;
 
-    if (!IsNullOrEmpty(response.message)) {
-        notify.error(response.message)
-        return;
-    }
-    let archivo: string = response.data.archivo;
+    // if (!IsNullOrEmpty(response.message)) {
+    //     notify.error(response.message)
+    //     return;
+    // }
+    // let archivo: string = response.data.archivo;
 
-    c_general.DownloadFile(archivo);
+    // c_general.DownloadFile(archivo);
 
-    response = dgav.dataBase;
-    if (!IsNullOrEmpty(response.message)) {
-        notify.error(response.messag)
-        return;
-    }
+    // response = dgav.dataBase;
+    // if (!IsNullOrEmpty(response.message)) {
+    //     notify.error(response.messag)
+    //     return;
+    // }
 
-    console.log(response.data);
+    // console.log(response.data);
 
 
     // //Crear un enlace para descargar el archivo

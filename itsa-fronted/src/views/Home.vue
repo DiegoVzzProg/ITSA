@@ -5,7 +5,7 @@ import usefulmockups_slogans from '../assets/img/usefulmockups_slogans.png'
 import collillustration_slogans from '../assets/img/collillustration_slogans.png'
 import lovelytype_slogans from '../assets/img/lovelytype_slogans.png'
 import slogan_principal from '../assets/img/slogan_principal.png'
-import { c_productos } from '../services/s_productos'
+import { c_productos } from '../services/s_productos';
 import Loading from '../components/Loading.vue'
 import File from '../components/File.vue'
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
@@ -13,18 +13,16 @@ import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 const productos: any = ref([]);
 
 const Productos = async () => {
-    await c_productos.fn_l_productos({
+    const response: any = await c_productos.fn_l_productos({
         id_producto: 0
-    })
-
-    const respone: any = dgav.dataBase;
-
-    if (!IsNullOrEmpty(respone.message)) {
-        notify.error(respone.message);
-        return;
+    });
+    if (response) {
+        if (!IsNullOrEmpty(dgav.dataBase.message)) {
+            notify.error(dgav.dataBase.message);
+            return;
+        }
+        productos.value = response;
     }
-
-    productos.value = respone.data;
 };
 
 onMounted(() => {

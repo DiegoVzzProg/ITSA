@@ -6,6 +6,20 @@ import { Notyf } from "notyf";
 import { ref } from "vue";
 
 //#region  dgavClass
+interface ApiResponse<T = any> {
+    data: T;
+    message?: string;
+    status: number;
+}
+
+interface DatabaseState<T = any> {
+    status: number;
+    message: string;
+    data: T;
+    isLoading: boolean;
+    reset(): void;
+}
+
 const httpMethods = {
     GET: 'GET',
     POST: 'POST',
@@ -15,86 +29,113 @@ const httpMethods = {
 
 type httpMethod = typeof httpMethods[keyof typeof httpMethods];
 
+const REQUEST_TIMEOUT = 30000;
+
 export class dgav {
     static httpMethod = httpMethods;
-    static dataBase = {
+    static dataBase: DatabaseState = {
         status: 200,
         message: "",
-        data: {} as Record<string, any>,
+        data: {},
+        isLoading: false,
         reset() {
             this.status = 200;
             this.message = "";
             this.data = {};
+            this.isLoading = false;
         },
     };
-    static async apiRequest(
+
+    static async apiRequest<T = any>(
         endPoint: string,
         method: httpMethod,
         body?: Record<string, any>
-    ): Promise<void> {
+    ): Promise<any> {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
         try {
-            const response: any = await this.handleRequest(method, endPoint, body);
+            this.dataBase.isLoading = true;
+            const response = await this.handleRequest<T>(method, endPoint, body, controller.signal);
 
-            if (!response || !response.data) {
-                console.error("La respuesta del servidor no contiene datos válidos.");
-                return undefined;
+            if (!response) {
+                throw new Error("Invalid server response");
             }
 
+            const { data, status } = response;
+            this.dataBase.status = status;
 
-            const { data } = response;
-            if (data.message) {
-                this.handleError(data.message);
-                return undefined;
+            if (response.message) {
+                this.handleError(response.message);
+                return;
             }
-            this.dataBase.data = data.data;
+
+            return data;
         } catch (error: any) {
-            this.handleError("An unexpected error has occurred.");
+            if (error.name === 'AbortError') {
+                this.handleError("Request timeout - please try again");
+            } else if (error.response) {
+                const message = error.response.data?.message || "Server error occurred";
+                this.handleError(message, error.response.status);
+            } else if (error.request) {
+                this.handleError("No response from server - check your connection");
+            } else {
+                this.handleError(error.message || "An unexpected error occurred");
+            }
+        } finally {
+            clearTimeout(timeoutId);
+            this.dataBase.isLoading = false;
         }
     };
-    private static async handleRequest(
+
+    private static async handleRequest<T>(
         method: httpMethod,
         endPoint: string,
-        body?: Record<string, any>
-    ) {
+        body?: Record<string, any>,
+        signal?: AbortSignal
+    ): Promise<ApiResponse<T> | null> {
+        const config = { signal };
+
         switch (method) {
             case this.httpMethod.GET:
-                return await api.get(endPoint);
+                return (await api.get<ApiResponse<T>>(endPoint, config)).data;
             case this.httpMethod.POST:
                 if (!body) {
-                    console.error('El "body" es obligatorio para POST.');
-                    return null;
+                    throw new Error('Body is required for POST requests');
                 }
-                return await api.post(endPoint, body);
+                return (await api.post<ApiResponse<T>>(endPoint, body, config)).data;
             case this.httpMethod.PUT:
                 if (!body) {
-                    console.error('El "body" es obligatorio para PUT.');
-                    return null;
+                    throw new Error('Body is required for PUT requests');
                 }
-                return await api.put(endPoint, body);
+                return (await api.put<ApiResponse<T>>(endPoint, body, config)).data;
             case this.httpMethod.DELETE:
-                return await api.delete(endPoint);
+                return (await api.delete<ApiResponse<T>>(endPoint, config)).data;
+            default:
+                throw new Error(`Unsupported HTTP method: ${method}`);
         }
     };
-    private static handleError(message: string, error?: any): void {
-        this.dataBase.reset();
-        this.dataBase.status = 599;
 
-        // this.dataBase.message =
-        //     error?.message || "Ha ocurrido un error inesperado.";
+    private static handleError(message: string, status: number = 500): void {
+        this.dataBase.reset();
+        this.dataBase.status = status;
         this.dataBase.message = message;
     };
-    static rowsCounts(data: Record<string, any>): number {
-        if (!data)
-            return 0;
+
+    static rowsCounts(data: any[]): number {
+        if (!Array.isArray(data)) return 0;
         return data.length;
     };
+
     static validateDataTable(): boolean {
-        return this.rowsCounts(dgav.dataBase.data) > 0 && dgav.dataBase.status == 200;
+        return Array.isArray(this.dataBase.data) &&
+            this.rowsCounts(this.dataBase.data) > 0 &&
+            this.dataBase.status === 200;
     }
 }
 //#endregion
 
-export const numberCart = ref<String>('0');
+export const numberCart = ref<any>(Cookies.get('numberCart') || '0');
 
 export class site {
     static async Init(): Promise<void> {
@@ -110,20 +151,20 @@ export class site {
         const userData = Cookies.get('user_data');
         if (userData) {
             const parsedData = JSON.parse(userData);
-            const data = {
+
+            const response: any = await c_clientes.fn_l_carrito_cliente({
                 id_usuario: parsedData.id_usuario
-            };
+            });
 
-            await c_clientes.fn_l_carrito_cliente(data);
-
-            const response: any = dgav.dataBase;
-            if (!IsNullOrEmpty(response.message)) {
-                notify.error(response.message)
-                return;
-            }
-
-            if (!IsNullOrEmpty(response.data)) {
-                numberCart.value = response.data.length.toString();
+            if (response) {
+                if (!IsNullOrEmpty(dgav.dataBase.message)) {
+                    notify.error(dgav.dataBase.message)
+                    return;
+                }
+                numberCart.value = response.length.toString();
+                this.setCookies({
+                    "numberCart": numberCart.value
+                });
             }
 
         } else {

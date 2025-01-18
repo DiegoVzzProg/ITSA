@@ -1,21 +1,4 @@
 <script setup lang="ts">
-// EJEMPLO DE AGREGAR UNA COOKIE
-//
-// Cookies.set('id_usuario', response.data["id_usuario"], {
-//     expires: 30,         // Expira en 7 días
-//     secure: true,       // Solo se envía en conexiones HTTPS
-//     sameSite: 'Strict', // Previene el envío en solicitudes de terceros
-//     path: '/',          // Disponible en toda la web
-// });
-
-// EJEMPLO REMOVER UNA COOKIE
-//
-// Cookies.remove('id_usuario', { path: '/' }); // Necesario si estableciste un path
-
-// EJEMPLO LEER UNA COOKIE
-//
-// Cookies.get('id_usuario');
-
 import { onMounted, ref } from 'vue';
 import logo from '../assets/svg/logo.svg'
 import Cookies from "js-cookie";
@@ -48,8 +31,6 @@ function GoCheckOut() {
 onMounted(() => {
     GasapFadeInUpEffect();
     const userData = Cookies.get('user_data');
-    console.log(userData);
-
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;
@@ -68,7 +49,7 @@ onMounted(() => {
                 path: '/',
             });
         }
-
+        site.Init();
     }
 });
 

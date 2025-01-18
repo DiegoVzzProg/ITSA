@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { c_general } from '../services/s_general';
 import { ref, watch } from 'vue';
 import { c_auth } from '../services/s_auth';
 import 'notyf/notyf.min.css';
@@ -89,22 +90,34 @@ const Register = async () => {
     if (emailError.value || passwordError.value || passwordConfirmError.value || leyoTermsError.value || nameError.value)
         return;
 
-    const data = {
+    let response: any = await c_auth.fn_register({
         nombre: name.value,
         email: email.value,
         password: password.value,
         leyo_terms: leyo_terms.value
-    };
+    });
+    if (response) {
+        const message: string = dgav.dataBase.message;
+        if (!IsNullOrEmpty(message)) {
+            notify.error(message)
+            return;
+        }
 
-    await c_auth.fn_register(data);
+        site.setCookies({
+            "token": response.token,
+            "user_data": JSON.stringify(response.user_data),
+            "logged_in_successfully": 'false'
+        });
 
-    const message: string = dgav.dataBase.message;
-    if (!IsNullOrEmpty(message)) {
-        notify.error(message)
-        return;
+        response = await c_general.SecretKey();
+        if (response) {
+            site.setCookies({
+                "secretKey": response.secretKey || ''
+            });
+
+            site.RedirectPage('home');
+        }
     }
-
-    site.RedirectPage('home');
 };
 </script>
 

@@ -1,8 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { replaceClass } from '../utils/site';
 import File from '../components/File.vue'
 import CardProduct from '../components/CardProduct.vue';
+
+const handleScroll = () => {
+    const header: any = document.getElementById('header') as HTMLElement;
+    const targetRect = document.getElementById('div_sub_contenedor_2').getBoundingClientRect();
+
+    if (window.scrollY >= targetRect.height) {
+        replaceClass(header, "bg-transparent", "bg-white");
+    } else {
+        replaceClass(header, "bg-white", "bg-transparent");
+    }
+};
 
 onMounted(() => {
     const header: any = document.getElementById('header') as HTMLElement;
@@ -34,13 +45,11 @@ onMounted(() => {
 
     });
 
-    window.addEventListener('scroll', () => {
-        if (window.scrollY >= targetRect.height) {
-            replaceClass(header, "bg-transparent", "bg-white");
-        } else {
-            replaceClass(header, "bg-white", "bg-transparent");
-        }
-    })
+    window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
