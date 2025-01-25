@@ -72,4 +72,16 @@ class CUsuarios extends Controller
             return CGeneral::CreateMessage($ex->getMessage(), 200, 'error', null);
         }
     }
+
+    public static function fn_logout(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $user->tokens()->delete();
+
+            return CGeneral::CreateMessage('', 200, 'success', ["message" => "Logout successful"]);
+        } catch (Exception $ex) {
+            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+        }
+    }
 }

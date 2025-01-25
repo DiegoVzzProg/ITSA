@@ -1,76 +1,18 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { c_auth } from '../services/s_auth';
-import 'notyf/notyf.min.css';
-import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
-import { c_general } from '../services/s_general';
-const email = ref('');
-const password = ref('');
+import { watch } from 'vue';
+import { site } from '../../utils/site';
+import { c_loginView, email, emailError, password, passwordError } from './Login';
 
-const emailError = ref('');
-const passwordError = ref('');
-
-const validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-        emailError.value = 'The email is invalid';
-    } else {
-        emailError.value = '';
-    }
-};
-
-const validatePassword = (value: string) => {
-    if (value.length < 4) {
-        passwordError.value = 'Password must be at least 4 characters long';
-    } else {
-        passwordError.value = '';
-    }
-};
 
 watch(email, (newValue) => {
-    validateEmail(newValue);
+    c_loginView.validateEmail(newValue);
 });
 
 watch(password, (newValue) => {
-    validatePassword(newValue);
+    c_loginView.validatePassword(newValue);
 });
 
-const Login = async () => {
-    validateEmail(email.value);
-    validatePassword(password.value);
 
-    if (emailError.value || passwordError.value)
-        return;
-
-    let response: any = await c_auth.fn_login({
-        email: email.value,
-        password: password.value
-    });
-
-    if (response) {
-
-        const message: string = dgav.dataBase.message;
-        if (!IsNullOrEmpty(message)) {
-            notify.error(message);
-            return;
-        }
-
-        site.setCookies({
-            "token": response.token,
-            "user_data": JSON.stringify(response.user_data),
-            "logged_in_successfully": 'false'
-        });
-
-        response = await c_general.SecretKey();
-        if (response) {
-            site.setCookies({
-                "secretKey": response.secretKey || ''
-            });
-
-            site.RedirectPage('home');
-        }
-    }
-};
 </script>
 
 <template>
@@ -111,7 +53,7 @@ const Login = async () => {
             <div class="flex flex-row justify-between w-full px-[clamp(18px,3vw,28px)]">
 
             </div>
-            <button @click="Login" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
+            <button @click="c_loginView.Login" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
                 login
             </button>
         </div>

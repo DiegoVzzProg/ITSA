@@ -1,27 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
-import { replaceClass } from '../utils/site';
-import icon_morado_1 from '../assets/img/gallery/basicsIcons/icon_morado_1.png'
-import icon_morado_2 from '../assets/img/gallery/basicsIcons/icon_morado_2.png'
-import icon_morado_3 from '../assets/img/gallery/basicsIcons/icon_morado_3.png'
-import PDF from '../assets/img/gallery/basicsIcons/PDF.png'
-import AI from '../assets/img/gallery/basicsIcons/Ai.png'
-import SVG from '../assets/img/gallery/basicsIcons/SVG.png'
-import basic_set_50 from '../assets/img/gallery/basicsIcons/basic_set_50.png'
-import gif_coleccion_1 from '../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
-import File from '../components/File.vue'
-import CardProduct from '../components/CardProduct.vue';
+import { onMounted, onUnmounted } from 'vue';
+import { replaceClass } from '../../utils/site';
+import icon_morado_1 from '../../assets/img/gallery/basicsIcons/icon_morado_1.png'
+import icon_morado_2 from '../../assets/img/gallery/basicsIcons/icon_morado_2.png'
+import icon_morado_3 from '../../assets/img/gallery/basicsIcons/icon_morado_3.png'
+import PDF from '../../assets/img/gallery/basicsIcons/PDF.png'
+import AI from '../../assets/img/gallery/basicsIcons/Ai.png'
+import SVG from '../../assets/img/gallery/basicsIcons/SVG.png'
+import basic_set_50 from '../../assets/img/gallery/basicsIcons/basic_set_50.png'
+import gif_coleccion_1 from '../../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
+import File from '../../components/File.vue';
+import CardProduct from '../../components/CardProduct.vue';
+import { c_basicsIcons } from './BasicsIcons';
 
-const handleScroll = () => {
-    const header: any = document.getElementById('header') as HTMLElement;
-    const targetRect = document.getElementById('div_sub_contenedor_2').getBoundingClientRect();
-
-    if (window.scrollY >= targetRect.height) {
-        replaceClass(header, "bg-transparent", "bg-white");
-    } else {
-        replaceClass(header, "bg-white", "bg-transparent");
-    }
-};
 
 onMounted(() => {
     const header: any = document.getElementById('header') as HTMLElement;
@@ -50,11 +41,11 @@ onMounted(() => {
 
     });
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', c_basicsIcons.handleScroll);
 });
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('scroll', c_basicsIcons.handleScroll);
 });
 </script>
 

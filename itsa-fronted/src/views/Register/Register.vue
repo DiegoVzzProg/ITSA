@@ -1,124 +1,28 @@
 <script setup lang="ts">
-import { c_general } from '../services/s_general';
-import { ref, watch } from 'vue';
-import { c_auth } from '../services/s_auth';
-import 'notyf/notyf.min.css';
-import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
+import { watch } from 'vue';
+import { site } from '../../utils/site';
+import { c_registerView, email, emailError, leyo_terms, leyoTermsError, name, nameError, password, passwordConfirm, passwordConfirmError, passwordError } from './Register';
 
-const email = ref('');
-const name = ref<string>('');
-const password = ref('');
-const passwordConfirm = ref('');
-const leyo_terms = ref<boolean>(false)
-
-const nameError = ref<string>('');
-const emailError = ref('');
-const passwordError = ref('');
-const passwordConfirmError = ref('');
-const leyoTermsError = ref<string>('');
-
-const validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-        emailError.value = 'The email is invalid';
-    } else {
-        emailError.value = '';
-    }
-};
-
-const validatePassword = (value: string) => {
-    if (value.length < 4) {
-        passwordError.value = 'Password must be at least 4 characters long';
-    } else {
-        passwordError.value = '';
-    }
-};
-
-const validatePasswordConfirm = (value: string) => {
-    console.log(password.value, value);
-
-    if (password.value != value) {
-        passwordConfirmError.value = 'Password does not match';
-    } else {
-        passwordConfirmError.value = '';
-    }
-};
-
-const validateTerms = (value: boolean) => {
-    if (!value) {
-        leyoTermsError.value = 'You must accept the terms and conditions';
-    } else {
-        leyoTermsError.value = '';
-    }
-};
-
-const validateName = (value: string) => {
-    if (IsNullOrEmpty(value)) {
-        nameError.value = 'This field is required';
-    } else {
-        nameError.value = '';
-    }
-};
 
 watch(email, (newValue) => {
-    validateEmail(newValue);
+    c_registerView.validateEmail(newValue);
 });
 
 watch(passwordConfirm, (newValue) => {
-    validatePasswordConfirm(newValue);
+    c_registerView.validatePasswordConfirm(newValue);
 });
 
 watch(name, (newValue) => {
-    validateName(newValue);
+    c_registerView.validateName(newValue);
 });
 
 watch(leyo_terms, (newValue) => {
-    validateTerms(newValue);
+    c_registerView.validateTerms(newValue);
 });
 
 watch(password, (newValue) => {
-    validatePassword(newValue);
+    c_registerView.validatePassword(newValue);
 });
-
-const Register = async () => {
-    validateEmail(email.value);
-    validatePasswordConfirm(passwordConfirm.value);
-    validatePassword(password.value);
-    validateTerms(leyo_terms.value);
-    validateName(name.value);
-
-    if (emailError.value || passwordError.value || passwordConfirmError.value || leyoTermsError.value || nameError.value)
-        return;
-
-    let response: any = await c_auth.fn_register({
-        nombre: name.value,
-        email: email.value,
-        password: password.value,
-        leyo_terms: leyo_terms.value
-    });
-    if (response) {
-        const message: string = dgav.dataBase.message;
-        if (!IsNullOrEmpty(message)) {
-            notify.error(message)
-            return;
-        }
-
-        site.setCookies({
-            "token": response.token,
-            "user_data": JSON.stringify(response.user_data),
-            "logged_in_successfully": 'false'
-        });
-
-        response = await c_general.SecretKey();
-        if (response) {
-            site.setCookies({
-                "secretKey": response.secretKey || ''
-            });
-
-            site.RedirectPage('home');
-        }
-    }
-};
 </script>
 
 <template>
@@ -188,7 +92,7 @@ const Register = async () => {
                     {{ leyoTermsError }}
                 </span>
             </div>
-            <button type="button" @click="Register" class="bg-black py-5 px-3 rounded-full text-white">
+            <button type="button" @click="c_registerView.Register" class="bg-black py-5 px-3 rounded-full text-white">
                 register
             </button>
         </div>

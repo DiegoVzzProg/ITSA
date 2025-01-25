@@ -1,57 +1,13 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
+import SelectCountry from "../../components/SelectCountry.vue";
+import { c_checkOut, impuesto, productData, productPrecio, userData } from "./CheckOut";
 import Cookies from "js-cookie";
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import { dgav, IsNullOrEmpty, notify } from '../utils/site';
-import SelectCountry from "../components/SelectCountry.vue";
-import { c_clientes } from "../services/s_clientes";
-
-const route = useRoute();
-const userData = ref<any>({});
-const productPrecio = ref<string>("");
-const impuesto = ref<string>("");
-const productData = ref<any>({});
-const name = ref<string>('');
-
-const productos = async () => {
-    const usuario = JSON.parse(Cookies.get('user_data') || "{}");
-    if (usuario) {
-        let response: any = await c_clientes.fn_l_carrito_cliente({
-            id_usuario: usuario.id_usuario
-        });
-
-        let message: string = dgav.dataBase.message;
-
-        if (response) {
-            if (!IsNullOrEmpty(message)) {
-                notify.error(message)
-                return;
-            }
-
-            productData.value = response;
-
-            response = await c_clientes.fn_l_precio_carrito_cliente({
-                id_usuario: usuario.id_usuario
-            });
-
-            if (response) {
-                if (!IsNullOrEmpty(message)) {
-                    notify.error(message)
-                    return;
-                }
-
-                productPrecio.value = response.precio;
-                impuesto.value = response.impuesto;
-            }
-        }
-
-    }
-}
 
 onMounted(() => {
-    // var usuario = decryptValue(route.params.id.toString());
-    userData.value = JSON.parse(Cookies.get('user_data') || "{}");
-    productos();
+    userData.value = JSON.parse(Cookies.get("user_data") || "{}");
+
+    c_checkOut.productos();
 });
 
 </script>
@@ -59,7 +15,8 @@ onMounted(() => {
 <template>
     <div
         class="flex flex-row max-[1397px]:flex-col-reverse gap-2 max-[1130px]:justify-end justify-between items-center w-full min-h-screen grow shrink-0 pt-[76px]">
-        <div class="flex flex-row max-[1397px]:flex-col w-full min-h-[464px]">
+        
+        <!-- <div class="flex flex-row max-[1397px]:flex-col w-full min-h-[464px]">
             <div class="w-full flex justify-center pb-1">
                 <p class="w-full max-w-screen-sm">
                     hi, {{ userData.nombre }}!
@@ -81,33 +38,21 @@ onMounted(() => {
                     </div>
                     <div class="flex flex-col gap-1">
                         <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="vat number">
-                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                            v-if="emailError">
-                            {{ emailError }}
-                        </span> -->
+
                     </div>
                     <div class="flex flex-col gap-1">
                         <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="address">
-                        <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                            v-if="emailError">
-                            {{ emailError }}
-                        </span> -->
+
                     </div>
                     <div class="flex flex-row max-[1130px]:flex-col gap-2">
                         <div class="flex flex-col w-full gap-1">
                             <input type="text" class="border border-black py-5 px-3 rounded-full"
                                 placeholder="zip code">
-                            <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                                v-if="emailError">
-                                {{ emailError }}
-                            </span> -->
+
                         </div>
                         <div class="flex flex-col w-full gap-1">
                             <input type="text" class="border border-black py-5 px-3 rounded-full" placeholder="state">
-                            <!-- <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                                v-if="emailError">
-                                {{ emailError }}
-                            </span> -->
+
                         </div>
                     </div>
                     <div class="flex flex-col">
@@ -166,7 +111,7 @@ onMounted(() => {
                     </p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
