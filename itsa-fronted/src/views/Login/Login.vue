@@ -61,9 +61,10 @@ watch(password, (newValue) => {
             <p class="px-[clamp(18px,3vw,28px)]">
                 need an account
             </p>
-            <router-link to="/register" class="bg-white border border-black py-5 px-3 rounded-full text-center">
+            <button type="button" v-on:click="site.RedirectPage('register')"
+                class="bg-white border border-black py-5 px-3 rounded-full text-center">
                 create account
-            </router-link>
+            </button>
         </div>
     </div>
 </template>

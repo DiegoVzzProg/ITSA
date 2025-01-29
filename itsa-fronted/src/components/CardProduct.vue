@@ -32,6 +32,21 @@ const AddCartCostumer = async () => {
             return;
         }
 
+        const response: any = await c_clientes.fn_l_carrito_cliente({
+            id_usuario: parsedData.id_usuario,
+        });
+
+        if (response) {
+            if (!IsNullOrEmpty(dgav.dataBase.message)) {
+                notify.error(dgav.dataBase.message);
+                return;
+            }
+
+            site.setCookies({
+                numberCart: response.length.toString(),
+            });
+        }
+
         site.RedirectPage("home");
 
     } else {

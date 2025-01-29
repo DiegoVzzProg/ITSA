@@ -2,6 +2,8 @@ import { ref } from "vue";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
+import { c_clientes } from "../../services/s_clientes";
+import Cookies from "js-cookie";
 
 export const email = ref("");
 export const password = ref("");
@@ -45,6 +47,9 @@ export class c_loginView {
     }
 
     if (response) {
+      email.value = "";
+      password.value = "";
+
       site.setCookies({
         token: response.token,
         user_data: JSON.stringify(response.user_data),
@@ -56,6 +61,25 @@ export class c_loginView {
         site.setCookies({
           secretKey: response.secretKey || "",
         });
+
+        const userData = Cookies.get("user_data");
+        if (userData) {
+          const parsedData = JSON.parse(userData);
+          const response: any = await c_clientes.fn_l_carrito_cliente({
+            id_usuario: parsedData.id_usuario,
+          });
+
+          if (response) {
+            if (!IsNullOrEmpty(dgav.dataBase.message)) {
+              notify.error(dgav.dataBase.message);
+              return;
+            }
+          }
+
+          site.setCookies({
+            numberCart: response.length.toString(),
+          });
+        }
 
         site.RedirectPage("home");
       }

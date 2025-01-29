@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CCarritoCliente;
+use App\Http\Controllers\CClientes;
 use App\Http\Controllers\CGeneral;
 use App\Http\Controllers\CProductos;
 use App\Http\Controllers\CUsuarios;
@@ -24,6 +25,11 @@ Route::prefix('v1')->group(function () {
             Route::post('/cliente', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/agregar', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
             Route::get('/precio/{id_usuario}', [CCarritoCliente::class, 'fn_l_precio_carrito_cliente']);
+        });
+
+        Route::prefix('clientes')->group(function () {
+            Route::post('/alta/cliente', [CClientes::class, 'fn_a_clientes']);
+            Route::get('/obtener/cliente/{id_cliente}', [CClientes::class, 'fn_l_clientes']);
         });
 
         Route::prefix('auth')->group(function () {

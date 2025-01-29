@@ -7,8 +7,8 @@
 @font-face {
   font-family: "silkaregular";
   src: url("./assets/font/silka-regular-webfont.eot");
-  src:
-    url("./assets/font/silka-regular-webfont.eot?#iefix") format("embedded-opentype"),
+  src: url("./assets/font/silka-regular-webfont.eot?#iefix")
+      format("embedded-opentype"),
     url("./assets/font/silka-regular-webfont.woff2") format("woff2"),
     url("./assets/font/silka-regular-webfont.woff") format("woff"),
     url("./assets/font/silka-regular-webfont.ttf") format("truetype");
@@ -19,8 +19,8 @@
 @font-face {
   font-family: "silkaregular_italic";
   src: url("./assets/font/silka-regularitalic-webfont.eot");
-  src:
-    url("./assets/font/silka-regularitalic-webfont.eot?#iefix") format("embedded-opentype"),
+  src: url("./assets/font/silka-regularitalic-webfont.eot?#iefix")
+      format("embedded-opentype"),
     url("./assets/font/silka-regularitalic-webfont.woff2") format("woff2"),
     url("./assets/font/silka-regularitalic-webfont.woff") format("woff"),
     url("./assets/font/silka-regularitalic-webfont.ttf") format("truetype");
@@ -30,8 +30,7 @@
 
 @font-face {
   font-family: "Itsa Bold";
-  src:
-    url("./assets/font/itsa-Regular.30422c880-Bold.woff2") format("woff2"),
+  src: url("./assets/font/itsa-Regular.30422c880-Bold.woff2") format("woff2"),
     url("./assets/font/itsa-Regular.30422c880-Bold.woff") format("woff"),
     url("./assets/font/itsa-Regular.30422c880-Bold.ttf") format("truetype");
   font-weight: bold;
@@ -40,8 +39,7 @@
 
 @font-face {
   font-family: "Itsa Regular";
-  src:
-    url("./assets/font/itsa-Regular.30422c880-Regular.woff2") format("woff2"),
+  src: url("./assets/font/itsa-Regular.30422c880-Regular.woff2") format("woff2"),
     url("./assets/font/itsa-Regular.30422c880-Regular.woff") format("woff"),
     url("./assets/font/itsa-Regular.30422c880-Regular.ttf") format("truetype");
   font-weight: normal;
@@ -90,8 +88,24 @@ body {
   border: 1px solid black;
 }
 
-*::-webkit-scrollbar{
-  display: none;
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .scroll-none::-webkit-scrollbar {

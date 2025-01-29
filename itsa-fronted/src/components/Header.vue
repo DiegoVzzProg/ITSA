@@ -18,6 +18,7 @@ const LogOut = async () => {
             window.location.reload();
         } else {
             site.RedirectPage('home');
+            id_usuario.value = 0;
         }
     }
 }
@@ -38,6 +39,7 @@ onMounted(() => {
         site.Init();
     }
 });
+
 
 </script>
 

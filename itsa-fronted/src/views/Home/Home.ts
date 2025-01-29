@@ -1,6 +1,8 @@
 import { computed, ref } from "vue";
 import { c_productos } from "../../services/s_productos";
-import { dgav, IsNullOrEmpty, notify } from "../../utils/site";
+import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
+import { c_clientes } from "../../services/s_clientes";
+import Cookies from "js-cookie";
 
 export const totalSections = 4;
 export const isSnapping = ref<boolean>(false);

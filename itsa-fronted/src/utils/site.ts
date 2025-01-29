@@ -2,6 +2,7 @@ import api from "../services/api";
 import Cookies from "js-cookie";
 import router from "../router";
 import { Notyf } from "notyf";
+import "notyf/notyf.min.css";
 import { ref } from "vue";
 import { c_clientes } from "../services/s_clientes";
 
@@ -51,6 +52,7 @@ export class dgav {
     method: httpMethod,
     body?: Record<string, any>
   ): Promise<any> {
+    this.dataBase.reset();
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
@@ -165,25 +167,10 @@ export class site {
     }
 
     const userData = Cookies.get("user_data");
-    if (userData) {
-      const parsedData = JSON.parse(userData);
-
-      const response: any = await c_clientes.fn_l_carrito_cliente({
-        id_usuario: parsedData.id_usuario,
-      });
-
-      if (response) {
-        if (!IsNullOrEmpty(dgav.dataBase.message)) {
-          notify.error(dgav.dataBase.message);
-          return;
-        }
-        numberCart.value = response.length.toString();
-        this.setCookies({
-          numberCart: numberCart.value,
-        });
-      }
-    } else {
+    if (!userData) {
       numberCart.value = "0";
+    } else {
+      numberCart.value = Cookies.get("numberCart");
     }
   }
   static RedirectPage(
