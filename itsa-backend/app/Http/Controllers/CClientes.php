@@ -32,7 +32,7 @@ class CClientes extends Controller
                 'telefono' => $request->input('telefono'),
                 'direccion' => $request->input('direccion'),
                 'estado' => $request->input('estado'),
-                'pais' => $request->input('pais'),
+                'id_pais' => $request->input('id_pais'),
                 'codigo_postal' => $request->input('codigo_postal'),
             ]);
 

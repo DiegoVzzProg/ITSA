@@ -155,17 +155,6 @@ export class site {
   }
 
   static async Init(): Promise<void> {
-    const header: any = document.getElementById("header") as HTMLElement;
-    if (header) {
-      const footer: any = document.getElementById("footer") as HTMLElement;
-      replaceClass(header, "bg-transparent", "bg-white");
-      replaceClass(footer, "hidden", "flex");
-      const main_contenedor: any = document.getElementById(
-        "main_contenedor"
-      ) as HTMLElement;
-      replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]");
-    }
-
     const userData = Cookies.get("user_data");
     if (!userData) {
       numberCart.value = "0";
@@ -200,7 +189,7 @@ export class site {
     this.Init();
   }
 
-  static setCookies(cookies: Record<string, string>): void {
+  public static setCookies(cookies: Record<string, string>): void {
     Object.entries(cookies).forEach(([key, value]) => {
       Cookies.set(key, value, {
         path: "/",
@@ -208,6 +197,17 @@ export class site {
         expires: 7,
       });
     });
+  }
+
+  public static replaceClass(
+    element: HTMLElement,
+    oldClass: string,
+    newClass: string
+  ): void {
+    if (element.classList.contains(oldClass)) {
+      element.classList.remove(oldClass);
+      element.classList.add(newClass);
+    }
   }
 }
 

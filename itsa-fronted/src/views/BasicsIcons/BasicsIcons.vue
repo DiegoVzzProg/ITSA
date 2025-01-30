@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { replaceClass } from '../../utils/site';
 import icon_morado_1 from '../../assets/img/gallery/basicsIcons/icon_morado_1.png'
 import icon_morado_2 from '../../assets/img/gallery/basicsIcons/icon_morado_2.png'
 import icon_morado_3 from '../../assets/img/gallery/basicsIcons/icon_morado_3.png'
@@ -11,43 +10,14 @@ import basic_set_50 from '../../assets/img/gallery/basicsIcons/basic_set_50.png'
 import gif_coleccion_1 from '../../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
 import File from '../../components/File.vue';
 import CardProduct from '../../components/CardProduct.vue';
-import { c_basicsIcons } from './BasicsIcons';
-
+import { class_basicsIcons } from './BasicsIcons';
 
 onMounted(() => {
-    const header: any = document.getElementById('header') as HTMLElement;
-    const footer: any = document.getElementById('footer') as HTMLElement;
-    const overflow: any = document.getElementById('overflow') as HTMLElement;
-
-    const main_contenedor: any = document.getElementById('main_contenedor') as HTMLElement;
-    replaceClass(main_contenedor, "px-[0px]", "px-[clamp(18px,5vw,68px)]")
-
-    const div_contenedor_gallery_basics_1: any = document.getElementById('div_contenedor_gallery_basics_1') as HTMLElement;
-    const div_contenedor_gallery_basics_2: any = document.getElementById('div_contenedor_gallery_basics_2') as HTMLElement;
-    const div_sub_contenedor_2 = document.getElementById('div_sub_contenedor_2') as HTMLElement;
-    const targetRect = div_sub_contenedor_2.getBoundingClientRect();
-
-    div_contenedor_gallery_basics_1.addEventListener('scroll', () => {
-        if (div_contenedor_gallery_basics_1.scrollTop >= (targetRect.height - 100)) {
-            replaceClass(overflow, "bg-[rgba(183,164,237,0.45)]", "bg-[rgba(25,18,44,0.7)]")
-            replaceClass(footer, "hidden", "flex");
-            replaceClass(div_contenedor_gallery_basics_2, "hidden", "flex");
-        } else {
-            replaceClass(overflow, "bg-[rgba(25,18,44,0.7)]", "bg-[rgba(183,164,237,0.45)]")
-            replaceClass(header, "bg-white", "bg-transparent");
-            replaceClass(footer, "flex", "hidden");
-            replaceClass(div_contenedor_gallery_basics_2, "flex", "hidden");
-        }
-
-    });
-
-    window.addEventListener('scroll', c_basicsIcons.handleScroll);
+    class_basicsIcons.onInit();
 });
 
 onUnmounted(() => {
-    document.getElementById('footer')?.classList.remove('flex');
-    document.getElementById('footer')?.classList.add('hidden');
-    window.removeEventListener('scroll', c_basicsIcons.handleScroll);
+    class_basicsIcons.onUnInit();
 });
 </script>
 
@@ -56,44 +26,51 @@ onUnmounted(() => {
         class="flex fixed bottom-[10px] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
-    <div
-        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-between max-[1090px]:justify-center items-center gap-8">
-        <img :src="icon_morado_1" alt="_" loading="lazy"
-            class="flex w-full max-w-[clamp(130px,18vw,310px)] max-[1090px]:hidden" />
-        <img :src="icon_morado_2" alt="_" loading="lazy" class="w-full flex max-w-[560px]" />
-        <img :src="icon_morado_3" alt="_" loading="lazy"
-            class="w-full flex max-w-[clamp(130px,18vw,245px)] max-[1090px]:hidden" />
+    <div class="min-h-screen grow shrink-0 flex flex-col">
+        <div class="min-h-screen"></div>
+        <div class="min-h-screen"></div>
     </div>
-    <div class="flex absolute top-0 left-0 h-screen bg-[rgba(183,164,237,0.45)] transition-all w-full" id="overflow">
-    </div>
-    <div id="div_contenedor_gallery_basics_1"
-        class="flex flex-col min-h-screen h-screen overflow-y-auto w-full snap-y snap-mandatory relative pt-[76px] scroll-none">
-        <div id="div_sub_contenedor_1"
-            class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
-            <div class="flex flex-col w-full justify-center items-center">
-                <p class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[78px] flex text-white z-10">
-                    basics icon set
-                </p>
-                <p class="text-[clamp(1em,3vw,4em)] text-center text-white">
-                    a sleek & minimalist collection <br> of geometric-style icons.
-                </p>
+    <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(183,164,237,0.45)] grow shrink-0 top-0 left-0 transition-all duration-500"
+        id="padre_contenedor_scroll">
+        <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
+            <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
+                <div id="children_elemento1_scroll"
+                    class="flex animate-fade-in flex-col w-full justify-center items-center">
+                    <p
+                        class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[78px] flex text-black z-10 select-none">
+                        basics icon set
+                    </p>
+                    <p class="text-[clamp(1em,3vw,4em)] text-center text-black select-none">
+                        a sleek & minimalist collection <br> of geometric-style icons.
+                    </p>
+                </div>
+                <div id="children_elemento2_scroll"
+                    class="hidden animate-fade-in flex-col w-full justify-center items-center">
+                    <p
+                        class="font-itsa-bold text-[clamp(35px,10vw,208px)] leading-[78px] font-bold flex text-white z-10 select-none">
+                        +50 elements
+                    </p>
+                    <p
+                        class="font-itsa-bold text-[clamp(20px,7vw,108px)] max-[480px]:translate-y-[-20px] text-center font-bold flex text-white z-10 select-none">
+                        personal & comercial use
+                    </p>
+                </div>
             </div>
         </div>
-        <div id="div_sub_contenedor_2"
-            class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
-            <div class="flex flex-col w-full justify-center items-center">
-                <p class="font-itsa-bold text-[clamp(35px,10vw,208px)] leading-[78px] font-bold flex text-white z-10">
-                    +50 elements
-                </p>
-                <p
-                    class="font-itsa-bold text-[clamp(20px,7vw,108px)] max-[480px]:translate-y-[-20px] text-center font-bold flex text-white z-10">
-                    personal & comercial use
-                </p>
+        <div class="w-full flex min-h-screen justify-center items-center sticky bottom-0 z-0 opacity-40"
+            id="contenedor_children_scroll">
+            <div
+                class="flex opacity-50 flex-row w-full justify-between max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
+                <img :src="icon_morado_1" alt="_" loading="lazy"
+                    class="flex w-full max-w-[clamp(130px,18vw,280px)] max-[1090px]:hidden" />
+                <img :src="icon_morado_2" alt="_" loading="lazy" class="w-full flex max-w-[560px]" />
+                <img :src="icon_morado_3" alt="_" loading="lazy"
+                    class="w-full flex max-w-[clamp(130px,18vw,215px)] max-[1090px]:hidden" />
             </div>
         </div>
     </div>
     <div class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]"
-        id="div_contenedor_gallery_basics_2">
+        id="contenedor_gallery_basics">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">
                 fresh icons
@@ -102,10 +79,10 @@ onUnmounted(() => {
                 <img :src="gif_coleccion_1" alt="_" loading="lazy" class="object-contain" />
             </div>
         </div>
-        <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0">
+        <div class="flex flex-row w-full h-screen max-[1024px]:flex-col-reverse grow shrink-0">
             <div
-                class="flex flex-col h-full w-full items-start max-[680px]:justify-start max-[680px]:items-center max-[680px]:text-center justify-center">
-                <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]  leading-[100px]">
+                class="flex flex-col justify-center max-[1024px]:items-center max-[1024px]:text-center w-full max-w-lg  max-[1024px]:max-w-full max-[1024px]:grow max-[1024px]:shrink-0">
+                <p class="font-itsa-bold text-[clamp(60px,8vw,108px)] leading-[100px]">
                     outline
                 </p>
                 <div class="flex flex-col">
@@ -124,9 +101,10 @@ onUnmounted(() => {
                     <img :src="PDF" alt="_" loading="lazy" class="w-full max-w-[34px]" />
                 </div>
             </div>
-            <div class="flex flex-col h-full w-full items-center justify-center">
+            <div
+                class="flex flex-col justify-center items-end max-[1024px]:items-center w-full max-[1024px]:grow max-[1024px]:shrink-0">
                 <div
-                    class="flex items-center justify-center rounded-[1em] p-5 w-full max-w-[532px] h-full max-h-[532px] bg-[rgba(115,64,255,0.45)]">
+                    class="flex items-center justify-center rounded-[1em] p-5 w-full max-w-[732px] h-full max-h-[732px] bg-[rgba(115,64,255,0.45)]">
                     <img :src="basic_set_50" alt="_" loading="lazy" class="flex w-full max-w-[220px]" />
                 </div>
             </div>
@@ -139,7 +117,7 @@ onUnmounted(() => {
                 a large library of basic elements including <br>
                 social media, weather, store and much more.
             </p>
-            <div class="w-[90%] flex items-center h-full wrapper max-h-[200px] max-w-[1536px] relative overflow-hidden"
+            <div class="w-[90%] flex items-center h-screen wrapper max-h-[200px] max-w-[1536px] relative overflow-hidden"
                 style="margin-inline: auto; content-visibility: auto;">
                 <div v-for="i in 57" :key="i"
                     class="flex p-[40px] app-item-scroll-infinite-basic-icons absolute rounded bg-[rgb(213,169,239)] left-[max(calc(200px*8),100%)]"
@@ -179,4 +157,6 @@ onUnmounted(() => {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
+
+.animate-scroll-principal {}
 </style>

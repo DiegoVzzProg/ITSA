@@ -17,7 +17,7 @@ class TClientes extends Model
         'telefono',
         'direccion',
         'estado',
-        'pais',
+        'id_pais',
         'codigo_postal'
     ];
 

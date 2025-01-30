@@ -4,7 +4,7 @@ import terms_and_conditions from '../assets/img/terms_and_conditions.png'
 </script>
 
 <template>
-    <div class="flex max-[768px]:flex-col-reverse min-h-full grow shrink-0 max-[768px]:py-7">
+    <div class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7">
         <div class="flex flex-col w-full text-balance">
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
                 <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] raleway">
@@ -66,7 +66,8 @@ import terms_and_conditions from '../assets/img/terms_and_conditions.png'
                 </p>
             </section>
         </div>
-        <div class="flex w-full h-full items-center justify-center max-[500px]:pb-[2rem]">
+        <div
+            class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]">
             <img :src="terms_and_conditions" alt="_" class="w-full max-w-[210px] h-full max-h-[200px]" loading="lazy">
         </div>
     </div>

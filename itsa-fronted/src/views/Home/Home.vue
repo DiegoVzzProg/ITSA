@@ -6,57 +6,42 @@ import collillustration_slogans from '../../assets/img/collillustration_slogans.
 import lovelytype_slogans from '../../assets/img/lovelytype_slogans.png'
 import slogan_principal from '../../assets/img/slogan_principal.png'
 import { site } from '../../utils/site';
+import { class_home, imgsPrincipal, productos } from './Home';
 import File from '../../components/File.vue';
-import { home, productos, showSection } from './Home';
 
 
 onMounted(() => {
-    document.getElementById('footer')?.classList.remove('flex');
-    document.getElementById('footer')?.classList.add('hidden');
-
-    window.addEventListener('resize', home.onResize);
-
-    home.Productos();
+    class_home.onInit();
 });
 
 onBeforeUnmount(() => {
-    window.removeEventListener('resize', home.onResize);
+    class_home.onUnInit();
 });
 
 </script>
 
 <template>
-    <div v-if="!showSection"
-        class="flex flex-col w-full justify-center items-center min-h-screen grow shrink-0 relative"
-        @mousedown="home.onMouseDown" @mousemove="home.onMouseMove" @mouseup="home.onMouseUp"
-        @mouseleave="home.onMouseLeave" @wheel.prevent="home.onWheel" @touchstart="home.onTouchStart"
-        @touchmove="home.onTouchMove" @touchend="home.onTouchEnd">
-        <div class="flex relative flex-col items-center justify-start gap-2 w-screen h-[40px] overflow-hidden">
-            <span class="flex flex-col items-center w-full min-h-screen transition-transform duration-700"
-                :style="home.transformStyle1.value">
-                <img :src="freshicons_slogan" alt="_" loading="lazy" class=" w-full max-w-[230px]">
-            </span>
-            <span class="flex flex-col items-center w-full min-h-screen transition-transform duration-700"
-                :style="home.transformStyle2.value">
-                <img :src="usefulmockups_slogans" alt="_" loading="lazy" class=" w-full max-w-[240px]">
-            </span>
-            <span class="flex flex-col items-center w-full min-h-screen transition-transform duration-700"
-                :style="home.transformStyle3.value">
-                <img :src="collillustration_slogans" alt="_" loading="lazy" class=" w-full max-w-[240px]">
-            </span>
-            <span class="flex flex-col items-center w-full min-h-screen transition-transform duration-700"
-                :style="home.transformStyle4.value">
-                <img :src="lovelytype_slogans" alt="_" loading="lazy" class=" w-full max-w-[220px] scale-[.9]">
-            </span>
+    <div class="h-[50vh]" id="section1"></div>
+    <div class="h-[50vh]" id="section2"></div>
+    <div class="h-[50vh]" id="section3"></div>
+    <div class="h-[50vh]" id="section4"></div>
+    <div class="flex flex-col w-full justify-center items-center min-h-screen grow sticky bottom-0 shrink-0">
+        <div
+            class="flex relative flex-col text-center items-center justify-center gap-2 w-full h-[55px] overflow-hidden ">
+            <p :class="`font-itsa-bold w-full text-[clamp(3rem,3vw,10rem)] ${img.class} animate-fade-in translate-y-[6px]`"
+                v-for="(img, index) in imgsPrincipal" :key="index">
+                {{ img.texto }}
+            </p>
         </div>
         <div class="flex w-full items-center justify-center">
-            <span class="flex flex-col items-center w-full h-full">
-                <img :src="slogan_principal" alt="_" loading="lazy" class=" w-full max-w-[550px]">
+            <span
+                class="flex flex-col items-center w-full text-center h-full text-[clamp(1.5rem,3vw,2.4rem)] animate-fade-in"
+                style="font-family:'Times New Roman', Times, serif; font-style: italic">
+                that make your stories look better
             </span>
         </div>
     </div>
-    <div v-else
-        class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in">
+    <div class="flex flex-col pt-[76px] w-full justify-start items-end h-screen grow shrink-0 relative animate-fade-in">
         <div class="flex flex-row-reverse justify-end max-[768px]:flex-col max-[768px]:items-center w-full gap-2 py-5 transition-all"
             v-if="productos.length > 0">
             <div v-for="(producto, index) in productos" :key="index"

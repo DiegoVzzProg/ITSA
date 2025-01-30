@@ -8,7 +8,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <footer id="footer" class="flex flex-col w-full grow shrink-0">
+    <footer id="footer" class="flex flex-col w-full grow shrink-0 px-[clamp(18px,5vw,68px)] min-h-screen justify-end">
         <div
             class="flex flex-col items-center justify-center w-full h-full find-us-mensaje app-findus-animation-timeline">
             <p class="text-pretty w-full max-w-[500px] text-center">

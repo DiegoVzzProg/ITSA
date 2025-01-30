@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("telefono");
             $table->string("direccion");
             $table->string("estado");
-            $table->string("pais");
+            $table->integer("id_pais");
             $table->string("codigo_postal");
             $table->timestamps();
         });

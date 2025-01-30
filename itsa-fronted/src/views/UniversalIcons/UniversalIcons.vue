@@ -2,14 +2,15 @@
 import { onMounted, onUnmounted } from 'vue';
 import File from '../../components/File.vue';
 import CardProduct from '../../components/CardProduct.vue';
-import { c_universalIconsView } from './UniversalIcons';
+import { class_universalIcons } from './UniversalIcons';
+
 
 onMounted(() => {
-    c_universalIconsView.onInit();
+    class_universalIcons.onInit();
 });
 
 onUnmounted(() => {
-    window.removeEventListener('scroll', c_universalIconsView.handleScroll);
+    class_universalIcons.onUnInit();
 });
 </script>
 
@@ -18,7 +19,53 @@ onUnmounted(() => {
         class="flex fixed bottom-[10px] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
-    <div
+    <div class="min-h-screen grow shrink-0 flex flex-col">
+        <div class="min-h-screen"></div>
+        <div class="min-h-screen"></div>
+    </div>
+    <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(116,171,253,0.47)] after:content-[' '] after:absolute after:w-full after:h-full after:bg-[rgba(0,0,0)] after:transition-all after:duration-500 after:opacity-0 grow shrink-0 top-0 left-0 transition-all duration-500"
+        id="padre_contenedor_scroll">
+        <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
+            <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
+                <div id="children_elemento1_scroll"
+                    class="flex animate-fade-in flex-col w-full justify-center items-center">
+                    <p
+                        class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
+                        universal <br> icon pack
+                    </p>
+                    <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
+                        a sleek & minimalist collection solid <br> of minimalist style icons.
+                    </p>
+                </div>
+                <div id="children_elemento2_scroll"
+                    class="hidden animate-fade-in flex-col w-full justify-center items-center">
+                    <p
+                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
+                        +500 elements
+                    </p>
+                    <p
+                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                        fully editable
+                    </p>
+                    <p
+                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                        personal & comercial use
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="w-full flex min-h-screen justify-center items-center sticky bottom-0 z-0 opacity-40"
+            id="contenedor_children_scroll">
+            <div
+                class="flex opacity-50 flex-row w-full justify-center max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
+                <File folder="../assets/img/gallery/universalicons" file="universalicon_cover.png" type="img"
+                    :encrypted="false" class="max-[680px]:hidden" />
+                <File folder="../assets/img/gallery/universalicons" file="universalicon_cover_1_icon.png" type="img"
+                    :encrypted="false" class="max-[680px]:block hidden" />
+            </div>
+        </div>
+    </div>
+    <!-- <div
         class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-center items-center gap-8">
         <File folder="../assets/img/gallery/universalicons" file="universalicon_cover.png" type="img" :encrypted="false"
             class="max-[680px]:hidden" />
@@ -58,9 +105,9 @@ onUnmounted(() => {
                 </p>
             </div>
         </div>
-    </div>
-    <div class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]"
-        id="div_contenedor_gallery_basics_2">
+    </div> -->
+    <div id="contenedor_gallery_basics"
+        class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">
                 universal icon

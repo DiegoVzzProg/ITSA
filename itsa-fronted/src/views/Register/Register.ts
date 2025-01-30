@@ -34,8 +34,6 @@ export class c_registerView {
   };
 
   public static validatePasswordConfirm = (value: string) => {
-    console.log(password.value, value);
-
     if (password.value != value) {
       passwordConfirmError.value = "Password does not match";
     } else {

@@ -1,178 +1,107 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { c_productos } from "../../services/s_productos";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_clientes } from "../../services/s_clientes";
 import Cookies from "js-cookie";
 
-export const totalSections = 4;
-export const isSnapping = ref<boolean>(false);
-
-// Indice de la sección actual (0, 1, 2)
-export const currentIndex = ref<number>(0);
-
-// Posición en píxeles (vertical) durante el arrastre
-export const scrollPos = ref<number>(0);
-
-// Alto de cada sección, lo calculamos con window.innerHeight
-export const sectionHeight = ref<number>(window.innerHeight);
-
-// Flags y referencias para arrastre
-export const isDragging = ref<boolean>(false);
-export const startY = ref<number>(0);
-export const scrollPosWhenDragStart = ref<number>(0);
-export const showSection = ref<boolean>(false);
 export const productos = ref<any>([]);
-export class home {
-  // Escuchamos el evento resize para recalcular el alto de la sección
-  public static onResize() {
-    sectionHeight.value = window.innerHeight;
-    // Ajusta la posición de cada sección nuevamente
-    // Hacemos un snap a la misma sección actual, para que no se pierda
-    this.snapToSection(currentIndex.value);
+export const imgsPrincipal = ref<any>(null);
+
+const section1 = ref<HTMLElement | null>(null);
+const section2 = ref<HTMLElement | null>(null);
+const section3 = ref<HTMLElement | null>(null);
+const section4 = ref<HTMLElement | null>(null);
+
+export class class_home {
+  public static onInit() {
+    this.Productos();
+
+    section1.value = document.getElementById("section1") as HTMLElement;
+    section2.value = document.getElementById("section2") as HTMLElement;
+    section3.value = document.getElementById("section3") as HTMLElement;
+    section4.value = document.getElementById("section4") as HTMLElement;
+
+    imgsPrincipal.value = [
+      {
+        texto: "fresh icons",
+        class: "block imagen_1",
+      },
+      {
+        texto: "useful mockups",
+        class: "hidden imagen_2",
+      },
+      {
+        texto: "collillustration",
+        class: "hidden imagen_3",
+      },
+      {
+        texto: "lovely type",
+        class: "hidden imagen_4",
+      },
+    ];
+
+    window.addEventListener("scroll", this.onHandleScroll);
   }
 
-  /**
-   * Función que encaja (snapea) la posición a una sección específica (0, 1, 2)
-   */
-  public static snapToSection(index: number) {
-    if (index < 0) index = 0;
-    if (index >= totalSections) index = totalSections - 1;
-    currentIndex.value = index;
-    // Calculamos en pixeles la posición a donde debe "encajar"
-    scrollPos.value = currentIndex.value * sectionHeight.value;
-
-    // Activar el estado de snapping
-    isSnapping.value = true;
-
-    // Detener el scroll durante un breve momento
-    setTimeout(() => {
-      isSnapping.value = false; // Permitir el scroll normal después de un tiempo
-    }, 500);
+  public static onUnInit() {
+    window.removeEventListener("scroll", this.onHandleScroll);
   }
 
-  /**
-   * Calculamos la sección más cercana basándonos en la posición
-   */
-  public static getNearestSectionIndex() {
-    // redondeamos scrollPos / sectionHeight
-    return Math.round(scrollPos.value / sectionHeight.value);
-  }
+  public static onHandleScroll() {
+    if (
+      !section1.value ||
+      !section2.value ||
+      !section3.value ||
+      !section4.value
+    )
+      return;
 
-  /**
-   * Eventos de mouse
-   */
-  public static onMouseDown(e: MouseEvent) {
-    isDragging.value = true;
-    startY.value = e.clientY;
-    scrollPosWhenDragStart.value = scrollPos.value;
-  }
+    const section1Pass: boolean =
+      section1.value.getBoundingClientRect().bottom <= 0;
+    const section2Pass: boolean =
+      section2.value.getBoundingClientRect().bottom <= 0;
+    const section3Pass: boolean =
+      section3.value.getBoundingClientRect().bottom <= 0;
+    const section4Pass: boolean =
+      section4.value.getBoundingClientRect().bottom <= 0;
 
-  public static onMouseMove(e: MouseEvent) {
-    if (!isDragging.value || isSnapping.value) return;
-    const delta = startY.value - e.clientY;
-    scrollPos.value = scrollPosWhenDragStart.value + delta;
-    this.checkIfAtEnd();
-  }
+    const imagen_1: HTMLElement = document.querySelector(
+      ".imagen_1"
+    ) as HTMLElement;
+    const imagen_2: HTMLElement = document.querySelector(
+      ".imagen_2"
+    ) as HTMLElement;
+    const imagen_3: HTMLElement = document.querySelector(
+      ".imagen_3"
+    ) as HTMLElement;
+    const imagen_4: HTMLElement = document.querySelector(
+      ".imagen_4"
+    ) as HTMLElement;
 
-  public static onMouseUp() {
-    if (isDragging.value) {
-      isDragging.value = false;
-      // Snap a la sección más cercana
-      this.snapToSection(this.getNearestSectionIndex());
+    if (section1Pass) {
+      site.replaceClass(imagen_1, "block", "hidden");
+      site.replaceClass(imagen_2, "hidden", "block");
+      site.replaceClass(imagen_3, "block", "hidden");
+      site.replaceClass(imagen_4, "block", "hidden");
+    } else {
+      site.replaceClass(imagen_1, "hidden", "block");
+      site.replaceClass(imagen_2, "block", "hidden");
+      site.replaceClass(imagen_3, "block", "hidden");
+      site.replaceClass(imagen_4, "block", "hidden");
     }
-  }
 
-  // Si el usuario saca el cursor fuera del contenedor mientras arrastra
-  public static onMouseLeave() {
-    if (isDragging.value) {
-      isDragging.value = false;
-      this.snapToSection(this.getNearestSectionIndex());
+    if (section2Pass) {
+      site.replaceClass(imagen_1, "block", "hidden");
+      site.replaceClass(imagen_2, "block", "hidden");
+      site.replaceClass(imagen_3, "hidden", "block");
+      site.replaceClass(imagen_4, "block", "hidden");
     }
-  }
 
-  /**
-   * Evento wheel: al usar la rueda de mouse, pasamos directamente
-   * a la siguiente/previa sección (sin quedar a mitad).
-   */
-  public static onWheel(e: WheelEvent) {
-    if (isSnapping.value) return;
-    if (e.deltaY > 0) {
-      // Scroll down => siguiente sección
-      this.snapToSection(currentIndex.value + 1);
-    } else if (e.deltaY < 0) {
-      // Scroll up => sección anterior
-      this.snapToSection(currentIndex.value - 1);
-    }
-    this.checkIfAtEnd();
-  }
-
-  /**
-   * Eventos touch (móviles)
-   */
-  public static onTouchStart(e: TouchEvent) {
-    isDragging.value = true;
-    startY.value = e.touches[0].clientY;
-    scrollPosWhenDragStart.value = scrollPos.value;
-  }
-
-  public static onTouchMove(e: TouchEvent) {
-    if (!isDragging.value || isSnapping.value) return;
-    const delta = startY.value - e.touches[0].clientY;
-    scrollPos.value = scrollPosWhenDragStart.value + delta;
-    this.checkIfAtEnd();
-  }
-
-  public static onTouchEnd() {
-    if (isDragging.value) {
-      isDragging.value = false;
-      this.snapToSection(this.getNearestSectionIndex());
-    }
-  }
-
-  /**
-   * Estilos computados para las 3 secciones
-   * Cada sección tiene un 'top' fijo (0, sectionHeight, sectionHeight*2),
-   * y la propiedad transform se basa en scrollPos
-   */
-  public static transformStyle1 = computed(() => {
-    return {
-      top: "0px",
-      transform: `translateY(${-scrollPos.value}px)`,
-    };
-  });
-  public static transformStyle2 = computed(() => {
-    return {
-      top: `${sectionHeight.value}px`,
-      transform: `translateY(${-scrollPos.value}px)`,
-    };
-  });
-  public static transformStyle3 = computed(() => {
-    return {
-      top: `${sectionHeight.value * 2}px`,
-      transform: `translateY(${-scrollPos.value - 10}px)`,
-    };
-  });
-  public static transformStyle4 = computed(() => {
-    return {
-      top: `${sectionHeight.value * 3}px`,
-      transform: `translateY(${-scrollPos.value - 24}px)`,
-    };
-  });
-
-  public static checkIfAtEnd() {
-    // Altura total de todas las secciones
-    const totalHeight = totalSections * sectionHeight.value;
-
-    // Verificamos si el scrollPos ha alcanzado o superado la altura total
-    if (scrollPos.value >= totalHeight - sectionHeight.value) {
-      setTimeout(() => {
-        showSection.value = true;
-      }, 1000);
-
-      setTimeout(() => {
-        document.getElementById("footer")?.classList.remove("hidden");
-        document.getElementById("footer")?.classList.add("flex");
-      }, 1300);
+    if (section3Pass) {
+      site.replaceClass(imagen_1, "block", "hidden");
+      site.replaceClass(imagen_2, "block", "hidden");
+      site.replaceClass(imagen_3, "block", "hidden");
+      site.replaceClass(imagen_4, "hidden", "block");
     }
   }
 

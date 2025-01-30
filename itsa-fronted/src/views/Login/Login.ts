@@ -22,8 +22,8 @@ export class c_loginView {
   };
 
   public static validatePassword = (value: string) => {
-    if (value.length < 4) {
-      passwordError.value = "Password must be at least 4 characters long";
+    if (value.length < 8) {
+      passwordError.value = "Password must be at least 8 characters long";
     } else {
       passwordError.value = "";
     }
