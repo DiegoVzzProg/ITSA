@@ -37,4 +37,12 @@ export class c_auth {
   public static async fN_logout() {
     return await dgav.apiRequest("/auth/logout/user", dgav.httpMethod.DELETE);
   }
+
+  public static async fn_forgot_password_restore(data: Record<string, any>) {
+    return await dgav.apiRequest(
+      "/auth/forgot/password/restore",
+      dgav.httpMethod.POST,
+      data
+    );
+  }
 }

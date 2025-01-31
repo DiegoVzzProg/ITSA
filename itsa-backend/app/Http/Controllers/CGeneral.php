@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TErroresInternos;
 use App\Models\TPaises;
-use App\Models\TTicketsErrorWeb;
 use Exception;
+use Illuminate\Http\Client\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\URL;
 
 class CGeneral extends Controller
 {
@@ -22,40 +20,6 @@ class CGeneral extends Controller
         }
 
         return response()->download($path, 'basicsicons');
-    }
-    public static function generarUrlFirmada($folder, $filename)
-    {
-        try {
-            $encryptedFilename = Crypt::encrypt($filename);
-
-            $url = URL::temporarySignedRoute(
-                'archivo',
-                now()->addMinutes(5),
-                ["folder" => $folder, 'filename' => $encryptedFilename, "signed" => true]
-            );
-
-            return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray([
-                "url" => $url
-            ]));
-        } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
-        }
-    }
-
-    public static function entregarArchivoFirmado($folder, $encryptedFilename)
-    {
-        try {
-            $decryptedFilename = Crypt::decrypt($encryptedFilename);
-            $filePath = storage_path('app/public/' . $folder . '/' . $decryptedFilename);
-
-            if (!file_exists($filePath)) {
-                return CGeneral::CreateMessage('No se encontro el archivo', 200, 'error', null);
-            }
-
-            return response()->file($filePath);
-        } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
-        }
     }
 
     public static function JsonToArray($json): mixed
@@ -80,12 +44,16 @@ class CGeneral extends Controller
     public static function CreateTicketError($error, $id_usuario)
     {
         try {
-            $ticket = TTicketsErrorWeb::create([
-                "error" => $error,
-                "id_usuario" => $id_usuario
+            $ticket = TErroresInternos::create([
+                'id_ticket' => uniqid(),
+                'codigo_error' => 599,
+                'id_usuario' => $id_usuario,
+                'detalle_error' => $error->getMessage(),
+                'controlador' => $error->getFile(),
+                'linea' => $error->getLine()
             ]);
 
-            return CGeneral::CreateMessage('', 599, 'error', [
+            return CGeneral::CreateMessage('Internal server error', 599, 'error', [
                 "id_ticket" => $ticket->id_ticket
             ]);
         } catch (Exception $ex) {
@@ -93,7 +61,7 @@ class CGeneral extends Controller
         }
     }
 
-    static function fn_l_paises()
+    static function fn_l_paises(Request $request)
     {
         try {
             $paises = TPaises::all();
@@ -102,16 +70,8 @@ class CGeneral extends Controller
                 "data_pais" => $paises
             ]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage("Contact support", 599, 'error', null);
-        }
-    }
-
-    public static function manejarArchivo(Request $request, $folder, $filename)
-    {
-        if ($request->has('signed')) {
-            return self::entregarArchivoFirmado($folder, $filename);
-        } else {
-            return self::generarUrlFirmada($folder, $filename);
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 

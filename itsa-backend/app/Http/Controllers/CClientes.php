@@ -17,8 +17,9 @@ class CClientes extends Controller
                 $cliente = TClientes::all();
             }
             return CGeneral::CreateMessage('', 200, 'success', $cliente);
-        } catch (\Exception $e) {
-            return CGeneral::CreateMessage('Internal server error', 599, 'error', null);
+        } catch (\Exception $ex) {
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 
@@ -37,8 +38,9 @@ class CClientes extends Controller
             ]);
 
             return CGeneral::CreateMessage('', 200, 'success', $cliente);
-        } catch (\Exception $e) {
-            return CGeneral::CreateMessage($e->getMessage(), 599, 'error', null);
+        } catch (\Exception $ex) {
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 }

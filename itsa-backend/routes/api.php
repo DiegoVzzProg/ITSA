@@ -12,12 +12,12 @@ Route::prefix('v1')->group(function () {
     Route::prefix('public')->group(function () {
         Route::post('/productos', [CProductos::class, 'fn_l_productos']);
         Route::get('/downloadfile/{arch}', [CGeneral::class, 'DescargarArchivo']);
-        Route::get('/archivo/{folder}/{filename}', [CGeneral::class, 'manejarArchivo'])->name('archivo');
     });
 
     Route::prefix('auth')->group(function () {
         Route::post('/login', [CUsuarios::class, 'fn_login']);
         Route::post('/register', [CUsuarios::class, 'fn_register']);
+        Route::post('/forgot/password/restore', [CUsuarios::class, 'fn_forgot_password_restore']);
     });
 
     Route::middleware('auth:sanctum')->group(function () {

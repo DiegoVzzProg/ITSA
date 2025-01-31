@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\TUsuarios;
+use DivisionByZeroError;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 
 class CUsuarios extends Controller
 {
@@ -13,6 +15,7 @@ class CUsuarios extends Controller
     {
         return $usuario->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;
     }
+
     public static function fn_login(Request $request)
     {
         try {
@@ -40,7 +43,7 @@ class CUsuarios extends Controller
                 "token" => $token
             ]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            return CGeneral::CreateTicketError($ex, 0);
         }
     }
 
@@ -69,7 +72,7 @@ class CUsuarios extends Controller
                 "token" => $token
             ]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 200, 'error', null);
+            return CGeneral::CreateTicketError($ex, 0);
         }
     }
 
@@ -81,7 +84,31 @@ class CUsuarios extends Controller
 
             return CGeneral::CreateMessage('', 200, 'success', ["message" => "Logout successful"]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
+        }
+    }
+
+    public static function fn_forgot_password_restore(Request $request)
+    {
+        try {
+            $credentials = $request->only('email');
+
+            $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
+
+            if (!$usuario) {
+                return CGeneral::CreateMessage('User not found or inactive', 599, 'info', null);
+            }
+
+            $token = Password::CreateToken($usuario);
+
+            $usuario->notify(new \App\Notifications\NotForgotPassword($token));
+            return response()->json(data: [
+                'message' => 'Message sent',
+                'data' => []
+            ], status: 200);
+        } catch (Exception $ex) {
+            return CGeneral::CreateTicketError($ex, 0);
         }
     }
 }

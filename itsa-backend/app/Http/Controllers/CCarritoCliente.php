@@ -19,7 +19,8 @@ class CCarritoCliente extends Controller
             }
             return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray($carrito_cliente));
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 
@@ -39,7 +40,8 @@ class CCarritoCliente extends Controller
 
             return CGeneral::CreateMessage('', 200, 'success', null);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 
@@ -56,7 +58,7 @@ class CCarritoCliente extends Controller
                 "impuesto" => $montoImpuesto
             ]);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            return CGeneral::CreateTicketError($ex, $id_usuario);
         }
     }
 }

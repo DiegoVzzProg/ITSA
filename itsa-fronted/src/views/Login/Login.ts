@@ -5,39 +5,93 @@ import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
 import Cookies from "js-cookie";
 
-export const email = ref("");
-export const password = ref("");
-
-export const emailError = ref("");
-export const passwordError = ref("");
+export const forgotPassword = ref<boolean>(false);
+export const FormLogin = ref<any>({
+  email: {
+    placeholder: "email",
+    value: "",
+    error: "",
+  },
+  password: {
+    placeholder: "password",
+    value: "",
+    error: "",
+  },
+});
 
 export class c_loginView {
-  public static validateEmail = (value: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(value)) {
-      emailError.value = "The email is invalid";
+  public static async RecuperarPassword() {
+    await c_auth.fn_forgot_password_restore({
+      email: FormLogin.value.email.value,
+    });
+
+    const message = dgav.dataBase.message;
+    const status = dgav.dataBase.status;
+    console.log(status);
+
+    if (status == 200) {
+      notify.success(message);
     } else {
-      emailError.value = "";
+      notify.error(message);
     }
+  }
+
+  public static validaciones(value: string, seccion: string) {
+    switch (seccion) {
+      case "email":
+        this.validateEmail(value);
+        break;
+      case "password":
+        this.validatePassword(value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  public static validateEmail = (value: string) => {
+    const formEmail = FormLogin.value.email;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    forgotPassword.value = false;
+
+    if (!emailRegex.test(value)) {
+      formEmail.error = "The email is invalid";
+      return;
+    }
+
+    if (value.length > 254) {
+      formEmail.error = "The email should not exceed 254 characters";
+      return;
+    }
+
+    forgotPassword.value = true;
+    formEmail.error = "";
   };
 
   public static validatePassword = (value: string) => {
+    const formPassword = FormLogin.value.password;
     if (value.length < 8) {
-      passwordError.value = "Password must be at least 8 characters long";
+      formPassword.error = "Password must be at least 8 characters long";
+    } else if (value.length > 20) {
+      formPassword.error = "Password should not exceed 20 characters";
     } else {
-      passwordError.value = "";
+      formPassword.error = "";
     }
   };
 
   public static Login = async () => {
-    this.validateEmail(email.value);
-    this.validatePassword(password.value);
+    const formEmail = FormLogin.value.email;
+    const formPassword = FormLogin.value.password;
 
-    if (emailError.value || passwordError.value) return;
+    this.validateEmail(formEmail.value);
+    this.validatePassword(formPassword.value);
+
+    if (formEmail.error || formPassword.error) return;
 
     let response: any = await c_auth.fn_login({
-      email: email.value,
-      password: password.value,
+      email: formEmail.value,
+      password: formPassword.value,
     });
 
     const message: string = dgav.dataBase.message;
@@ -47,8 +101,8 @@ export class c_loginView {
     }
 
     if (response) {
-      email.value = "";
-      password.value = "";
+      FormLogin.value.email.value = "";
+      FormLogin.value.password.value = "";
 
       site.setCookies({
         token: response.token,
@@ -77,11 +131,11 @@ export class c_loginView {
           }
 
           site.setCookies({
-            numberCart: response.length.toString(),
+            numberCart: response.length.toString() ?? "0",
           });
-        }
 
-        site.RedirectPage("home");
+          site.RedirectPage("home");
+        }
       }
     }
   };

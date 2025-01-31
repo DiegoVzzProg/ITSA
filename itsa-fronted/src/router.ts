@@ -6,6 +6,7 @@ import BasicsIcons from "./views/BasicsIcons/BasicsIcons.vue";
 import UniversalIcons from "./views/UniversalIcons/UniversalIcons.vue";
 import CheckOut from "./views/CheckOut/CheckOut.vue";
 import Register from "./views/Register/Register.vue";
+import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
@@ -39,6 +40,12 @@ const routes: Array<RouteRecordRaw> = [
     path: "/register",
     name: "register",
     component: Register,
+    meta: { layout: "Auth" },
+  },
+  {
+    path: "/forgot/password",
+    name: "forgotpassword",
+    component: ForgotPassword,
     meta: { layout: "Auth" },
   },
 ];

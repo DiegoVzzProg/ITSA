@@ -21,7 +21,8 @@ class CProductos extends Controller
             }
             return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray($producto));
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage($ex->getMessage(), 599, 'error', null);
+            $usuario = $request->user();
+            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
         }
     }
 }

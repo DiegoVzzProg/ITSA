@@ -1,17 +1,7 @@
 <script setup lang="ts">
 import { watch } from 'vue';
 import { site } from '../../utils/site';
-import { c_loginView, email, emailError, password, passwordError } from './Login';
-
-
-watch(email, (newValue) => {
-    c_loginView.validateEmail(newValue);
-});
-
-watch(password, (newValue) => {
-    c_loginView.validatePassword(newValue);
-});
-
+import { c_loginView, forgotPassword, FormLogin } from './Login';
 
 </script>
 
@@ -34,24 +24,20 @@ watch(password, (newValue) => {
             <p class="px-[clamp(18px,3vw,28px)]">
                 log in to your account
             </p>
-            <div class="flex flex-col gap-1">
-                <input v-model="email" type="text" class="border border-black py-5 px-3 rounded-full"
-                    placeholder="email">
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" v-if="emailError">
-                    {{ emailError }}
-                </span>
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1" v-for="(item, index) in FormLogin" :key="index">
+                    <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
+                        :placeholder="item.placeholder"
+                        v-on:input="c_loginView.validaciones(item.value, item.placeholder)">
+                    <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                        v-if="item.error">
+                        {{ item.error }}
+                    </span>
+                </div>
             </div>
-            <div class="flex flex-col gap-1">
-                <input v-model="password" type="password" class="border border-black py-5 px-3 rounded-full"
-                    placeholder="password">
-
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                    v-if="passwordError">
-                    {{ passwordError }}
-                </span>
-            </div>
-            <div class="flex flex-row justify-between w-full px-[clamp(18px,3vw,28px)]">
-
+            <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="forgotPassword">
+                <button class="underline underline-offset-2" v-on:click="c_loginView.RecuperarPassword()">forgot
+                    password?</button>
             </div>
             <button @click="c_loginView.Login" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
                 login
