@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import Cookies from "js-cookie";
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
-import { c_general } from '../services/s_general';
-import { c_productos } from '../services/s_productos';
 import { c_clientes } from '../services/s_clientes';
 
 const props = defineProps<{
@@ -15,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const AddCartCostumer = async () => {
-    const userData = Cookies.get('user_data');
+    const userData = site.getCookie('user_data');
     if (userData) {
         const parsedData = JSON.parse(userData);
 
@@ -44,7 +41,7 @@ const AddCartCostumer = async () => {
 
             site.setCookies({
                 numberCart: response.length.toString(),
-            });
+            }, false);
         }
 
         site.RedirectPage("home");

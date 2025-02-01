@@ -1,41 +1,46 @@
 import { dgav } from "../utils/site";
 
+const shoppingCartUrl = "/shoppingCart";
+const customersUrl = "/customers";
+
 export class c_clientes {
-  static async fn_l_carrito_cliente(data: Record<string, any>) {
+  public static async fn_l_carrito_cliente(data: Record<string, any>) {
     return await dgav.apiRequest(
-      "/carrito/cliente",
+      `${shoppingCartUrl}/client`,
       dgav.httpMethod.POST,
       data
     );
   }
 
-  static async fn_a_carrito_cliente(data: Record<string, any>) {
+  public static async fn_a_carrito_cliente(data: Record<string, any>) {
     return await dgav.apiRequest(
-      "/carrito/agregar/",
+      `${shoppingCartUrl}/addProduct`,
       dgav.httpMethod.POST,
       data
     );
   }
 
-  static async fn_l_precio_carrito_cliente(data: Record<string, any>) {
+  public static async fn_l_precio_carrito_cliente(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `/carrito/precio/${data.id_usuario}`,
-      dgav.httpMethod.GET
+      `${shoppingCartUrl}/totalPrice`,
+      dgav.httpMethod.POST,
+      data
     );
   }
 
   public static async fn_a_clientes(data: Record<string, any>) {
     return await dgav.apiRequest(
-      "/clientes/alta/cliente",
+      `${customersUrl}/registerCustomer`,
       dgav.httpMethod.POST,
       data
     );
   }
 
-  public static async fn_l_clientes(id_cliente: number) {
+  public static async fn_l_clientes(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `/clientes/obtener/cliente/${id_cliente}`,
-      dgav.httpMethod.GET
+      `${customersUrl}/getCustomer`,
+      dgav.httpMethod.POST,
+      data
     );
   }
 }

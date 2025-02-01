@@ -47,9 +47,6 @@ onBeforeMount(() => {
     <div v-else-if="props.type == 'video' && archivo != ''">
         <video :src="archivo" loop autoplay muted alt="_" loading="lazy" class="w-full h-full"></video>
     </div>
-    <div class="flex w-full justify-center" v-else>
-        <Loading />
-    </div>
 </template>
 
 <style scoped></style>

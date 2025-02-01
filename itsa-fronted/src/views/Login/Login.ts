@@ -89,7 +89,7 @@ export class c_loginView {
 
     if (formEmail.error || formPassword.error) return;
 
-    let response: any = await c_auth.fn_login({
+    const responseLogin: any = await c_auth.fn_login({
       email: formEmail.value,
       password: formPassword.value,
     });
@@ -100,23 +100,32 @@ export class c_loginView {
       return;
     }
 
-    if (response) {
+    if (responseLogin) {
       FormLogin.value.email.value = "";
       FormLogin.value.password.value = "";
 
-      site.setCookies({
-        token: response.token,
-        user_data: JSON.stringify(response.user_data),
-        logged_in_successfully: "false",
-      });
+      site.setCookies(
+        {
+          token: responseLogin.token,
+        },
+        false
+      );
 
-      response = await c_general.SecretKey();
+      const response = await c_general.SecretKey();
       if (response) {
+        site.setCookies(
+          {
+            secretKey: response.secretKey,
+          },
+          false
+        );
+
         site.setCookies({
-          secretKey: response.secretKey || "",
+          user_data: JSON.stringify(responseLogin.user_data),
+          logged_in_successfully: "false",
         });
 
-        const userData = Cookies.get("user_data");
+        const userData = site.getCookie("user_data");
         if (userData) {
           const parsedData = JSON.parse(userData);
           const response: any = await c_clientes.fn_l_carrito_cliente({
@@ -130,9 +139,12 @@ export class c_loginView {
             }
           }
 
-          site.setCookies({
-            numberCart: response.length.toString() ?? "0",
-          });
+          site.setCookies(
+            {
+              numberCart: response.length.toString() ?? "0",
+            },
+            false
+          );
 
           site.RedirectPage("home");
         }

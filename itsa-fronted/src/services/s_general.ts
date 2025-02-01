@@ -9,7 +9,7 @@ export class c_general {
   }
 
   static async SecretKey() {
-    return await dgav.apiRequest("/secret/key", dgav.httpMethod.GET);
+    return await dgav.apiRequest("/secretKey", dgav.httpMethod.GET);
   }
 
   static async DownloadFile(arch: string) {
@@ -17,12 +17,12 @@ export class c_general {
     //     responseType: 'blob',
     // });
     return await dgav.apiRequest(
-      `/public/downloadfile/${arch}`,
+      `/public/downloadFile/${arch}`,
       dgav.httpMethod.GET
     );
   }
 
   static async fn_l_paises() {
-    return await dgav.apiRequest(`/countries`, dgav.httpMethod.GET);
+    return await dgav.apiRequest(`/countries`, dgav.httpMethod.POST, {});
   }
 }

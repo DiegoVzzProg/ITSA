@@ -4,19 +4,13 @@ import router from "../router";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import { ref } from "vue";
-import { c_clientes } from "../services/s_clientes";
+import CryptoJS from "crypto-js";
 
 //#region  dgavClass
-interface ApiResponse<T = any> {
-  data: T;
-  message?: string;
-  status: number;
-}
 
-interface DatabaseState<T = any> {
+interface DatabaseState {
   status: number;
   message: string;
-  data: T;
   isLoading: boolean;
   reset(): void;
 }
@@ -33,16 +27,14 @@ type httpMethod = (typeof httpMethods)[keyof typeof httpMethods];
 const REQUEST_TIMEOUT = 30000;
 
 export class dgav {
-  static httpMethod = httpMethods;
-  static dataBase: DatabaseState = {
+  public static httpMethod = httpMethods;
+  public static dataBase: DatabaseState = {
     status: 200,
     message: "",
-    data: {},
     isLoading: false,
     reset() {
       this.status = 200;
       this.message = "";
-      this.data = {};
       this.isLoading = false;
     },
   };
@@ -52,13 +44,15 @@ export class dgav {
     method: httpMethod,
     body?: Record<string, any>
   ): Promise<any> {
-    this.dataBase.reset();
+    this.dataBase.isLoading = true;
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT);
 
     try {
-      this.dataBase.isLoading = true;
-      const response = await this.handleRequest<T>(
+      const response: any = await this.handleRequest<T>(
         method,
         endPoint,
         body,
@@ -72,12 +66,13 @@ export class dgav {
       const { data, status } = response;
       this.dataBase.status = status;
 
+      this.dataBase.isLoading = false;
       if (response.message) {
         this.handleError(response.message);
         return;
       }
 
-      return data;
+      return JSON.parse(atob(data));
     } catch (error: any) {
       if (error.name === "AbortError") {
         this.handleError("Request timeout - please try again");
@@ -100,24 +95,24 @@ export class dgav {
     endPoint: string,
     body?: Record<string, any>,
     signal?: AbortSignal
-  ): Promise<ApiResponse<T> | null> {
+  ): Promise<T | null> {
     const config = { signal };
 
     switch (method) {
       case this.httpMethod.GET:
-        return (await api.get<ApiResponse<T>>(endPoint, config)).data;
+        return (await api.get(endPoint, config)).data;
       case this.httpMethod.POST:
         if (!body) {
           throw new Error("Body is required for POST requests");
         }
-        return (await api.post<ApiResponse<T>>(endPoint, body, config)).data;
+        return (await api.post(endPoint, body, config)).data;
       case this.httpMethod.PUT:
         if (!body) {
           throw new Error("Body is required for PUT requests");
         }
-        return (await api.put<ApiResponse<T>>(endPoint, body, config)).data;
+        return (await api.put(endPoint, body, config)).data;
       case this.httpMethod.DELETE:
-        return (await api.delete<ApiResponse<T>>(endPoint, config)).data;
+        return (await api.delete(endPoint, config)).data;
       default:
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
@@ -133,20 +128,71 @@ export class dgav {
     if (!Array.isArray(data)) return 0;
     return data.length;
   }
-
-  static validateDataTable(): boolean {
-    return (
-      Array.isArray(this.dataBase.data) &&
-      this.rowsCounts(this.dataBase.data) > 0 &&
-      this.dataBase.status === 200
-    );
-  }
 }
 //#endregion
 
 export const numberCart = ref<any>(Cookies.get("numberCart") || "0");
 
 export class site {
+  /**
+   * Encripta cualquier dato (objeto, arreglo, número, boolean, string, etc.)
+   * y retorna una cadena cifrada.
+   *
+   * @param data - El dato a encriptar.
+   * @returns {string} La cadena encriptada o una cadena vacía si no se encuentra la clave.
+   */
+  public static encryptData(data: any): string {
+    const encryptionKey = Cookies.get("secretKey") || "";
+    if (!encryptionKey) return "";
+
+    const dataToEncrypt =
+      typeof data === "string" ? data : JSON.stringify(data);
+
+    const encryptedData = CryptoJS.AES.encrypt(
+      dataToEncrypt,
+      encryptionKey
+    ).toString();
+    return encryptedData;
+  }
+
+  /**
+   * Desencripta una cadena previamente encriptada.
+   * Siempre retorna una cadena con el contenido desencriptado.
+   *
+   * @param encryptedData - La cadena encriptada.
+   * @returns {string} La cadena desencriptada o una cadena vacía si no se encuentra la clave.
+   */
+  public static decryptData(encryptedData: string): string {
+    const encryptionKey = Cookies.get("secretKey") || "";
+    if (!encryptionKey) return "";
+
+    const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
+    const decryptedData: string = bytes.toString(CryptoJS.enc.Utf8);
+    return decryptedData;
+  }
+
+  public static setCookies(
+    cookies: Record<string, string>,
+    encrypted: boolean = true
+  ): void {
+    Object.entries(cookies).forEach(([key, value]) => {
+      Cookies.set(key, encrypted ? this.encryptData(value) : value, {
+        path: "/",
+        sameSite: "Strict",
+        expires: 7,
+      });
+    });
+  }
+
+  public static getCookie(key: string, encrypted: boolean = true) {
+    const encryptionKey = Cookies.get("secretKey") || "";
+
+    if (encryptionKey && encrypted)
+      return this.decryptData(Cookies.get(key) || "");
+
+    return Cookies.get(key) || "";
+  }
+
   public static allDeleteCookies() {
     const allCookies: any = Cookies.get();
     Object.keys(allCookies).forEach((cookieName) => {
@@ -155,11 +201,11 @@ export class site {
   }
 
   static async Init(): Promise<void> {
-    const userData = Cookies.get("user_data");
+    const userData = this.getCookie("user_data");
     if (!userData) {
       numberCart.value = "0";
     } else {
-      numberCart.value = Cookies.get("numberCart");
+      numberCart.value = this.getCookie("numberCart", false);
     }
   }
   static RedirectPage(
@@ -187,16 +233,6 @@ export class site {
 
     window.scrollTo({ top: 0, behavior: "smooth" });
     this.Init();
-  }
-
-  public static setCookies(cookies: Record<string, string>): void {
-    Object.entries(cookies).forEach(([key, value]) => {
-      Cookies.set(key, value, {
-        path: "/",
-        sameSite: "Strict",
-        expires: 7,
-      });
-    });
   }
 
   public static replaceClass(

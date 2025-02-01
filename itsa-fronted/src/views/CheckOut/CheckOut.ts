@@ -1,6 +1,6 @@
 import { reactive, ref } from "vue";
 import { c_clientes } from "../../services/s_clientes";
-import { dgav, IsNullOrEmpty, notify } from "../../utils/site";
+import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 
 export const productData = ref<any>({});
 export const productPrecio = ref<string>("");
@@ -71,8 +71,13 @@ export class class_checkout {
   }
 
   public static async infoForms1() {
-    const data: any = userData.value;
-    const response: any = await c_clientes.fn_l_clientes(data.id_usuario);
+    const dataUser: any = JSON.parse(site.getCookie("user_data"));
+
+    const data: any = {
+      id_usuario: dataUser.id_usuario,
+    };
+
+    const response: any = await c_clientes.fn_l_clientes(data);
     if (response) {
       console.log(response);
     }
@@ -85,7 +90,7 @@ export class class_checkout {
         nombre: class_checkout.formCheckout1.name.value,
         telefono: class_checkout.formCheckout1.phone.value,
         direccion: class_checkout.formCheckout1.address.value,
-        pais: "mexico",
+        id_pais: 1,
         estado: class_checkout.formCheckout2.state.value,
         codigo_postal: class_checkout.formCheckout2.postal_code.value,
       });

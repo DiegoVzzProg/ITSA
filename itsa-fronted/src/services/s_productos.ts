@@ -1,7 +1,13 @@
-import { dgav } from '../utils/site';
+import { dgav } from "../utils/site";
+
+const productosUrl = "/public";
 
 export class c_productos {
-    static async fn_l_productos(data: Record<string, any>): Promise<any> {
-        return await dgav.apiRequest('/public/productos', dgav.httpMethod.POST, data);
-    }
+  static async fn_l_productos(data: Record<string, any>): Promise<any> {
+    return await dgav.apiRequest(
+      `${productosUrl}/listProducts`,
+      dgav.httpMethod.POST,
+      data
+    );
+  }
 }

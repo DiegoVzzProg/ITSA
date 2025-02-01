@@ -20,7 +20,9 @@ defineExpose({
 });
 const countrysAll = async () => {
     const respsponse: any = await c_general.fn_l_paises();
-    countries.value = respsponse.data_pais;
+    if (respsponse) {
+        countries.value = respsponse.data_pais;
+    }
 }
 onMounted(() => {
     countrysAll();
@@ -31,8 +33,8 @@ onMounted(() => {
 <template>
     <div class="flex flex-col w-full relative">
         <button @click="showCountries = !showCountries"
-            class="flex flex-col w-full border border-black py-5 px-3 rounded-full">
-            <span class="text-gray-400" v-text="selectedCountry">
+            class="flex flex-col w-full border border-black py-5 px-3 rounded-full select-button">
+            <span :class="`${selectedCountry != 'country' ? 'text-black' : 'text-gray-400'}`" v-text="selectedCountry">
             </span>
         </button>
         <div v-if="showCountries"

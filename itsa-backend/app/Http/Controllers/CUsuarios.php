@@ -18,23 +18,22 @@ class CUsuarios extends Controller
 
     public static function fn_login(Request $request)
     {
-        try {
-
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $credentials = $request->only('email', 'password');
 
             $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
 
             if (!$usuario) {
-                return CGeneral::CreateMessage('User not found or inactive', 200, 'info', null);
+                return CGeneral::CreateMessage('User not found or inactive', 599,  null);
             }
 
             if (!Hash::check($credentials['password'], $usuario->password)) {
-                return CGeneral::CreateMessage('Incorrect password', 200, 'info', null);
+                return CGeneral::CreateMessage('Incorrect password', 599, null);
             }
 
             $token = self::token(usuario: $usuario);
 
-            return CGeneral::CreateMessage('', 200, 'success', [
+            return CGeneral::CreateMessage('', 200,  [
                 "user_data" => [
                     'id_usuario' => $usuario->id_usuario,
                     'email' => $usuario->email,
@@ -42,15 +41,12 @@ class CUsuarios extends Controller
                 ],
                 "token" => $token
             ]);
-        } catch (Exception $ex) {
-            return CGeneral::CreateTicketError($ex, 0);
-        }
+        });
     }
 
     public static function fn_register(Request $request)
     {
-        try {
-
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $credentials = $request->only('nombre', 'email', 'password', 'leyo_terms');
 
             $usuario = TUsuarios::create([
@@ -63,7 +59,7 @@ class CUsuarios extends Controller
 
             $token = self::token(usuario: $usuario);
 
-            return CGeneral::CreateMessage('', 200, 'success', [
+            return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
                     'id_usuario' => $usuario->id_usuario,
                     'email' => $usuario->email,
@@ -71,44 +67,34 @@ class CUsuarios extends Controller
                 ],
                 "token" => $token
             ]);
-        } catch (Exception $ex) {
-            return CGeneral::CreateTicketError($ex, 0);
-        }
+        }, $request);
     }
 
     public static function fn_logout(Request $request)
     {
-        try {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $user = $request->user();
             $user->tokens()->delete();
 
-            return CGeneral::CreateMessage('', 200, 'success', ["message" => "Logout successful"]);
-        } catch (Exception $ex) {
-            $usuario = $request->user();
-            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
-        }
+            return CGeneral::CreateMessage('', 200,  []);
+        }, $request);
     }
 
     public static function fn_forgot_password_restore(Request $request)
     {
-        try {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $credentials = $request->only('email');
 
             $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
 
             if (!$usuario) {
-                return CGeneral::CreateMessage('User not found or inactive', 599, 'info', null);
+                return CGeneral::CreateMessage('User not found or inactive', 599, null);
             }
 
             $token = Password::CreateToken($usuario);
 
             $usuario->notify(new \App\Notifications\NotForgotPassword($token));
-            return response()->json(data: [
-                'message' => 'Message sent',
-                'data' => []
-            ], status: 200);
-        } catch (Exception $ex) {
-            return CGeneral::CreateTicketError($ex, 0);
-        }
+            return CGeneral::CreateMessage('Message sent', 200, null);
+        }, $request);
     }
 }

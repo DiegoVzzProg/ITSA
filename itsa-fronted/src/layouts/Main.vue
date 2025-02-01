@@ -2,14 +2,15 @@
 import { onMounted } from 'vue';
 import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
-import { dgav, isNotified, site } from '../utils/site';
+import { isNotified, site } from '../utils/site';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+import Loading from '../components/Loading.vue';
 
 
 onMounted(() => {
 
-    const userData = Cookies.get('user_data');
+    const userData = site.getCookie('user_data');
     if (userData) {
         if (!isNotified) {
             const notyf = new Notyf({
@@ -35,6 +36,7 @@ onMounted(() => {
     <Header />
     <main class="flex flex-col w-full min-h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" id="main_contenedor">
         <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0">
+            <Loading />
             <slot></slot>
         </div>
     </main>

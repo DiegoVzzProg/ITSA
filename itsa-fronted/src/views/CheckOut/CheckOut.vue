@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import arrow_right from '../../assets/svg/arrow-right.svg'
 import SelectCountry from "../../components/SelectCountry.vue";
 import { class_checkout, impuesto, productData, productPrecio, userData } from "./CheckOut";
-import Cookies from "js-cookie";
+import { site } from '../../utils/site';
 
 
 onMounted(() => {
-    userData.value = JSON.parse(Cookies.get("user_data") || "{}");
+    userData.value = JSON.parse(site.getCookie("user_data") || "{}");
 
     class_checkout.productos();
     class_checkout.infoForms1();

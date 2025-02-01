@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TErroresInternos;
 use App\Models\TPaises;
 use Exception;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 
@@ -16,7 +16,7 @@ class CGeneral extends Controller
         $path = storage_path('app/public/' . $arch);
 
         if (!file_exists($path)) {
-            return CGeneral::CreateMessage("File not found", 599, 'error', null);
+            return CGeneral::CreateMessage("File not found", 599, null);
         }
 
         return response()->download($path, 'basicsicons');
@@ -27,18 +27,12 @@ class CGeneral extends Controller
         return json_decode(json: json_encode(value: $json), associative: true);
     }
 
-    public static function CreateMessage($message, $status, $type, $data): JsonResponse
+    public static function CreateMessage($message, $status, $data, $encrypt = true): JsonResponse
     {
         return response()->json(data: [
-            'type' => $type,
             'message' => $message,
-            'data' => $data
+            'data' => $encrypt ? base64_encode(json_encode($data)) : $data
         ], status: $status);
-    }
-
-    public static function EncryptValue($value)
-    {
-        return Hash::make($value);
     }
 
     public static function CreateTicketError($error, $id_usuario)
@@ -53,30 +47,43 @@ class CGeneral extends Controller
                 'linea' => $error->getLine()
             ]);
 
-            return CGeneral::CreateMessage('Internal server error', 599, 'error', [
-                "id_ticket" => $ticket->id_ticket
-            ]);
+            return CGeneral::CreateMessage('Internal server error ticket: ' . $ticket->id_ticket, 599, null, false);
         } catch (Exception $ex) {
-            return CGeneral::CreateMessage("Contact support", 599, 'error', null);
+            return CGeneral::CreateMessage("Contact support", 599, null, false);
         }
     }
 
     static function fn_l_paises(Request $request)
     {
-        try {
+        return CGeneral::invokeFunctionAPI(function () {
             $paises = TPaises::all();
 
-            return CGeneral::CreateMessage('', 200, 'error', [
+            return CGeneral::CreateMessage('', 200, [
                 "data_pais" => $paises
             ]);
-        } catch (Exception $ex) {
-            $usuario = $request->user();
-            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
-        }
+        }, $request);
     }
 
     public static function generarSecretKey()
     {
-        return self::CreateMessage("", 200, "success", ['secretKey' => bin2hex(random_bytes(10))]);
+        return self::CreateMessage("", 200, ['secretKey' => bin2hex(random_bytes(10))]);
+    }
+
+    public static function invokeFunctionAPI(callable $function, Request $request = null)
+    {
+        try {
+            return $function();
+        } catch (Exception $ex) {
+
+            if ($request) {
+                try {
+                    $user = $request->user();
+                    return self::CreateTicketError($ex, $user->id_usuario);
+                } catch (Exception $ex) {
+                    return self::CreateMessage("Contact support", 599,  null);
+                }
+            }
+            return self::CreateMessage("Contact support", 599, null);
+        }
     }
 }

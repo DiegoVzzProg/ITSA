@@ -10,7 +10,7 @@ class CProductos extends Controller
 {
     public static function fn_l_productos(Request $request)
     {
-        try {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $producto = [];
             $id_producto = $request->input('id_producto');
 
@@ -19,10 +19,7 @@ class CProductos extends Controller
             } else {
                 $producto = TProducto::all();
             }
-            return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray($producto));
-        } catch (Exception $ex) {
-            $usuario = $request->user();
-            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
-        }
+            return CGeneral::CreateMessage('', 200, $producto);
+        }, $request);
     }
 }

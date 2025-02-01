@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-
+import { dgav } from '../utils/site';
 
 onMounted(() => {
 
@@ -8,9 +8,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <svg viewBox="25 25 50 50" class="svg-loading">
-        <circle r="20" cy="50" cx="50"></circle>
-    </svg>
+    <div class="flex w-full justify-center fixed top-0 left-0 items-center bg-white z-[9999] h-full animate-fade-in "
+        v-if="dgav.dataBase.isLoading">
+        <svg viewBox="25 25 50 50" class="svg-loading">
+            <circle r="20" cy="50" cx="50"></circle>
+        </svg>
+    </div>
 </template>
 
 <style scoped>

@@ -11,23 +11,19 @@ class CCarritoCliente extends Controller
 {
     static function fn_l_carrito_cliente(Request $request)
     {
-        try {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             if ($request->id_usuario > 0) {
                 $carrito_cliente = TCarritoCliente::where('id_usuario', $request->id_usuario)->where('borrado', false)->get();
             } else {
                 $carrito_cliente = [];
             }
-            return CGeneral::CreateMessage('', 200, 'success', CGeneral::JsonToArray($carrito_cliente));
-        } catch (Exception $ex) {
-            $usuario = $request->user();
-            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
-        }
+            return CGeneral::CreateMessage('', 200, $carrito_cliente);
+        }, $request);
     }
 
     static function fn_a_carrito_cliente(Request $request)
     {
-        try {
-
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
             $producto = TProducto::where('id_producto', $request->id_producto)->first();
 
             TCarritoCliente::create([
@@ -38,27 +34,22 @@ class CCarritoCliente extends Controller
                 'precio' => $producto->precio
             ]);
 
-            return CGeneral::CreateMessage('', 200, 'success', null);
-        } catch (Exception $ex) {
-            $usuario = $request->user();
-            return CGeneral::CreateTicketError($ex, $usuario->id_usuario);
-        }
+            return CGeneral::CreateMessage('', 200, null);
+        }, $request);
     }
 
-    static function fn_l_precio_carrito_cliente($id_usuario)
+    static function fn_l_precio_carrito_cliente(Request $request)
     {
-        try {
-            $precio = TCarritoCliente::where('id_usuario', $id_usuario)->where('borrado', false)->sum('precio');
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $precio = TCarritoCliente::where('id_usuario', $request->id_usuario)->where('borrado', false)->sum('precio');
 
             $montoImpuesto = ($precio * 16) / 100;
 
             $precio = $precio + $montoImpuesto;
-            return CGeneral::CreateMessage('', 200, 'success', [
+            return CGeneral::CreateMessage('', 200, [
                 "precio" => $precio,
                 "impuesto" => $montoImpuesto
             ]);
-        } catch (Exception $ex) {
-            return CGeneral::CreateTicketError($ex, $id_usuario);
-        }
+        }, $request);
     }
 }

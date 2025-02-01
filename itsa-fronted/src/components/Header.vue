@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import logo from '../assets/svg/logo.svg'
-import Cookies from "js-cookie";
+
 import { numberCart, site } from '../utils/site';
 import { c_auth } from '../services/s_auth';
 import { useRoute } from 'vue-router';
@@ -24,7 +24,7 @@ const LogOut = async () => {
 }
 
 function GoCheckOut() {
-    const userData = Cookies.get('user_data');
+    const userData = site.getCookie('user_data');
     if (userData && Number(numberCart.value) > 0) {
         site.RedirectPage('checkout');
     }
@@ -32,7 +32,7 @@ function GoCheckOut() {
 
 
 onMounted(() => {
-    const userData = Cookies.get('user_data');
+    const userData = site.getCookie('user_data');
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;
