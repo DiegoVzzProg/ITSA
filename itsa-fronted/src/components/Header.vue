@@ -24,7 +24,7 @@ const LogOut = async () => {
 }
 
 function GoCheckOut() {
-    const userData = site.getCookie('user_data');
+    const userData = site.getCookie('e.u.d');
     if (userData && Number(numberCart.value) > 0) {
         site.RedirectPage('checkout');
     }
@@ -32,7 +32,7 @@ function GoCheckOut() {
 
 
 onMounted(() => {
-    const userData = site.getCookie('user_data');
+    const userData = site.getCookie('e.u.d');
     if (userData) {
         const parsedData = JSON.parse(userData);
         id_usuario.value = parsedData.id_usuario || 0;

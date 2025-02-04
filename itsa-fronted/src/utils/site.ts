@@ -142,7 +142,7 @@ export class site {
    * @returns {string} La cadena encriptada o una cadena vacía si no se encuentra la clave.
    */
   public static encryptData(data: any): string {
-    const encryptionKey = Cookies.get("secretKey") || "";
+    const encryptionKey = Cookies.get("e.k") || "";
     if (!encryptionKey) return "";
 
     const dataToEncrypt =
@@ -163,7 +163,7 @@ export class site {
    * @returns {string} La cadena desencriptada o una cadena vacía si no se encuentra la clave.
    */
   public static decryptData(encryptedData: string): string {
-    const encryptionKey = Cookies.get("secretKey") || "";
+    const encryptionKey = Cookies.get("e.k") || "";
     if (!encryptionKey) return "";
 
     const bytes = CryptoJS.AES.decrypt(encryptedData, encryptionKey);
@@ -185,7 +185,7 @@ export class site {
   }
 
   public static getCookie(key: string, encrypted: boolean = true) {
-    const encryptionKey = Cookies.get("secretKey") || "";
+    const encryptionKey = Cookies.get("e.k") || "";
 
     if (encryptionKey && encrypted)
       return this.decryptData(Cookies.get(key) || "");
@@ -201,7 +201,7 @@ export class site {
   }
 
   static async Init(): Promise<void> {
-    const userData = this.getCookie("user_data");
+    const userData = this.getCookie("e.u.d");
     if (!userData) {
       numberCart.value = "0";
     } else {

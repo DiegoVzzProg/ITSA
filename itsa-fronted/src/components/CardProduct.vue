@@ -12,7 +12,7 @@ const props = defineProps<{
 }>();
 
 const AddCartCostumer = async () => {
-    const userData = site.getCookie('user_data');
+    const userData = site.getCookie('e.u.d');
     if (userData) {
         const parsedData = JSON.parse(userData);
 

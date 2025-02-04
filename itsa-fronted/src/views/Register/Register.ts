@@ -3,41 +3,97 @@ import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
 
-export const email = ref("");
-export const name = ref<string>("");
-export const password = ref("");
-export const passwordConfirm = ref("");
+export const FormRegister = ref<any>({
+  name: {
+    placeholder: "user name",
+    value: "",
+    error: "",
+    maxLength: 24,
+    type: "text",
+  },
+  email: {
+    placeholder: "email",
+    value: "",
+    error: "",
+    maxLength: 254,
+    type: "text",
+  },
+  password: {
+    placeholder: "password",
+    value: "",
+    error: "",
+    maxLength: 20,
+    type: "password",
+  },
+  passwordConfirm: {
+    placeholder: "password confirmation",
+    value: "",
+    error: "",
+    maxLength: 20,
+    type: "password",
+  },
+});
+
 export const leyo_terms = ref<boolean>(false);
 
-export const nameError = ref<string>("");
-export const emailError = ref("");
-export const passwordError = ref("");
-export const passwordConfirmError = ref("");
 export const leyoTermsError = ref<string>("");
 
 export class c_registerView {
+  private static formsProps = FormRegister.value;
+
+  public static validacionesFormRegister = (placeholder: string) => {
+    switch (placeholder.replace(" ", "").trim()) {
+      case "username":
+        this.validateName(this.formsProps.name.value);
+        break;
+      case "email":
+        this.validateEmail(this.formsProps.email.value);
+        break;
+      case "password":
+        this.validatePassword(this.formsProps.password.value);
+        break;
+      case "passwordconfirmation":
+        this.validatePasswordConfirm(this.formsProps.passwordConfirm.value);
+        break;
+      default:
+        break;
+    }
+  };
+
   public static validateEmail = (value: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!emailRegex.test(value)) {
-      emailError.value = "The email is invalid";
+      this.formsProps.email.error = "The email is invalid";
+    } else if (value.length > this.formsProps.email.maxLength) {
+      this.formsProps.email.error =
+        "The email should not exceed " +
+        this.formsProps.email.maxLength +
+        " characters";
     } else {
-      emailError.value = "";
+      this.formsProps.email.error = "";
     }
   };
 
   public static validatePassword = (value: string) => {
-    if (value.length < 4) {
-      passwordError.value = "Password must be at least 4 characters long";
+    if (value.length < 8) {
+      this.formsProps.password.error =
+        "Password must be at least 8 characters long";
+    } else if (value.length > this.formsProps.password.maxLength) {
+      this.formsProps.password.error =
+        "Password must not exceed " +
+        this.formsProps.password.maxLength +
+        " characters";
     } else {
-      passwordError.value = "";
+      this.formsProps.password.error = "";
     }
   };
 
   public static validatePasswordConfirm = (value: string) => {
-    if (password.value != value) {
-      passwordConfirmError.value = "Password does not match";
+    if (this.formsProps.password.value != value) {
+      this.formsProps.passwordConfirm.error = "Password does not match";
     } else {
-      passwordConfirmError.value = "";
+      this.formsProps.passwordConfirm.error = "";
     }
   };
 
@@ -51,51 +107,66 @@ export class c_registerView {
 
   public static validateName = (value: string) => {
     if (IsNullOrEmpty(value)) {
-      nameError.value = "This field is required";
+      this.formsProps.name.error = "This field is required";
+    } else if (value.length > this.formsProps.name.maxLength) {
+      this.formsProps.name.error =
+        "The name must not exceed " +
+        this.formsProps.name.maxLength +
+        " characters";
+    } else if (value.length < 4) {
+      this.formsProps.name.error =
+        "The name must be at least 4 characters long";
+    } else if (!/^[^\s`]+$/.test(value)) {
+      this.formsProps.name.error =
+        "The name cannot contain spaces and backticks";
     } else {
-      nameError.value = "";
+      this.formsProps.name.error = "";
     }
   };
 
   public static Register = async () => {
-    this.validateEmail(email.value);
-    this.validatePasswordConfirm(passwordConfirm.value);
-    this.validatePassword(password.value);
+    this.validateEmail(this.formsProps.email.value);
+    this.validatePasswordConfirm(this.formsProps.passwordConfirm.value);
+    this.validatePassword(this.formsProps.password.value);
     this.validateTerms(leyo_terms.value);
-    this.validateName(name.value);
+    this.validateName(this.formsProps.name.value);
 
     if (
-      emailError.value ||
-      passwordError.value ||
-      passwordConfirmError.value ||
+      this.formsProps.email.error ||
+      this.formsProps.password.error ||
+      this.formsProps.passwordConfirm.error ||
       leyoTermsError.value ||
-      nameError.value
+      this.formsProps.name.error
     )
       return;
 
-    let response: any = await c_auth.fn_register({
-      nombre: name.value,
-      email: email.value,
-      password: password.value,
+    const responseRegister = await c_auth.fn_register({
+      nombre: this.formsProps.name.value,
+      email: this.formsProps.email.value,
+      password: this.formsProps.password.value,
       leyo_terms: leyo_terms.value,
     });
-    if (response) {
-      const message: string = dgav.dataBase.message;
-      if (!IsNullOrEmpty(message)) {
-        notify.error(message);
-        return;
-      }
 
-      site.setCookies({
-        token: response.token,
-        user_data: JSON.stringify(response.user_data),
-        logged_in_successfully: "false",
-      });
+    const message: string = dgav.dataBase.message;
+    if (!IsNullOrEmpty(message)) {
+      notify.error(message);
+      return;
+    }
 
-      response = await c_general.SecretKey();
+    if (responseRegister) {
+      site.setCookies(
+        {
+          "e.t": responseRegister.token,
+        },
+        false
+      );
+
+      const response = await c_general.SecretKey();
       if (response) {
         site.setCookies({
-          secretKey: response.secretKey || "",
+          "e.k": response.secretKey || "",
+          "e.u.d": JSON.stringify(responseRegister.user_data),
+          logged_in_successfully: "false",
         });
 
         site.RedirectPage("home");

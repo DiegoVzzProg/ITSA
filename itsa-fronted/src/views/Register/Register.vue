@@ -1,28 +1,8 @@
 <script setup lang="ts">
-import { watch } from 'vue';
 import { site } from '../../utils/site';
-import { c_registerView, email, emailError, leyo_terms, leyoTermsError, name, nameError, password, passwordConfirm, passwordConfirmError, passwordError } from './Register';
+import { c_registerView, FormRegister, leyo_terms, leyoTermsError } from './Register';
 
 
-watch(email, (newValue) => {
-    c_registerView.validateEmail(newValue);
-});
-
-watch(passwordConfirm, (newValue) => {
-    c_registerView.validatePasswordConfirm(newValue);
-});
-
-watch(name, (newValue) => {
-    c_registerView.validateName(newValue);
-});
-
-watch(leyo_terms, (newValue) => {
-    c_registerView.validateTerms(newValue);
-});
-
-watch(password, (newValue) => {
-    c_registerView.validatePassword(newValue);
-});
 </script>
 
 <template>
@@ -44,36 +24,12 @@ watch(password, (newValue) => {
             <p class="px-[clamp(18px,3vw,28px)]">
                 create a new user
             </p>
-            <div class="flex flex-col gap-1">
-                <input v-model="name" type="text" class="border border-black py-5 px-3 rounded-full" placeholder="name">
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" v-if="nameError">
-                    {{ nameError }}
-                </span>
-            </div>
-            <div class="flex flex-col gap-1">
-                <input v-model="email" type="text" class="border border-black py-5 px-3 rounded-full"
-                    placeholder="email">
-
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" v-if="emailError">
-                    {{ emailError }}
-                </span>
-            </div>
-            <div class="flex flex-col gap-1">
-                <input v-model="password" type="password" class="border border-black py-5 px-3 rounded-full"
-                    placeholder="password">
-
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                    v-if="passwordError">
-                    {{ passwordError }}
-                </span>
-            </div>
-            <div class="flex flex-col gap-1">
-                <input v-model="passwordConfirm" type="password" class="border border-black py-5 px-3 rounded-full"
-                    placeholder="password confirmation">
-
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                    v-if="passwordConfirmError">
-                    {{ passwordConfirmError }}
+            <div class="flex flex-col gap-1" v-for="(item, index) in FormRegister" :key="index">
+                <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
+                    :placeholder="item.placeholder" :maxlength="item.maxLength"
+                    v-on:input="c_registerView.validacionesFormRegister(item.placeholder)">
+                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" v-if="item.error">
+                    {{ item.error }}
                 </span>
             </div>
             <div class="flex flex-col gap-2 w-full px-[clamp(18px,3vw,28px)]">

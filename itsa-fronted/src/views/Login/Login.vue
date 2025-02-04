@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { watch } from 'vue';
 import { site } from '../../utils/site';
 import { c_loginView, forgotPassword, FormLogin } from './Login';
 
@@ -26,8 +25,8 @@ import { c_loginView, forgotPassword, FormLogin } from './Login';
             </p>
             <div class="flex flex-col gap-3">
                 <div class="flex flex-col gap-1" v-for="(item, index) in FormLogin" :key="index">
-                    <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
-                        :placeholder="item.placeholder"
+                    <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
+                        :placeholder="item.placeholder" :maxlength="item.maxLength"
                         v-on:input="c_loginView.validaciones(item.value, item.placeholder)">
                     <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                         v-if="item.error">

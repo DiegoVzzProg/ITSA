@@ -1,13 +1,6 @@
 import { dgav } from "../utils/site";
 
 export class c_general {
-  static async fileEncrypted(folder: string, filename: string) {
-    return await dgav.apiRequest(
-      `/public/archivo/${folder}/${filename}`,
-      dgav.httpMethod.GET
-    );
-  }
-
   static async SecretKey() {
     return await dgav.apiRequest("/secretKey", dgav.httpMethod.GET);
   }

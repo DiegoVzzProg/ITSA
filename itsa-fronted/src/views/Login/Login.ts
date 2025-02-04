@@ -3,7 +3,6 @@ import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
-import Cookies from "js-cookie";
 
 export const forgotPassword = ref<boolean>(false);
 export const FormLogin = ref<any>({
@@ -11,11 +10,15 @@ export const FormLogin = ref<any>({
     placeholder: "email",
     value: "",
     error: "",
+    maxLength: 254,
+    type: "text",
   },
   password: {
     placeholder: "password",
     value: "",
     error: "",
+    maxLength: 20,
+    type: "password",
   },
 });
 
@@ -101,12 +104,12 @@ export class c_loginView {
     }
 
     if (responseLogin) {
-      FormLogin.value.email.value = "";
-      FormLogin.value.password.value = "";
+      // FormLogin.value.email.value = "";
+      // FormLogin.value.password.value = "";
 
       site.setCookies(
         {
-          token: responseLogin.token,
+          "e.t": responseLogin.token,
         },
         false
       );
@@ -115,17 +118,17 @@ export class c_loginView {
       if (response) {
         site.setCookies(
           {
-            secretKey: response.secretKey,
+            "e.k": response.secretKey,
           },
           false
         );
 
         site.setCookies({
-          user_data: JSON.stringify(responseLogin.user_data),
+          "e.u.d": JSON.stringify(responseLogin.user_data),
           logged_in_successfully: "false",
         });
 
-        const userData = site.getCookie("user_data");
+        const userData = site.getCookie("e.u.d");
         if (userData) {
           const parsedData = JSON.parse(userData);
           const response: any = await c_clientes.fn_l_carrito_cliente({

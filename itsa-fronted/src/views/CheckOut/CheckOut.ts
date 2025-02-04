@@ -71,7 +71,7 @@ export class class_checkout {
   }
 
   public static async infoForms1() {
-    const dataUser: any = JSON.parse(site.getCookie("user_data"));
+    const dataUser: any = JSON.parse(site.getCookie("e.u.d"));
 
     const data: any = {
       id_usuario: dataUser.id_usuario,

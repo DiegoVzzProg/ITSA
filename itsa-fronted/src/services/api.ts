@@ -14,7 +14,7 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    const token = site.getCookie("token", false);
+    const token = site.getCookie("e.t", false);
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

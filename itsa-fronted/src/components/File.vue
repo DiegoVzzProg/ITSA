@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref } from 'vue';
-import { c_general } from '../services/s_general';
-import Loading from './Loading.vue';
-import { dgav, IsNullOrEmpty, notify } from '../utils/site';
 
 const props = defineProps<{
     folder: string;
@@ -14,20 +11,9 @@ const props = defineProps<{
 const archivo = ref<string>('');
 
 const getArchivo = async (): Promise<void> => {
-    if (props.encrypted) {
-        const response: any = await c_general.fileEncrypted(props.folder, props.file);
-        if (response) {
-            const message: any = dgav.dataBase.message;
 
-            if (!IsNullOrEmpty(message)) {
-                notify.error(message)
-                return;
-            }
-            archivo.value = response.url;
-        }
-    } else {
-        archivo.value = new URL(`${props.folder}/${props.file}`, import.meta.url).href
-    }
+    archivo.value = new URL(`${props.folder}/${props.file}`, import.meta.url).href
+
 };
 
 onMounted(() => {

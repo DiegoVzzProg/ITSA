@@ -10,7 +10,7 @@ import Loading from '../components/Loading.vue';
 
 onMounted(() => {
 
-    const userData = site.getCookie('user_data');
+    const userData = site.getCookie('e.u.d');
     if (userData) {
         if (!isNotified) {
             const notyf = new Notyf({

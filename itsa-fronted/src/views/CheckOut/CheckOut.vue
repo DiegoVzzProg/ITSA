@@ -6,7 +6,7 @@ import { site } from '../../utils/site';
 
 
 onMounted(() => {
-    userData.value = JSON.parse(site.getCookie("user_data") || "{}");
+    userData.value = JSON.parse(site.getCookie("e.u.d") || "{}");
 
     class_checkout.productos();
     class_checkout.infoForms1();
