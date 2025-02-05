@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 import { c_clientes } from '../services/s_clientes';
 
@@ -33,14 +33,15 @@ const AddCartCostumer = async () => {
             id_usuario: parsedData.id_usuario,
         });
 
+        let mensaje: any = dgav.dataBase.message;
+
         if (response) {
-            if (!IsNullOrEmpty(dgav.dataBase.message)) {
-                notify.error(dgav.dataBase.message);
+            if (!IsNullOrEmpty(mensaje)) {
+                notify.error(mensaje);
                 return;
             }
-
             site.setCookies({
-                numberCart: response.length.toString(),
+                "e.n.o.p": response.length.toString(),
             }, false);
         }
 
@@ -88,8 +89,18 @@ const Download = async () => {
     // window.URL.revokeObjectURL(url);
 }
 
-onMounted(() => {
+const existeArticuloEnCarrito = ref<boolean>(false);
+const habilitarDescarga = async () => {
+    const response: any = await c_clientes.fn_existe_producto_carrito_cliente({
+        id_producto: props.id_producto
+    });
 
+    if (response) {
+        existeArticuloEnCarrito.value = true;
+    }
+}
+onMounted(() => {
+    habilitarDescarga();
 });
 </script>
 
@@ -109,15 +120,19 @@ onMounted(() => {
             {{ descripcion }}
         </p>
         <div class="flex pb-12">
+            <button v-if="existeArticuloEnCarrito"
+                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
+                in cart
+            </button>
             <button @click="AddCartCostumer"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
-                v-if="Number(precio) > 0">
+                v-else-if="Number(precio) > 0">
                 buy
             </button>
             <button @click="Download"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
                 v-else>
-                download free
+                download {{ Number(precio) > 0 ? "" : "free" }}
             </button>
         </div>
     </div>

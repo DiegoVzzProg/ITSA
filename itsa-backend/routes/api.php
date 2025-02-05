@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('customers')->group(function () {
             Route::post('/registerCustomer', [CClientes::class, 'fn_a_clientes']);
             Route::post('/getCustomer', [CClientes::class, 'fn_l_clientes']);
+            Route::post('/checkProductInShoppingCart', [CCarritoCliente::class, 'fn_existe_producto_carrito_cliente']);
         });
 
         Route::prefix('auth')->group(function () {

@@ -131,8 +131,6 @@ export class dgav {
 }
 //#endregion
 
-export const numberCart = ref<any>(Cookies.get("numberCart") || "0");
-
 export class site {
   /**
    * Encripta cualquier dato (objeto, arreglo, número, boolean, string, etc.)
@@ -205,7 +203,7 @@ export class site {
     if (!userData) {
       numberCart.value = "0";
     } else {
-      numberCart.value = this.getCookie("numberCart", false);
+      numberCart.value = this.getCookie("e.n.o.p", false);
     }
   }
   static RedirectPage(
@@ -278,3 +276,5 @@ export const notify = new Notyf({
 export const IsNullOrEmpty = (value: any): boolean => {
   return value == null || value == undefined || value == "";
 };
+
+export const numberCart = ref<any>(site.getCookie("e.n.o.p", false) || "0");

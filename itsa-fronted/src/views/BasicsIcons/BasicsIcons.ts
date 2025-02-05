@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { replaceClass, site } from "../../utils/site";
+import { site } from "../../utils/site";
 
 export const headerComponent = ref<HTMLElement | null>(null);
 export const padre_contenedor_scroll = ref<HTMLElement | null>(null);

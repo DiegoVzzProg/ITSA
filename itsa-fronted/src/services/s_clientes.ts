@@ -43,4 +43,14 @@ export class c_clientes {
       data
     );
   }
+
+  public static async fn_existe_producto_carrito_cliente(
+    data: Record<string, any>
+  ) {
+    return await dgav.apiRequest(
+      `${customersUrl}/checkProductInShoppingCart`,
+      dgav.httpMethod.POST,
+      data
+    );
+  }
 }

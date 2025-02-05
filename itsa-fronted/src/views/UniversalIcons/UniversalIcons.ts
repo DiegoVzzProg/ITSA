@@ -1,5 +1,7 @@
 import { ref } from "vue";
-import { site } from "../../utils/site";
+import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
+import { c_productos } from "../../services/s_productos";
+import { c_clientes } from "../../services/s_clientes";
 export const headerComponent = ref<HTMLElement | null>(null);
 export const padre_contenedor_scroll = ref<HTMLElement | null>(null);
 export const contenedor_scroll = ref<HTMLElement | null>(null);
@@ -9,6 +11,9 @@ export const children_elemento2_scroll = ref<HTMLElement | null>(null);
 export const contenedor_gallery_basics = ref<HTMLElement | null>(null);
 
 export class class_universalIcons {
+  public static existeArticuloEnCarrito = ref<boolean>(false);
+  public static producto = ref<any>(undefined);
+
   public static onInit() {
     headerComponent.value = document.getElementById("header") as HTMLElement;
     headerComponent.value?.classList.add("bg-transparent");
@@ -33,7 +38,27 @@ export class class_universalIcons {
     ) as HTMLElement;
 
     window.addEventListener("scroll", this.handleScroll);
+
+    this.Producto();
   }
+
+  public static async Producto() {
+    const data: any = {
+      id_producto: 2,
+    };
+
+    let response: any = await c_productos.fn_l_productos(data);
+
+    if (!IsNullOrEmpty(dgav.dataBase.message)) {
+      notify.error(dgav.dataBase.message);
+      return;
+    }
+
+    if (response) {
+      this.producto.value = response;
+    }
+  }
+
   public static onUnInit() {
     headerComponent.value?.classList.add("bg-white");
     headerComponent.value?.classList.remove("bg-transparent");

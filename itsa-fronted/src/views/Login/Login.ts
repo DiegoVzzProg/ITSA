@@ -144,7 +144,7 @@ export class c_loginView {
 
           site.setCookies(
             {
-              numberCart: response.length.toString() ?? "0",
+              "e.n.o.p": response.length.toString() ?? "0",
             },
             false
           );

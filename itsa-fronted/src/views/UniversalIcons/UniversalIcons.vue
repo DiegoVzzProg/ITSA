@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue';
 import File from '../../components/File.vue';
 import CardProduct from '../../components/CardProduct.vue';
 import { class_universalIcons } from './UniversalIcons';
+import { IsNullOrEmpty } from '../../utils/site';
 
 
 onMounted(() => {
@@ -202,10 +203,11 @@ onUnmounted(() => {
                     :encrypted="false"></File>
             </div>
         </div>
-        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
+        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
+            v-if="!IsNullOrEmpty(class_universalIcons.producto.value)">
             <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon pack"
                 descripcion="524 items available as: illustrator, figma, svg & pdf commercial & personal use"
-                precio="455">
+                :precio="`${class_universalIcons.producto.value.precio}`">
             </CardProduct>
         </div>
     </div>

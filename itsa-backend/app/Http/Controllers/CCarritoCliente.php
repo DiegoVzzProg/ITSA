@@ -52,4 +52,19 @@ class CCarritoCliente extends Controller
             ]);
         }, $request);
     }
+
+    public static function fn_existe_producto_carrito_cliente(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+
+            $user = $request->user();
+            $producto = TCarritoCliente::where('id_usuario', $user->id_usuario)
+                ->where('id_producto', $request->id_producto)
+                ->where('borrado', false)->first();
+
+            return CGeneral::CreateMessage('', 200, [
+                "existe" => $producto != null && strlen($producto) > 0
+            ]);
+        }, $request);
+    }
 }
