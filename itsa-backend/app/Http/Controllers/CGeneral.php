@@ -7,21 +7,9 @@ use App\Models\TPaises;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 
 class CGeneral extends Controller
 {
-    static function DescargarArchivo($arch)
-    {
-        $path = storage_path('app/public/' . $arch);
-
-        if (!file_exists($path)) {
-            return CGeneral::CreateMessage("File not found", 599, null);
-        }
-
-        return response()->download($path, 'basicsicons');
-    }
-
     public static function JsonToArray($json): mixed
     {
         return json_decode(json: json_encode(value: $json), associative: true);
@@ -80,10 +68,16 @@ class CGeneral extends Controller
                     $user = $request->user();
                     return self::CreateTicketError($ex, $user->id_usuario);
                 } catch (Exception $ex) {
-                    return self::CreateMessage("Contact support", 599,  null);
+                    return response()->json(data: [
+                        'message' => "Contact support",
+                        'data' => null
+                    ], status: 599);
                 }
             }
-            return self::CreateMessage("Contact support", 599, null);
+            return response()->json(data: [
+                'message' => "Contact support",
+                'data' => null
+            ], status: 599);
         }
     }
 }

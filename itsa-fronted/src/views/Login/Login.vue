@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import { site } from '../../utils/site';
 import { c_loginView, forgotPassword, FormLogin } from './Login';
+
+onMounted(() => {
+    c_loginView.onInit();
+});
 
 </script>
 

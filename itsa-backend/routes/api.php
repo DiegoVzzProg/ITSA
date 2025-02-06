@@ -9,9 +9,9 @@ use App\Http\Controllers\CUsuarios;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::prefix('public')->group(function () {
+    Route::prefix('products')->group(function () {
         Route::post('/listProducts', [CProductos::class, 'fn_l_productos']);
-        Route::get('/downloadFile/{file}', [CGeneral::class, 'DescargarArchivo']);
+        Route::get('/downloadFile/{id_producto}', [CProductos::class, 'fn_descargar_archivo']);
     });
 
     Route::prefix('auth')->group(function () {

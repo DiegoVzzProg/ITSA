@@ -20,6 +20,7 @@ const httpMethods = {
   POST: "POST",
   PUT: "PUT",
   DELETE: "DELETE",
+  DOWNLOAD: "DOWNLOAD",
 } as const;
 
 type httpMethod = (typeof httpMethods)[keyof typeof httpMethods];
@@ -44,6 +45,7 @@ export class dgav {
     method: httpMethod,
     body?: Record<string, any>
   ): Promise<any> {
+    this.dataBase.reset();
     this.dataBase.isLoading = true;
     const controller = new AbortController();
 
@@ -113,6 +115,13 @@ export class dgav {
         return (await api.put(endPoint, body, config)).data;
       case this.httpMethod.DELETE:
         return (await api.delete(endPoint, config)).data;
+      case this.httpMethod.DOWNLOAD:
+        return (
+          await api.get(endPoint, {
+            responseType: "blob",
+            signal: signal,
+          })
+        ).data;
       default:
         throw new Error(`Unsupported HTTP method: ${method}`);
     }
@@ -205,6 +214,8 @@ export class site {
     } else {
       numberCart.value = this.getCookie("e.n.o.p", false);
     }
+
+    dgav.dataBase.reset();
   }
   static RedirectPage(
     url: string,

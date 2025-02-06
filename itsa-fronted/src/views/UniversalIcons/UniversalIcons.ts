@@ -1,7 +1,6 @@
 import { ref } from "vue";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_productos } from "../../services/s_productos";
-import { c_clientes } from "../../services/s_clientes";
 export const headerComponent = ref<HTMLElement | null>(null);
 export const padre_contenedor_scroll = ref<HTMLElement | null>(null);
 export const contenedor_scroll = ref<HTMLElement | null>(null);

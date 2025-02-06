@@ -23,6 +23,17 @@ export const FormLogin = ref<any>({
 });
 
 export class c_loginView {
+  public static onInit() {
+    this.ResetFormLogin();
+  }
+
+  public static ResetFormLogin() {
+    FormLogin.value.email.value = "";
+    FormLogin.value.password.value = "";
+    FormLogin.value.email.error = "";
+    FormLogin.value.password.error = "";
+  }
+
   public static async RecuperarPassword() {
     await c_auth.fn_forgot_password_restore({
       email: FormLogin.value.email.value,
@@ -30,7 +41,6 @@ export class c_loginView {
 
     const message = dgav.dataBase.message;
     const status = dgav.dataBase.status;
-    console.log(status);
 
     if (status == 200) {
       notify.success(message);
@@ -104,9 +114,6 @@ export class c_loginView {
     }
 
     if (responseLogin) {
-      // FormLogin.value.email.value = "";
-      // FormLogin.value.password.value = "";
-
       site.setCookies(
         {
           "e.t": responseLogin.token,
@@ -149,6 +156,7 @@ export class c_loginView {
             false
           );
 
+          this.ResetFormLogin();
           site.RedirectPage("home");
         }
       }

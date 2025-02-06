@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 import { c_clientes } from '../services/s_clientes';
+import { c_productos } from '../services/s_productos';
 
 const props = defineProps<{
     id_producto: number;
@@ -53,41 +54,33 @@ const AddCartCostumer = async () => {
 }
 
 const Download = async () => {
-    // await c_productos.fn_l_productos({
-    //     id_producto: props.id_producto
-    // });
+    const response: any = await c_productos.fn_descargar_archivo(String(props.id_producto));
+    console.log(response);
 
+    if (response) {
+        // // Se crea una URL temporal a partir del blob recibido
+        // const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
 
-    // let response: any = dgav.dataBase;
+        // // Se crea un elemento <a> para simular el clic y descargar el archivo
+        // const link = document.createElement("a");
+        // link.href = blobUrl;
+        // link.download = filename; // Nombre del archivo a descargar
+        // document.body.appendChild(link);
+        // link.click();
 
-    // if (!IsNullOrEmpty(response.message)) {
-    //     notify.error(response.message)
-    //     return;
-    // }
-    // let archivo: string = response.data.archivo;
-
-    // c_general.DownloadFile(archivo);
-
-    // response = dgav.dataBase;
-    // if (!IsNullOrEmpty(response.message)) {
-    //     notify.error(response.messag)
-    //     return;
-    // }
-
-    // console.log(response.data);
-
-
-    // //Crear un enlace para descargar el archivo
-    // const url = window.URL.createObjectURL(new Blob([responseDownload.data]));
-    // const link = document.createElement('a');
-    // link.href = url;
-    // link.setAttribute('download', "basicsicons"); // Nombre del archivo
-    // document.body.appendChild(link);
-    // link.click();
-
-    // // Limpiar el objeto Blob
-    // window.URL.revokeObjectURL(url);
+        // // Se limpia el DOM y se libera la URL creada
+        // document.body.removeChild(link);
+        // window.URL.revokeObjectURL(blobUrl);
+    }
 }
+
+function GoCheckOut() {
+    const userData = site.getCookie('e.u.d');
+    if (userData) {
+        site.RedirectPage('checkout');
+    }
+}
+
 
 const existeArticuloEnCarrito = ref<boolean>(false);
 const habilitarDescarga = async () => {
@@ -95,8 +88,9 @@ const habilitarDescarga = async () => {
         id_producto: props.id_producto
     });
 
+
     if (response) {
-        existeArticuloEnCarrito.value = true;
+        existeArticuloEnCarrito.value = response.existe;
     }
 }
 onMounted(() => {
@@ -120,9 +114,9 @@ onMounted(() => {
             {{ descripcion }}
         </p>
         <div class="flex pb-12">
-            <button v-if="existeArticuloEnCarrito"
+            <button v-if="existeArticuloEnCarrito" v-on:click="GoCheckOut()"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
-                in cart
+                Go to cart
             </button>
             <button @click="AddCartCostumer"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"

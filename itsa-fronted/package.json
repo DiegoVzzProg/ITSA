@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@midudev/tailwind-animations": "^0.1.0",
-    "@stripe/stripe-js": "^5.5.0",
+    "@stripe/stripe-js": "^5.6.0",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
     "gsap": "^3.12.5",
