@@ -7,8 +7,6 @@ const api: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // responseType: 'blob'
-  // withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -21,6 +19,20 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 9999) {
+      if (error.response.data.message == "expired") {
+        site.allDeleteCookies();
+        site.RedirectPage("home");
+        window.location.reload();
+      }
+    }
     return Promise.reject(error);
   }
 );

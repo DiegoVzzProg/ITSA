@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('descripcion')->nullable()->default(null);
             $table->timestamp('fecha_creacion');
             $table->boolean('borrado')->default(false);
+            $table->string('foto_producto')->nullable()->default(null);
         });
     }
 

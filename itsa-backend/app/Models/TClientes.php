@@ -14,7 +14,7 @@ class TClientes extends Model
     protected $fillable = [
         'id_usuario',
         'nombre',
-        'telefono',
+        'numero_de_iva_empresa',
         'direccion',
         'estado',
         'id_pais',

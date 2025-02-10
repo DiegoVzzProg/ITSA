@@ -206,7 +206,7 @@ onUnmounted(() => {
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
             v-if="!IsNullOrEmpty(class_universalIcons.producto.value)">
             <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon pack"
-                descripcion="524 items available as: illustrator, figma, svg & pdf commercial & personal use"
+                descripcion="524 items <br/> available as: <br/> illustrator, figma, svg & pdf <br/> commercial & personal use"
                 :precio="`${class_universalIcons.producto.value.precio}`">
             </CardProduct>
         </div>

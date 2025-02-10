@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::prefix('products')->group(function () {
         Route::post('/listProducts', [CProductos::class, 'fn_l_productos']);
-        Route::get('/downloadFile/{id_producto}', [CProductos::class, 'fn_descargar_archivo']);
     });
 
     Route::prefix('auth')->group(function () {
@@ -20,7 +19,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/restorePassword', [CUsuarios::class, 'fn_forgot_password_restore']);
     });
 
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum', 'session.expire')->group(function () {
         Route::prefix('shoppingCart')->group(function () {
             Route::post('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
@@ -35,6 +34,10 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('auth')->group(function () {
             Route::delete('/logoutUser', [CUsuarios::class, 'fn_logout']);
+        });
+
+        Route::prefix('products')->group(function () {
+            Route::get('/downloadFile/{id_producto}', [CProductos::class, 'fn_descargar_archivo']);
         });
 
         Route::get('/secretKey', [CGeneral::class, 'generarSecretKey']);

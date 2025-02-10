@@ -129,7 +129,8 @@ onUnmounted(() => {
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
             <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="this pack is free"
-                descripcion="57 items available as: illustrator, figma & svg commercial & personal use" precio="0">
+                descripcion="57 items <br/> available as: <br/> illustrator, figma & svg <br/> commercial & personal use"
+                precio="0">
             </CardProduct>
         </div>
     </div>

@@ -132,32 +132,39 @@ export class c_loginView {
 
         site.setCookies({
           "e.u.d": JSON.stringify(responseLogin.user_data),
-          logged_in_successfully: "false",
         });
 
+        site.setCookies(
+          {
+            logged_in_successfully: "false",
+          },
+          false
+        );
+
         const userData = site.getCookie("e.u.d");
+
         if (userData) {
           const parsedData = JSON.parse(userData);
           const response: any = await c_clientes.fn_l_carrito_cliente({
             id_usuario: parsedData.id_usuario,
           });
 
-          if (response) {
-            if (!IsNullOrEmpty(dgav.dataBase.message)) {
-              notify.error(dgav.dataBase.message);
-              return;
-            }
+          if (!IsNullOrEmpty(dgav.dataBase.message)) {
+            notify.error(dgav.dataBase.message);
+            return;
           }
 
-          site.setCookies(
-            {
-              "e.n.o.p": response.length.toString() ?? "0",
-            },
-            false
-          );
+          if (response) {
+            site.setCookies(
+              {
+                "e.n.o.p": response.length.toString() ?? "0",
+              },
+              false
+            );
 
-          this.ResetFormLogin();
-          site.RedirectPage("home");
+            this.ResetFormLogin();
+            site.RedirectPage("home");
+          }
         }
       }
     }

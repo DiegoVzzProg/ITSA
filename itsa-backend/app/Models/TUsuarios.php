@@ -34,7 +34,8 @@ class TUsuarios extends Authenticatable
         'password',
         'activo',
         'leyo_terms',
-        'creacion'
+        'creacion',
+        'ultima_conexion'
     ];
 
     protected $hidden = [

@@ -254,6 +254,12 @@ export class site {
       element.classList.add(newClass);
     }
   }
+
+  public static formatNumber = (num: number): string => {
+    const [integer, decimal] = num.toFixed(10).split(".");
+    const cleanDecimal = decimal?.replace(/0+$/, "") || "";
+    return cleanDecimal ? `${integer}.${cleanDecimal}` : integer;
+  };
 }
 
 /**

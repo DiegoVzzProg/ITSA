@@ -31,7 +31,8 @@ class CCarritoCliente extends Controller
                 'id_producto' => $request->id_producto,
                 'descripcion' => $request->descripcion,
                 'fecha_creacion' => now(),
-                'precio' => $producto->precio
+                'precio' => $producto->precio,
+                'foto_producto' => $producto->foto_miniatura
             ]);
 
             return CGeneral::CreateMessage('', 200, null);

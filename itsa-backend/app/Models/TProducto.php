@@ -32,7 +32,9 @@ class TProducto extends Model
         'subtitulo',
         'descripcion',
         'imagen',
-        'archivo'
+        'archivo',
+        'hover_efecto',
+        'foto_miniatura'
     ];
 
     // Valores por defecto de los atributos

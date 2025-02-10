@@ -161,19 +161,33 @@ export class c_registerView {
         false
       );
 
-
-      site.setCookies({
-        "e.u.d": JSON.stringify(responseRegister.user_data),
-        logged_in_successfully: "false",
-      });
-
       const response = await c_general.SecretKey();
+
       if (response) {
+        site.setCookies(
+          {
+            "e.k": response.secretKey || "",
+          },
+          false
+        );
+
         site.setCookies({
-          "e.k": response.secretKey || "",
           "e.u.d": JSON.stringify(responseRegister.user_data),
-          logged_in_successfully: "false",
         });
+
+        site.setCookies(
+          {
+            logged_in_successfully: "false",
+          },
+          false
+        );
+
+        site.setCookies(
+          {
+            "e.n.o.p": "0",
+          },
+          false
+        );
 
         site.RedirectPage("home");
       }

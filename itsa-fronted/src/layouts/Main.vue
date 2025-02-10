@@ -5,7 +5,6 @@ import { Notyf } from 'notyf';
 import { isNotified, site } from '../utils/site';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
-import Loading from '../components/Loading.vue';
 
 
 onMounted(() => {
@@ -36,7 +35,6 @@ onMounted(() => {
     <Header />
     <main class="flex flex-col w-full min-h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" id="main_contenedor">
         <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0">
-            <Loading />
             <slot></slot>
         </div>
     </main>

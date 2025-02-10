@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('password');
             $table->timestamp('creacion');
             $table->boolean('activo')->default(true);
+            $table->datetime('ultima_conexion')->default(now());
         });
     }
 

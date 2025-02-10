@@ -12,13 +12,15 @@ return new class extends Migration {
     {
         Schema::create('t_productos', function (Blueprint $table) {
             $table->increments("id_producto");
-            $table->text("url")->nullable();
+            $table->string("url")->nullable();
             $table->decimal("precio")->default(0.00);
             $table->string("titulo", 100);
             $table->string("subtitulo", 100);
             $table->string("descripcion", 254)->default("");
-            $table->text("imagen")->nullable();
-            $table->text("archivo")->nullable();
+            $table->string("imagen")->nullable();
+            $table->string("foto_miniatura")->nullable();
+            $table->string("archivo")->nullable();
+            $table->string("hover_efecto")->default("rgba(201,117,249,0.4)");
         });
     }
 

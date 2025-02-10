@@ -25,7 +25,8 @@ class TCarritoCliente extends Model
         'descripcion',
         'fecha_creacion',
         'borrado',
-        'precio'
+        'precio',
+        'foto_producto'
     ];
 
     protected $hidden = [];

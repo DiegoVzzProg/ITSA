@@ -13,7 +13,7 @@ class CUsuarios extends Controller
 {
     static function token($usuario): mixed
     {
-        return $usuario->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;
+        return $usuario->createToken('auth_token', ['*'], now()->addDays(1))->plainTextToken;
     }
 
     public static function fn_login(Request $request)
@@ -33,6 +33,9 @@ class CUsuarios extends Controller
 
             $token = self::token(usuario: $usuario);
 
+
+            TUsuarios::where('id_usuario', $usuario->id_usuario)->update(['ultima_conexion' => now()]);
+
             return CGeneral::CreateMessage('', 200,  [
                 "user_data" => [
                     'id_usuario' => $usuario->id_usuario,
@@ -49,12 +52,19 @@ class CUsuarios extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $credentials = $request->only('nombre', 'email', 'password', 'leyo_terms');
 
+            $existeEmail = TUsuarios::where('email', $credentials['email'])->first();
+
+            if ($existeEmail) {
+                return CGeneral::CreateMessage('Email already exists', 599, null);
+            }
+
             $usuario = TUsuarios::create([
                 'nombre' => $credentials['nombre'],
                 'email' => $credentials['email'],
                 'password' => Hash::make($credentials['password']),
                 'leyo_terms' => $credentials['leyo_terms'],
-                'creacion' => now()
+                'creacion' => now(),
+                'ultima_conexion' => now()
             ]);
 
             $token = self::token(usuario: $usuario);

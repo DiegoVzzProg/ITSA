@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id_cliente');
             $table->integer('id_usuario');
             $table->string("nombre");
-            $table->string("telefono");
+            $table->string("numero_de_iva_empresa")->nullable()->default(null);
             $table->string("direccion");
             $table->string("estado");
             $table->integer("id_pais");
