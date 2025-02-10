@@ -14,9 +14,9 @@ export class class_checkout {
       placeholder: "Name",
       error: "",
     },
-    phone: {
+    vat_number: {
       value: "",
-      placeholder: "Phone",
+      placeholder: "Vat number",
       error: "",
     },
     address: {
@@ -88,7 +88,7 @@ export class class_checkout {
       await c_clientes.fn_a_clientes({
         id_usuario: userData.value.id_usuario,
         nombre: class_checkout.formCheckout1.name.value,
-        telefono: class_checkout.formCheckout1.phone.value,
+        telefono: class_checkout.formCheckout1.vat_number.value,
         direccion: class_checkout.formCheckout1.address.value,
         id_pais: 1,
         estado: class_checkout.formCheckout2.state.value,

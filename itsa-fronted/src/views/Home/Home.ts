@@ -31,7 +31,7 @@ export class class_home {
         class: "hidden imagen_2",
       },
       {
-        texto: "collillustration",
+        texto: "coll illustration",
         class: "hidden imagen_3",
       },
       {

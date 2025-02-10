@@ -8,15 +8,15 @@ onMounted(() => {
 </script>
 
 <template>
-    <footer id="footer" class="flex flex-col w-full grow shrink-0 px-[clamp(18px,5vw,68px)] min-h-screen justify-end">
+    <footer id="footer" class="flex flex-col w-full grow shrink-0 px-[clamp(18px,5vw,68px)] h-screen justify-end">
         <div
             class="flex flex-col items-center justify-center w-full h-full find-us-mensaje app-findus-animation-timeline">
-            <p class="text-pretty w-full max-w-[500px] text-center">
+            <p class="text-pretty text-[clamp(1rem,2.5vw,1.5rem)] w-full max-w-[700px] text-center">
                 itsa studio <sub class="align-super text-[.55rem] font-black z-[-1]">TM</sub> is
                 an
                 independent digital assets boutique runned by
                 IN THE SAME AGENCY <sub class="align-super text-[.55rem] font-black z-[-1]">TM</sub>
-                team that provides high quality, useful, affordable and extermely
+                team that provides high quality, useful, affordable and extrem
                 unique resources. our passion is
                 to create digital products to hep to students, designers,
                 agencies and anyone person creative.
@@ -25,7 +25,8 @@ onMounted(() => {
         <div
             class="flex flex-col items-center md:flex-row lg:flex-row md:justify-between lg:justify-between gap-[40px] md:items-start lg:items-start mt-[50px]">
             <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px] gap-[7px]">
-                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic" class="find-us-titulo">
+                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
+                    class="border-b-black border-b find-us-titulo">
                     information
                 </p>
                 <div class="flex flex-col items-start find-us-description gap-[5px]">
@@ -48,7 +49,8 @@ onMounted(() => {
                 </div>
             </section>
             <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px]  gap-[7px]">
-                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic" class="find-us-titulo">
+                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
+                    class="border-b-black border-b find-us-titulo">
                     folow us
                 </p>
                 <div class="flex flex-col find-us-description gap-[5px]">
@@ -67,7 +69,8 @@ onMounted(() => {
                 </div>
             </section>
             <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px] gap-[7px]">
-                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic" class="find-us-titulo">
+                <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
+                    class="border-b-black border-b find-us-titulo">
                     support
                 </p>
                 <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">

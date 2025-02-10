@@ -161,6 +161,12 @@ export class c_registerView {
         false
       );
 
+
+      site.setCookies({
+        "e.u.d": JSON.stringify(responseRegister.user_data),
+        logged_in_successfully: "false",
+      });
+
       const response = await c_general.SecretKey();
       if (response) {
         site.setCookies({

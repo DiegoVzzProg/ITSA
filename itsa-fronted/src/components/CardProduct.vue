@@ -100,14 +100,14 @@ onMounted(() => {
 
 <template>
     <div
-        class="flex text-center justify-between items-center flex-col gap-4 rounded-lg w-full max-w-[508px] border border-black min-h-[508px] max-h-[608px]">
-        <p class="py-6">
+        class="flex text-center justify-between items-center flex-col gap-4 rounded-lg w-full max-w-[408px] border border-black min-h-[608px] max-h-[608px]">
+        <p class="py-6 mt-6">
             {{ titulo }}
         </p>
-        <p class="font-itsa-bold text-[clamp(1.5em,3vw,3em)]">
+        <p class="font-itsa-bold text-[clamp(2em,3vw,3em)]">
             {{ subtitulo }}
         </p>
-        <p class="font-itsa-bold text-[clamp(1.5em,3vw,3em)]">
+        <p class="font-itsa-bold text-[clamp(2em,3vw,3em)]">
             ${{ precio }} mxn
         </p>
         <p class="w-full max-w-44 text-pretty">
