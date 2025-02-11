@@ -4,6 +4,7 @@ use App\Http\Controllers\CCarritoCliente;
 use App\Http\Controllers\CClientes;
 use App\Http\Controllers\CGeneral;
 use App\Http\Controllers\CProductos;
+use App\Http\Controllers\CStripe;
 use App\Http\Controllers\CUsuarios;
 
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
             Route::post('/totalPrice', [CCarritoCliente::class, 'fn_l_precio_carrito_cliente']);
+            Route::post('/proceedToCheckout', [CStripe::class, 'fn_stripe']);
         });
 
         Route::prefix('customers')->group(function () {

@@ -141,6 +141,11 @@ export class dgav {
 //#endregion
 
 export class site {
+  public static userData(): any {
+    const data: any = site.getCookie("e.u.d");
+    return data ? JSON.parse(data) : undefined;
+  }
+
   /**
    * Encripta cualquier dato (objeto, arreglo, número, boolean, string, etc.)
    * y retorna una cadena cifrada.
@@ -186,7 +191,7 @@ export class site {
       Cookies.set(key, encrypted ? this.encryptData(value) : value, {
         path: "/",
         sameSite: "Strict",
-        expires: 7,
+        expires: 1,
       });
     });
   }

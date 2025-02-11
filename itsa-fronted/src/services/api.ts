@@ -30,8 +30,10 @@ api.interceptors.response.use(
       if (error.response.data.message == "expired") {
         site.allDeleteCookies();
         site.RedirectPage("home");
-        window.location.reload();
       }
+    } else if (error.response.status == 401) {
+      site.allDeleteCookies();
+      site.RedirectPage("home");
     }
     return Promise.reject(error);
   }

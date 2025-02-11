@@ -34,7 +34,8 @@ class TProducto extends Model
         'imagen',
         'archivo',
         'hover_efecto',
-        'foto_miniatura'
+        'foto_miniatura',
+        'id_stripe'
     ];
 
     // Valores por defecto de los atributos

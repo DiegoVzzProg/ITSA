@@ -1,6 +1,7 @@
 import { ref } from "vue";
 import { c_productos } from "../../services/s_productos";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
+import { c_clientes } from "../../services/s_clientes";
 
 export const productos = ref<any>([]);
 export const imgsPrincipal = ref<any>([
@@ -30,6 +31,7 @@ const section4 = ref<HTMLElement | null>(null);
 export class class_home {
   public static onInit() {
     this.Productos();
+    this.CarritoCliente();
 
     section1.value = document.getElementById("section1") as HTMLElement;
     section2.value = document.getElementById("section2") as HTMLElement;
@@ -37,6 +39,16 @@ export class class_home {
     section4.value = document.getElementById("section4") as HTMLElement;
 
     window.addEventListener("scroll", this.onHandleScroll);
+  }
+
+  public static async CarritoCliente(): Promise<void> {
+    if (site.userData()) {
+      // const parsedData = site.userData();
+      // const response: any = await c_clientes.fn_l_carrito_cliente({
+      //   id_usuario: parsedData.id_usuario,
+      // });
+      // console.log(response.length);
+    }
   }
 
   public static onUnInit() {
@@ -104,5 +116,9 @@ export class class_home {
       }
       productos.value = response;
     }
+  }
+
+  public static ObtenerHoverEfecto(): string {
+    return `hover:bg-[#0000]`;
   }
 }

@@ -8,9 +8,8 @@ onMounted(() => {
 </script>
 
 <template>
-    <footer id="footer" class="flex flex-col w-full grow shrink-0 px-[clamp(18px,5vw,68px)] h-screen justify-end">
-        <div
-            class="flex flex-col items-center justify-center w-full h-full find-us-mensaje app-findus-animation-timeline">
+    <footer id="footer" class="flex flex-col w-full grow shrink-0 px-[clamp(18px,5vw,68px)] min-h-screen justify-end">
+        <div class="flex flex-col items-center justify-center w-full h-full grow shrink-0">
             <p class="text-pretty text-[clamp(1rem,2.5vw,1.5rem)] w-full max-w-[700px] text-center">
                 itsa studio <sub class="align-super text-[.55rem] font-black z-[-1]">TM</sub> is
                 an
@@ -24,36 +23,38 @@ onMounted(() => {
         </div>
         <div
             class="flex flex-col items-center md:flex-row lg:flex-row md:justify-between lg:justify-between gap-[40px] md:items-start lg:items-start mt-[50px]">
-            <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px] gap-[7px]">
+            <section
+                class="flex flex-row max-[768px]:flex-col w-full md:max-w-[230px] lg:max-w-[230px] min-h-full gap-[7px]">
                 <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
-                    class="border-b-black border-b find-us-titulo">
+                    class="md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4 find-us-titulo">
                     information
                 </p>
-                <div class="flex flex-col items-start find-us-description gap-[5px]">
+                <div class="flex flex-col items-start gap-[5px]">
                     <button @click="site.RedirectPage('info', { select: 'license' })"
-                        class="hover:bg-[rgb(244, 242, 239)] transition-all">
+                        class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         license
                     </button>
                     <button @click="site.RedirectPage('info', { select: 'payments' })"
-                        class="hover:bg-[rgb(244, 242, 239)] transition-all">
+                        class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         payments & refunds
                     </button>
                     <button @click="site.RedirectPage('info', { select: 'terms' })"
-                        class="hover:bg-[rgb(244, 242, 239)] transition-all">
+                        class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         terms & conditions
                     </button>
                     <button @click="site.RedirectPage('info', { select: 'privacity' })"
-                        class="hover:bg-[rgb(244, 242, 239)] transition-all">
+                        class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         privacity policy
                     </button>
                 </div>
             </section>
-            <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px]  gap-[7px]">
+            <section
+                class="flex flex-row max-[768px]:flex-col w-full md:max-w-[230px] lg:max-w-[230px] min-h-full gap-[7px]">
                 <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
-                    class="border-b-black border-b find-us-titulo">
+                    class="md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4">
                     folow us
                 </p>
-                <div class="flex flex-col find-us-description gap-[5px]">
+                <div class="flex flex-col find-us-description gap-[5px] ps-1">
                     <a href="https://www.instagram.com/itsastudio_mx/?igsh=N284M2I0ZjBreWUy"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all" target="_blank">
                         instagram
@@ -68,9 +69,10 @@ onMounted(() => {
                     </a>
                 </div>
             </section>
-            <section class="flex flex-col w-full md:max-w-[230px] lg:max-w-[230px] gap-[7px]">
+            <section
+                class="flex flex-row max-[768px]:flex-col w-full md:max-w-[230px] lg:max-w-[230px] min-h-full gap-[7px]">
                 <p style="font-family: 'Times New Roman', Times, serif; font-style: italic"
-                    class="border-b-black border-b find-us-titulo">
+                    class="md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4">
                     support
                 </p>
                 <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">
@@ -81,7 +83,7 @@ onMounted(() => {
                 </div>
             </section>
         </div>
-        <div class="w-full felx">
+        <div class="w-full felx pt-10">
             <p class="py-[20px]">&#169;2024 all rights reserved</p>
         </div>
     </footer>

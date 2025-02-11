@@ -43,7 +43,7 @@ onBeforeUnmount(() => {
             <div class="flex flex-row-reverse justify-end max-[768px]:flex-col max-[768px]:items-center w-full gap-2 py-5 transition-all"
                 v-if="productos.length > 0">
                 <div v-for="(producto, index) in productos" :key="index"
-                    :class="`bg-[rgb(244,242,239)] transition-all duration-300 ease-in-out py-12 w-full max-w-[508px] max-h-[508px] min-h-[508px] max-[620px]:min-h-[408px] max-[620px]:max-h-[408px] rounded-[12px] p-5 flex flex-col group ${String(producto.hover_efecto)}`">
+                    :class="[producto.hover_efecto, 'bg-[rgb(244,242,239)] transition-all duration-300 ease-in-out py-12 w-full max-w-[508px] max-h-[508px] min-h-[508px] max-[620px]:min-h-[408px] max-[620px]:max-h-[408px] rounded-[12px] p-5 flex flex-col group']">
                     <div class="flex flex-row group-hover:text-white">
                         <div class="flex flex-col w-full gap-1">
                             <p class="font-itsa-bold text-[clamp(1.8em,5vw,2.5em)] mb-[-18px] leading-8">
@@ -78,4 +78,13 @@ onBeforeUnmount(() => {
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+
+.hover_efecto_basicsIcons:hover{
+    background-color: rgba(201, 117, 249, 0.459);
+}
+
+.hover_efecto_universalIcons:hover{
+    background-color: rgba(116, 171, 253, 0.61);
+}
+</style>

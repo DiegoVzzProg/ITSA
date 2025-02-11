@@ -53,4 +53,13 @@ export class c_clientes {
       data
     );
   }
+  public static async proceedToCheckout(
+    data: Record<string, any>
+  ): Promise<any> {
+    return await dgav.apiRequest(
+      `${shoppingCartUrl}/proceedToCheckout`,
+      dgav.httpMethod.POST,
+      data
+    );
+  }
 }
