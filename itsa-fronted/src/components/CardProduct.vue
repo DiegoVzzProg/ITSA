@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
 import { c_clientes } from '../services/s_clientes';
 import { c_productos } from '../services/s_productos';
+import { numberCartShopping } from '../stores/countCartShopping';
 
 const props = defineProps<{
     id_producto: number;
@@ -17,7 +18,7 @@ const AddCartCostumer = async () => {
     if (userData) {
         const parsedData = JSON.parse(userData);
 
-        await c_clientes.fn_a_carrito_cliente({
+        await c_clientes.addProduct({
             id_usuario: parsedData.id_usuario,
             id_producto: props.id_producto,
             descripcion: props.subtitulo
@@ -30,21 +31,7 @@ const AddCartCostumer = async () => {
             return;
         }
 
-        const response: any = await c_clientes.fn_l_carrito_cliente({
-            id_usuario: parsedData.id_usuario,
-        });
-
-        let mensaje: any = dgav.dataBase.message;
-
-        if (response) {
-            if (!IsNullOrEmpty(mensaje)) {
-                notify.error(mensaje);
-                return;
-            }
-            site.setCookies({
-                "e.n.o.p": response.length.toString(),
-            }, false);
-        }
+        numberCartShopping().update();
 
         site.RedirectPage("home");
 
@@ -54,7 +41,7 @@ const AddCartCostumer = async () => {
 }
 
 const Download = async () => {
-    const response: any = await c_productos.fn_descargar_archivo(String(props.id_producto));
+    const response: any = await c_productos.downloadFile(String(props.id_producto));
     console.log(response);
 
     if (response) {
@@ -84,10 +71,10 @@ function GoCheckOut() {
 
 const existeArticuloEnCarrito = ref<boolean>(false);
 const habilitarDescarga = async () => {
-    const response: any = await c_clientes.fn_existe_producto_carrito_cliente({
+
+    const response: any = await c_clientes.checkProductInShoppingCart({
         id_producto: props.id_producto
     });
-
 
     if (response) {
         existeArticuloEnCarrito.value = response.existe;
@@ -119,13 +106,8 @@ onMounted(() => {
             </button>
             <button @click="AddCartCostumer"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
-                v-else-if="Number(precio) > 0">
-                buy
-            </button>
-            <button @click="Download"
-                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
                 v-else>
-                download {{ Number(precio) > 0 ? "" : "free" }}
+                {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
             </button>
         </div>
     </div>

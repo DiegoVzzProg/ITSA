@@ -29,7 +29,7 @@ class CProductos extends Controller
         $producto = TProducto::find($id_producto);
 
         if (!$producto) {
-            return CGeneral::CreateMessage('Product not found', 598, null);
+            return CGeneral::CreateMessage('Product not found', 599, null);
         }
 
         $filePath = $producto->archivo;

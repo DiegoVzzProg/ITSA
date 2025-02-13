@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 import { site } from "../utils/site";
+import { numberCartShopping } from "../stores/countCartShopping";
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -26,14 +27,16 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 9999) {
-      if (error.response.data.message == "expired") {
-        site.allDeleteCookies();
-        site.RedirectPage("home");
-      }
-    } else if (error.response.status == 401) {
-      site.allDeleteCookies();
-      site.RedirectPage("home");
+    if (error.response.status == 401) {
+      // site.allDeleteCookies();
+      // numberCartShopping().default();
+      // site.RedirectPage("home");
+      // site.setCookies(
+      //   {
+      //     session: "false",
+      //   },
+      //   false
+      // );
     }
     return Promise.reject(error);
   }

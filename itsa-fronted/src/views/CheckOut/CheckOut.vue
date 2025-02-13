@@ -1,16 +1,20 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import SelectCountry from "../../components/SelectCountry.vue";
 
 import { dgav, IsNullOrEmpty, notify, site } from '../../utils/site';
 import File from '../../components/File.vue';
 import Loading from '../../components/Loading.vue';
 import { c_clientes } from '../../services/s_clientes';
+import { numberCartShopping } from '../../stores/countCartShopping';
+import { useRoute } from 'vue-router';
 
 const productData = ref<any>({});
 const productPrecio = ref<string>("");
 const impuesto = ref<string>("");
-const userData = ref<any>({});
+const clientDataExists = ref<boolean>(false);
+const clientData = ref<any>(null);
+const finish = ref<boolean>(false);
 
 const formCheckout1 = reactive({
     name: {
@@ -54,14 +58,21 @@ const formCountry = reactive({
         value: "",
         placeholder: "Country",
         error: "",
+        id_pais: 0,
     },
 });
+const route = useRoute();
 
 onMounted(() => {
-    userData.value = JSON.parse(site.getCookie("e.u.d") || "{}");
+    const sessionId: string = route.query.session_id as string;
+    console.log(sessionId);
 
     productos();
     infoForms1();
+
+    if (numberCartShopping().count == 0) {
+        site.RedirectPage('home');
+    }
 });
 
 
@@ -71,15 +82,14 @@ onUnmounted(() => {
 
 
 const infoForms1 = async () => {
-    const dataUser: any = JSON.parse(site.getCookie("e.u.d"));
-
     const data: any = {
-        id_usuario: dataUser.id_usuario,
+        id_usuario: site.userData().id_usuario,
     };
 
-    const response: any = await c_clientes.fn_l_clientes(data);
+    const response: any = await c_clientes.getCustomer(data);
     if (response) {
-        console.log(response);
+        clientDataExists.value = true;
+        clientData.value = response;
     }
 }
 
@@ -111,23 +121,23 @@ const AddCliente = async () => {
     validateCountry();
 
     if (
-        IsNullOrEmpty(form1.name.error) ||
-        IsNullOrEmpty(form1.vat_number.error) ||
-        IsNullOrEmpty(form1.address.error) ||
-        IsNullOrEmpty(form2.state.error) ||
-        IsNullOrEmpty(form2.postal_code.error) ||
-        IsNullOrEmpty(formCountry.country.error)
+        !IsNullOrEmpty(form1.name.error) ||
+        !IsNullOrEmpty(form1.vat_number.error) ||
+        !IsNullOrEmpty(form1.address.error) ||
+        !IsNullOrEmpty(form2.state.error) ||
+        !IsNullOrEmpty(form2.postal_code.error) ||
+        !IsNullOrEmpty(formCountry.country.error)
     ) {
         return;
     }
 
-    if (userData.value) {
-        await c_clientes.fn_a_clientes({
-            id_usuario: userData.value.id_usuario,
+    if (site.userData()) {
+        await c_clientes.registerCustomer({
+            id_usuario: site.userData().id_usuario,
             nombre: formCheckout1.name.value,
             numero_de_iva_empresa: formCheckout1.vat_number.value,
             direccion: formCheckout1.address.value,
-            id_pais: 1,
+            id_pais: formCountry.country.value,
             estado: formCheckout2.state.value,
             codigo_postal: formCheckout2.postal_code.value,
         });
@@ -137,6 +147,9 @@ const AddCliente = async () => {
             notify.error(message);
             return;
         }
+
+        notify.success("your billing information has been saved.");
+        clientDataExists.value = true;
     }
 }
 
@@ -177,6 +190,8 @@ const validateForms1 = (value: string, type: string) => {
                 form1.address.error = "Address is required.";
             } else if (value.length > 255) {
                 form1.address.error = "Address cannot exceed 255 characters.";
+            } else {
+                form1.address.error = "";
             }
             break;
     }
@@ -218,39 +233,32 @@ const validateForms2 = (value: string, type: string) => {
 }
 
 const productos = async () => {
-    if (userData.value) {
-        let response: any = await c_clientes.fn_l_carrito_cliente({
-            id_usuario: userData.value.id_usuario,
-        });
+    if (site.userData()) {
+        let response: any = await c_clientes.shoppingCartClient();
 
         let message: string = dgav.dataBase.message;
 
+        if (!IsNullOrEmpty(message)) {
+            notify.error(message);
+            return;
+        }
+
         if (response) {
-            if (!IsNullOrEmpty(message)) {
-                notify.error(message);
-                return;
-            }
-
-            productData.value = response;
-
-            response = await c_clientes.fn_l_precio_carrito_cliente({
-                id_usuario: userData.value.id_usuario,
-            });
-
-            if (response) {
-                if (!IsNullOrEmpty(message)) {
-                    notify.error(message);
-                    return;
-                }
-
-                productPrecio.value = response.precio;
-                impuesto.value = response.impuesto;
-            }
+            productData.value = response.carrito_cliente;
+            productPrecio.value = response.precio;
+            impuesto.value = response.impuesto;
         }
     }
 }
 
-const checkoutSession = async (cadena: string) => {
+const checkoutSession = async () => {
+    let cadena: string = "";
+    for (let i = 0; i < productData.value.length; i++) {
+        if (Number(productData.value[i].precio) > 0) {
+            cadena += productData.value[i].id_producto + ";";
+        }
+    }
+
     const response: any = await c_clientes.proceedToCheckout({
         cadena: cadena,
     });
@@ -268,7 +276,7 @@ const checkoutSession = async (cadena: string) => {
             return;
         }
 
-        window.open(url, "_blank");
+        window.location.href = url;
     }
 }
 
@@ -279,56 +287,119 @@ const validateCountry = () => {
         formCountry.country.error = "";
     }
 }
+
+const eliminarProductoDelCarrito = async (id_producto: string) => {
+
+    const response1: any = await c_clientes.deleteProductFromShoppingCart({
+        id_producto: btoa(id_producto)
+    });
+
+    if (!IsNullOrEmpty(dgav.dataBase.message)) {
+        notify.error(dgav.dataBase.message);
+        return;
+    }
+
+    if (response1) {
+        notify.success(response1.message);
+
+        numberCartShopping().update();
+
+        if (response1.productos.length == 0) {
+            site.RedirectPage("home");
+            return;
+        }
+        productData.value = response1.productos;
+
+    }
+}
+
 </script>
 
 <template>
     <div class="flex flex-row gap-2 pt-[76px] w-full min-h-[200px] mb-6 items-end justify-center">
         <div class="flex flex-row w-full max-[1060px]:max-w-2xl gap-2">
             <p>
-                hi,
+                hi user,
             </p>
             <p>
-                {{ userData.nombre }}!
+                {{ site.userData().nombre }}!
             </p>
         </div>
     </div>
     <div
-        class="flex flex-row gap-4 max-[1060px]:pb-20 justify-between w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
-        <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-2">
+        class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
+        <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0">
             <div class="flex flex-col gap-1 text-[clamp(.85rem,3vw,1rem)]">
                 <p>
                     your details
                 </p>
                 <p>biling</p>
             </div>
-            <div class="flex flex-col gap-1" v-for="item in formCheckout1">
-                <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
-                    :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" v-if="item.error">
-                    {{ item.error }}
-                </span>
-            </div>
-            <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
-                <div class="flex flex-col w-full gap-1" v-for="item in formCheckout2">
-                    <input v-model="item.value" type="text" @input="validateForms2(item.value, item.id)"
-                        class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder">
+            <div class="flex flex-col gap-2 w-full" v-if="!clientData">
+                <div class="flex flex-col gap-1" v-for="item in formCheckout1">
+                    <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
+                        :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
                     <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                         v-if="item.error">
                         {{ item.error }}
                     </span>
                 </div>
+                <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
+                    <div class="flex flex-col w-full gap-1" v-for="item in formCheckout2">
+                        <input v-model="item.value" type="text" @input="validateForms2(item.value, item.id)"
+                            class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder">
+                        <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                            v-if="item.error">
+                            {{ item.error }}
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <SelectCountry v-model="formCountry.country.id_pais" :placeholder="formCountry.country.placeholder"
+                        :id_pais="formCountry.country.id_pais" />
+                    <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                        v-if="formCountry.country.error">
+                        {{ formCountry.country.error }}
+                    </span>
+                </div>
+                <button @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white">
+                    continue
+                </button>
             </div>
-            <div class="flex flex-col gap-1">
-                <SelectCountry v-model="formCountry.country.value" @change="validateCountry"
-                    :placeholder="formCountry.country.placeholder" />
-                <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                    v-if="formCountry.country.error">
-                    {{ formCountry.country.error }}
-                </span>
+            <div class="flex flex-col gap-2 w-full justify-between h-[min(500px,100%)]" v-else>
+                <div class="flex flex-col leading-1">
+                    <p>
+                        <strong>Name:</strong> {{ clientData.nombre }}
+                    </p>
+                    <p>
+                        <strong>Address:</strong> {{ clientData.direccion }}
+                    </p>
+                    <div class="flex flex-row gap-1">
+                        <p>
+                            <strong>Postal Code:</strong> {{ clientData.codigo_postal }},
+                        </p>
+                        <p>
+                            <strong>State:</strong> {{ clientData.estado }}
+                        </p>
+                    </div>
+                    <p>
+                        <strong>Country:</strong> {{ clientData.pais }}
+                    </p>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <p>
+                        payment
+                    </p>
+                    <button v-on:click="finish = !finish" v-if="!finish"
+                        class="bg-black py-5 px-3 rounded-full text-white">
+                        finish
+                    </button>
+                    <button v-if="finish" v-on:click="checkoutSession()"
+                        class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
+                        pay with card
+                    </button>
+                </div>
             </div>
-            <button type="submit" @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white">
-                continue
-            </button>
         </div>
 
         <div class="flex flex-col w-full max-w-2xl gap-2">
@@ -361,6 +432,16 @@ const validateCountry = () => {
                                 ${{ item.precio }}
                             </p>
                         </div>
+                        <button class="sticky right-0 rounded-s-full bg-white"
+                            @click="eliminarProductoDelCarrito(item.id_producto)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M18 6l-12 12" />
+                                <path d="M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
                 <Loading v-else />

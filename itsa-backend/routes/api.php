@@ -22,10 +22,10 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('auth:sanctum', 'session.expire')->group(function () {
         Route::prefix('shoppingCart')->group(function () {
-            Route::post('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
+            Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
-            Route::post('/totalPrice', [CCarritoCliente::class, 'fn_l_precio_carrito_cliente']);
             Route::post('/proceedToCheckout', [CStripe::class, 'fn_stripe']);
+            Route::post('/deleteProductFromShoppingCart', [CCarritoCliente::class, 'fn_b_producto_carrito_cliente']);
         });
 
         Route::prefix('customers')->group(function () {
@@ -40,9 +40,10 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::get('/downloadFile/{id_producto}', [CProductos::class, 'fn_descargar_archivo']);
+            Route::post('/stripe/checkoutSuccess', [CStripe::class, 'fn_stripe_success']);
         });
 
         Route::get('/secretKey', [CGeneral::class, 'generarSecretKey']);
-        Route::post('/countries', [CGeneral::class, 'fn_l_paises']);
+        Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
     });
 });

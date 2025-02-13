@@ -24,8 +24,8 @@ class CheckSessionExpiration
 
             if ($diferencia >= 1440) {
                 return response()->json([
-                    'message' => 'expired'
-                ], 9999);
+                    'message' => 'session expired'
+                ], 401);
             }
         }
 

@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import { c_general } from '../services/s_general';
 
 interface Country {
     id_pais: number;
     nombre: string;
 }
+
 const props = defineProps({
+    modelValue: {
+        type: Number,
+        default: null
+    },
     placeholder: {
         type: String,
-        default: 'Country'
+        default: 'Seleccione un país'
     }
 });
 
@@ -19,19 +24,37 @@ const countries = ref<Country[]>([]);
 const selectedCountry = ref<string>('');
 const showCountries = ref(false);
 const search = ref('');
-const dropdownButton = ref<HTMLButtonElement>();
-const inputSearch = ref<HTMLButtonElement>();
 
-// Mejor nombre de función
+// Watcher para actualizar la selección cuando cambia el id_pais
+watch(() => props.modelValue, (newId) => {
+    if (newId) {
+        const country = countries.value.find(c => c.id_pais === newId);
+        if (country) {
+            selectedCountry.value = country.nombre;
+        }
+    } else {
+        selectedCountry.value = '';
+    }
+}, { immediate: true });
+
+// Watcher adicional para cuando se cargan los países
+watch(countries, () => {
+    if (props.modelValue) {
+        const country = countries.value.find(c => c.id_pais === props.modelValue);
+        if (country) {
+            selectedCountry.value = country.nombre;
+        }
+    }
+});
+
 const fetchCountries = async () => {
-    const response = await c_general.fn_l_paises();
+    const response = await c_general.countries();
     if (response?.data_pais) {
         countries.value = response.data_pais;
     }
 };
 
 const filteredCountries = computed(() => {
-    if (!search.value) return countries.value;
     return countries.value.filter(country =>
         country.nombre.toLowerCase().includes(search.value.toLowerCase())
     );
@@ -45,46 +68,31 @@ const selectCountry = (country: Country) => {
     emit('change', country);
 };
 
-const closeOnClickOutside = (event: MouseEvent) => {
-    if (!dropdownButton.value?.contains(event.target as Node) && !inputSearch.value?.contains(event.target as Node)) {
-        showCountries.value = false;
-    }
-};
-
 onMounted(() => {
     fetchCountries();
-    document.addEventListener('click', closeOnClickOutside);
 });
 </script>
 
 <template>
     <div class="custom-select">
-        <button ref="dropdownButton" @click="showCountries = !showCountries" class="select-button"
-            :aria-expanded="showCountries" aria-haspopup="listbox">
+        <button @click="showCountries = !showCountries" class="select-button" :aria-expanded="showCountries">
             <span :class="['selected-value', !selectedCountry && 'placeholder']">
                 {{ selectedCountry || placeholder }}
             </span>
         </button>
 
-        <transition name="slide-fade">
-            <div v-if="showCountries" role="listbox" class="dropdown-container">
-                <div class="search-container">
-                    <input v-model="search" ref="inputSearch" type="text" placeholder="Search..." class="search-input"
-                        aria-label="Search country" />
-                </div>
-
-                <ul class="options-list">
-                    <li v-for="(country, index) in filteredCountries" :key="country.id_pais" role="option"
-                        :aria-selected="country.id_pais === index" class="option-item" @click="selectCountry(country)">
-                        {{ country.nombre }}
-                    </li>
-
-                    <li v-if="!filteredCountries.length" class="no-results">
-                        No results found
-                    </li>
-                </ul>
+        <div v-if="showCountries" class="dropdown-container">
+            <div class="search-container">
+                <input v-model="search" type="text" placeholder="Buscar..." class="search-input" />
             </div>
-        </transition>
+
+            <ul class="options-list">
+                <li v-for="country in filteredCountries" :key="country.id_pais" class="option-item"
+                    @click="selectCountry(country)">
+                    {{ country.nombre }}
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 

@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { c_productos } from "../../services/s_productos";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_clientes } from "../../services/s_clientes";
+import { sp_list_products } from "../../stores/sp_listProducts";
 
 export const productos = ref<any>([]);
 export const imgsPrincipal = ref<any>([
@@ -31,7 +32,16 @@ const section4 = ref<HTMLElement | null>(null);
 export class class_home {
   public static onInit() {
     this.Productos();
-    this.CarritoCliente();
+
+    let sessionExpire: boolean =
+      Boolean(site.getCookie("session", false)) ?? false;
+
+    if (sessionExpire) {
+      site.allDeleteCookies();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    }
 
     section1.value = document.getElementById("section1") as HTMLElement;
     section2.value = document.getElementById("section2") as HTMLElement;
@@ -39,16 +49,6 @@ export class class_home {
     section4.value = document.getElementById("section4") as HTMLElement;
 
     window.addEventListener("scroll", this.onHandleScroll);
-  }
-
-  public static async CarritoCliente(): Promise<void> {
-    if (site.userData()) {
-      // const parsedData = site.userData();
-      // const response: any = await c_clientes.fn_l_carrito_cliente({
-      //   id_usuario: parsedData.id_usuario,
-      // });
-      // console.log(response.length);
-    }
   }
 
   public static onUnInit() {
@@ -106,7 +106,13 @@ export class class_home {
   }
 
   public static async Productos() {
-    const response: any = await c_productos.fn_l_productos({
+    const data: Record<string, any> = {
+      id_producto: 0,
+    };
+
+    const prueba: any = await sp_list_products().execute(data);
+
+    const response: any = await c_productos.listProducts({
       id_producto: 0,
     });
     if (response) {

@@ -20,8 +20,7 @@ return new class extends Migration {
             $table->string("imagen")->nullable();
             $table->string("foto_miniatura")->nullable();
             $table->string("archivo")->nullable();
-            $table->string("hover_efecto")->default("rgba(201,117,249,0.4)");
-            $table->string("id_stripe")->nullable()->default(null);
+            $table->string("hover_efecto")->default("hover_efecto_basicsIcons");
         });
     }
 

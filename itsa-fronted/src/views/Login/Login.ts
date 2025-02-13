@@ -3,6 +3,7 @@ import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
+import { numberCartShopping } from "../../stores/countCartShopping";
 
 export const forgotPassword = ref<boolean>(false);
 export const FormLogin = ref<any>({
@@ -35,7 +36,7 @@ export class c_loginView {
   }
 
   public static async RecuperarPassword() {
-    await c_auth.fn_forgot_password_restore({
+    await c_auth.restorePassword({
       email: FormLogin.value.email.value,
     });
 
@@ -102,7 +103,7 @@ export class c_loginView {
 
     if (formEmail.error || formPassword.error) return;
 
-    const responseLogin: any = await c_auth.fn_login({
+    const responseLogin: any = await c_auth.loginUser({
       email: formEmail.value,
       password: formPassword.value,
     });
@@ -122,7 +123,7 @@ export class c_loginView {
       );
 
       const response = await c_general.SecretKey();
-      if (response) {
+      if (response && responseLogin) {
         site.setCookies(
           {
             "e.k": response.secretKey,
@@ -144,27 +145,10 @@ export class c_loginView {
         const userData = site.getCookie("e.u.d");
 
         if (userData) {
-          const parsedData = JSON.parse(userData);
-          const response: any = await c_clientes.fn_l_carrito_cliente({
-            id_usuario: parsedData.id_usuario,
-          });
+          numberCartShopping().update();
 
-          if (!IsNullOrEmpty(dgav.dataBase.message)) {
-            notify.error(dgav.dataBase.message);
-            return;
-          }
-
-          if (response) {
-            site.setCookies(
-              {
-                "e.n.o.p": response.length.toString() ?? "0",
-              },
-              false
-            );
-
-            this.ResetFormLogin();
-            site.RedirectPage("home");
-          }
+          this.ResetFormLogin();
+          site.RedirectPage("home");
         }
       }
     }

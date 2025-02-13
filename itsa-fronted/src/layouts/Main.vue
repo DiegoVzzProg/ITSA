@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
 import { isNotified, site } from '../utils/site';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
-
+import Loading from '../components/Loading.vue';
+import { dgav } from '../utils/site';
+const loading = ref(dgav.dataBase.isLoading);
+watch(() => dgav.dataBase.isLoading, (newVal) => {
+    loading.value = newVal;
+});
 
 onMounted(() => {
-
     const userData = site.getCookie('e.u.d');
     if (userData) {
         if (!isNotified) {
@@ -32,6 +36,7 @@ onMounted(() => {
 </script>
 
 <template>
+    <Loading v-if="loading" />
     <Header />
     <main class="flex flex-col w-full min-h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" id="main_contenedor">
         <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0">

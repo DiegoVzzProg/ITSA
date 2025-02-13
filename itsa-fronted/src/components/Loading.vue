@@ -7,7 +7,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="flex w-full justify-center items-center">
+    <div class="flex w-full justify-center items-center fixed top-0 left-0 h-full bg-white z-[9999]">
         <svg viewBox="25 25 50 50" class="svg-loading">
             <circle r="20" cy="50" cx="50"></circle>
         </svg>

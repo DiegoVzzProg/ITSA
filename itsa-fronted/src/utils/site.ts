@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import router from "../router";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
-import { ref } from "vue";
 import CryptoJS from "crypto-js";
 
 //#region  dgavClass
@@ -12,7 +11,6 @@ interface DatabaseState {
   status: number;
   message: string;
   isLoading: boolean;
-  reset(): void;
 }
 
 const httpMethods = {
@@ -33,20 +31,17 @@ export class dgav {
     status: 200,
     message: "",
     isLoading: false,
-    reset() {
-      this.status = 200;
-      this.message = "";
-      this.isLoading = false;
-    },
   };
 
-  static async apiRequest<T = any>(
+  public static async apiRequest<T = any>(
     endPoint: string,
     method: httpMethod,
     body?: Record<string, any>
   ): Promise<any> {
-    this.dataBase.reset();
     this.dataBase.isLoading = true;
+    this.dataBase.status = 200;
+    this.dataBase.message = "";
+
     const controller = new AbortController();
 
     const timeoutId = setTimeout(() => {
@@ -68,7 +63,6 @@ export class dgav {
       const { data, status } = response;
       this.dataBase.status = status;
 
-      this.dataBase.isLoading = false;
       if (response.message) {
         this.handleError(response.message);
         return;
@@ -87,8 +81,8 @@ export class dgav {
         this.handleError(error.message || "An unexpected error occurred");
       }
     } finally {
-      clearTimeout(timeoutId);
       this.dataBase.isLoading = false;
+      clearTimeout(timeoutId);
     }
   }
 
@@ -118,8 +112,8 @@ export class dgav {
       case this.httpMethod.DOWNLOAD:
         return (
           await api.get(endPoint, {
+            ...config,
             responseType: "blob",
-            signal: signal,
           })
         ).data;
       default:
@@ -128,14 +122,12 @@ export class dgav {
   }
 
   private static handleError(message: string, status: number = 500): void {
-    this.dataBase.reset();
     this.dataBase.status = status;
     this.dataBase.message = message;
   }
 
-  static rowsCounts(data: any[]): number {
-    if (!Array.isArray(data)) return 0;
-    return data.length;
+  public static rowsCounts(data: any[]): number {
+    return Array.isArray(data) ? data.length : 0;
   }
 }
 //#endregion
@@ -212,16 +204,6 @@ export class site {
     });
   }
 
-  static async Init(): Promise<void> {
-    const userData = this.getCookie("e.u.d");
-    if (!userData) {
-      numberCart.value = "0";
-    } else {
-      numberCart.value = this.getCookie("e.n.o.p", false);
-    }
-
-    dgav.dataBase.reset();
-  }
   static RedirectPage(
     url: string,
     parametros: Record<string, any> = {},
@@ -246,7 +228,6 @@ export class site {
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-    this.Init();
   }
 
   public static replaceClass(
@@ -264,6 +245,10 @@ export class site {
     const [integer, decimal] = num.toFixed(10).split(".");
     const cleanDecimal = decimal?.replace(/0+$/, "") || "";
     return cleanDecimal ? `${integer}.${cleanDecimal}` : integer;
+  };
+
+  public static IsNullOrEmpty = (value: any): boolean => {
+    return value == null || value == undefined || value == "";
   };
 }
 
@@ -298,5 +283,3 @@ export const notify = new Notyf({
 export const IsNullOrEmpty = (value: any): boolean => {
   return value == null || value == undefined || value == "";
 };
-
-export const numberCart = ref<any>(site.getCookie("e.n.o.p", false) || "0");

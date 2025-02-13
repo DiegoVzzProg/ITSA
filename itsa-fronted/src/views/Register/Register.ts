@@ -140,7 +140,7 @@ export class c_registerView {
     )
       return;
 
-    const responseRegister = await c_auth.fn_register({
+    const responseRegister = await c_auth.registerUser({
       nombre: this.formsProps.name.value,
       email: this.formsProps.email.value,
       password: this.formsProps.password.value,
@@ -167,6 +167,7 @@ export class c_registerView {
         site.setCookies(
           {
             "e.k": response.secretKey || "",
+            logged_in_successfully: "false",
           },
           false
         );
@@ -174,21 +175,6 @@ export class c_registerView {
         site.setCookies({
           "e.u.d": JSON.stringify(responseRegister.user_data),
         });
-
-        site.setCookies(
-          {
-            logged_in_successfully: "false",
-          },
-          false
-        );
-
-        site.setCookies(
-          {
-            "e.n.o.p": "0",
-          },
-          false
-        );
-
         site.RedirectPage("home");
       }
     }

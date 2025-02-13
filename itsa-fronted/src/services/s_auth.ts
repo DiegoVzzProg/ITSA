@@ -3,11 +3,11 @@ import { dgav } from "../utils/site";
 const urlAuth = "/auth";
 
 export class c_auth {
-  static async fn_login(data: Record<string, any>): Promise<any> {
+  static async loginUser(data: Record<string, any>): Promise<any> {
     return this.auth(1, data);
   }
 
-  static async fn_register(data: Record<string, any>): Promise<any> {
+  static async registerUser(data: Record<string, any>): Promise<any> {
     return this.auth(2, data);
   }
 
@@ -36,11 +36,11 @@ export class c_auth {
     return response;
   }
 
-  public static async fN_logout() {
+  public static async logoutUser() {
     return await dgav.apiRequest(`${urlAuth}/logoutUser`, dgav.httpMethod.DELETE);
   }
 
-  public static async fn_forgot_password_restore(data: Record<string, any>) {
+  public static async restorePassword(data: Record<string, any>) {
     return await dgav.apiRequest(
       `${urlAuth}/restorePassword`,
       dgav.httpMethod.POST,

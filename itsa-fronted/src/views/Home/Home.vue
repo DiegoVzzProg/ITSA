@@ -40,32 +40,37 @@ onBeforeUnmount(() => {
         </div>
         <div
             class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in">
-            <div class="flex flex-row-reverse justify-end max-[768px]:flex-col max-[768px]:items-center w-full gap-2 py-5 transition-all"
+            <div class="flex flex-row-reverse w-full justify-end gap-3 py-5 transition-all max-[1024px]:flex-wrap max-[1024px]:justify-center"
                 v-if="productos.length > 0">
-                <div v-for="(producto, index) in productos" :key="index"
-                    :class="[producto.hover_efecto, 'bg-[rgb(244,242,239)] transition-all duration-300 ease-in-out py-12 w-full max-w-[508px] max-h-[508px] min-h-[508px] max-[620px]:min-h-[408px] max-[620px]:max-h-[408px] rounded-[12px] p-5 flex flex-col group']">
-                    <div class="flex flex-row group-hover:text-white">
-                        <div class="flex flex-col w-full gap-1">
-                            <p class="font-itsa-bold text-[clamp(1.8em,5vw,2.5em)] mb-[-18px] leading-8">
+                <div v-for="(producto, index) in productos" :key="index" :class="[
+                    producto.hover_efecto,
+                    'w-[min(508px,100%)] lg:min-h-[clamp(208px,40vw,508px)] min-h-[408px] transition-all duration-300 ease-in-out',
+                    'bg-[rgb(244,242,239)] rounded-[12px] cursor-pointer p-5'
+                ]">
+                    <div class="flex flex-col w-full">
+                        <div class="flex flex-row w-full justify-between items-center gap-2">
+                            <p class="font-itsa-bold text-[clamp(2rem,2.3vw,2.4rem)] leading-7 w-full">
                                 {{ producto.titulo }}
                             </p>
-                            <span class="w-full max-w-[230px] leading-6 ms-1 mt-4">
+                            <button @click="site.RedirectPage(String(producto.url))"
+                                :class="`text-white bg-black py-2 text-nowrap rounded-full px-[clamp(15px,3vw,28px)] text-[1.2rem] md:text-[1.4rem] lg:text-[1.2rem] xl:text-[1.8rem] tracking-wide`">
+                                <p class="translate-y-[3px] font-itsa-bold ">
+                                    {{ parseFloat(producto.precio) > 0 ?
+                                        `$${site.formatNumber(parseFloat(producto.precio))} mxn` : 'free' }}
+                                </p>
+                            </button>
+                        </div>
+                        <div class="flex translate-y-[-8px] flex-col items-start">
+                            <p class="max-w-[230px] leading-6">
                                 <i class="times-new-roman-font text-[1rem] lg:text-[1.4rem] xl:text-[1.4rem]">{{
                                     producto.subtitulo }}</i>
-                            </span>
+                            </p>
                             <p class="text-[clamp(.6em,2vw,.7em)]">
                                 {{ producto.descripcion }}
                             </p>
                         </div>
-                        <div class="flex items-start justify-end">
-                            <button @click="site.RedirectPage(String(producto.url))"
-                                :class="`text-white bg-black py-2 text-nowrap rounded-full px-[clamp(15px,3vw,28px)] font-itsa-bold text-[clamp(20px,3vw,28px)] tracking-wide`">
-                                {{ parseFloat(producto.precio) > 0 ?
-                                    `$${site.formatNumber(parseFloat(producto.precio))} mxn` : 'free' }}
-                            </button>
-                        </div>
                     </div>
-                    <div class="flex items-center justify-center w-full h-full">
+                    <div class="flex items-center justify-center w-full h-[calc(100%-100px)]">
                         <span class="flex w-full max-w-[320px]">
                             <File folder="../assets/img/gallery" :file="producto.imagen" type="img"
                                 :encrypted="false" />
@@ -79,12 +84,11 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-
-.hover_efecto_basicsIcons:hover{
+.hover_efecto_basicsIcons:hover {
     background-color: rgba(201, 117, 249, 0.459);
 }
 
-.hover_efecto_universalIcons:hover{
+.hover_efecto_universalIcons:hover {
     background-color: rgba(116, 171, 253, 0.61);
 }
 </style>

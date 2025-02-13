@@ -46,7 +46,7 @@ export class class_universalIcons {
       id_producto: 2,
     };
 
-    let response: any = await c_productos.fn_l_productos(data);
+    let response: any = await c_productos.listProducts(data);
 
     if (!IsNullOrEmpty(dgav.dataBase.message)) {
       notify.error(dgav.dataBase.message);

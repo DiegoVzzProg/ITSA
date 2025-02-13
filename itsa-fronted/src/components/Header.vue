@@ -2,17 +2,19 @@
 import { onMounted, ref } from 'vue';
 import logo from '../assets/svg/logo.svg'
 
-import { numberCart, site } from '../utils/site';
+import { site } from '../utils/site';
 import { c_auth } from '../services/s_auth';
 import { useRoute } from 'vue-router';
+import { numberCartShopping } from '../stores/countCartShopping'
 
 const id_usuario = ref<number>(0);
 const router = useRoute();
 
 const LogOut = async () => {
-    const response: any = await c_auth.fN_logout();
+    const response: any = await c_auth.logoutUser();
     if (response) {
         site.allDeleteCookies();
+        numberCartShopping().default();
 
         if (router.name == 'home') {
             window.location.reload();
@@ -24,19 +26,15 @@ const LogOut = async () => {
 }
 
 function GoCheckOut() {
-    const userData = site.getCookie('e.u.d');
-    if (userData && Number(numberCart.value) > 0) {
+    if (site.userData() && numberCartShopping().count > 0) {
         site.RedirectPage('checkout');
     }
 }
 
 
 onMounted(() => {
-    const userData = site.getCookie('e.u.d');
-    if (userData) {
-        const parsedData = JSON.parse(userData);
-        id_usuario.value = parsedData.id_usuario || 0;
-        site.Init();
+    if (site.userData()) {
+        id_usuario.value = site.userData().id_usuario || 0;
     }
 });
 
@@ -87,7 +85,7 @@ onMounted(() => {
                         <path d="M17 17h-11v-14h-2" />
                         <path d="M6 5l14 1l-1 7h-13" />
                     </svg>
-                    <span class="text-[.70rem] font-semibold min-w-[20px]" v-text="numberCart"></span>
+                    <span class="text-[.70rem] font-semibold min-w-[20px]" v-text="numberCartShopping().count"></span>
                 </button>
             </nav>
         </div>
