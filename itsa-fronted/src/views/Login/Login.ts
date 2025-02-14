@@ -4,6 +4,7 @@ import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
 import { numberCartShopping } from "../../stores/countCartShopping";
+import { sp_login_user } from "../../stores/sotre_auth";
 
 export const forgotPassword = ref<boolean>(false);
 export const FormLogin = ref<any>({
@@ -103,10 +104,12 @@ export class c_loginView {
 
     if (formEmail.error || formPassword.error) return;
 
-    const responseLogin: any = await c_auth.loginUser({
+    const data: any = {
       email: formEmail.value,
       password: formPassword.value,
-    });
+    };
+
+    await sp_login_user().exec(data);
 
     const message: string = dgav.dataBase.message;
     if (!IsNullOrEmpty(message)) {
@@ -114,16 +117,17 @@ export class c_loginView {
       return;
     }
 
-    if (responseLogin) {
+    if (sp_login_user().data) {
       site.setCookies(
         {
-          "e.t": responseLogin.token,
+          "e.t": sp_login_user().data.token,
+          "r.t": sp_login_user().data.refresh_token,
         },
         false
       );
 
       const response = await c_general.SecretKey();
-      if (response && responseLogin) {
+      if (response && sp_login_user().data) {
         site.setCookies(
           {
             "e.k": response.secretKey,
@@ -132,7 +136,7 @@ export class c_loginView {
         );
 
         site.setCookies({
-          "e.u.d": JSON.stringify(responseLogin.user_data),
+          "e.u.d": JSON.stringify(sp_login_user().data.user_data),
         });
 
         site.setCookies(

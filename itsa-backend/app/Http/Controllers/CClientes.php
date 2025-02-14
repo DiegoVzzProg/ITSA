@@ -13,23 +13,23 @@ class CClientes extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
 
             $user = $request->user();
+            $cliente = TClientes::where('id_usuario', $user->id_usuario)->first();
 
-            if ($user->id_usuario > 0) {
-                $cliente = TClientes::where('id_usuario', $user->id_usuario)->first();
-            } else {
-                $cliente = TClientes::all();
+            $dt_cliente = null;
+
+            if ($cliente) {
+                $paises = TPaises::where('activo', true)
+                    ->where('id_pais', $cliente->id_pais)->first();
+
+                $dt_cliente = [
+                    "nombre" => $cliente->nombre,
+                    "numero_de_iva_empresa" => $cliente->numero_de_iva_empresa,
+                    "direccion" => $cliente->direccion,
+                    "estado" => $cliente->estado,
+                    "codigo_postal" => $cliente->codigo_postal,
+                    "pais" => $paises->nombre
+                ];
             }
-
-            $paises = TPaises::where('activo', true)->where('id_pais', $cliente->id_pais)->first();
-
-            $dt_cliente = [
-                "nombre" => $cliente->nombre,
-                "numero_de_iva_empresa" => $cliente->numero_de_iva_empresa,
-                "direccion" => $cliente->direccion,
-                "estado" => $cliente->estado,
-                "codigo_postal" => $cliente->codigo_postal,
-                "pais" => $paises->nombre
-            ];
 
             return CGeneral::CreateMessage('', 200, $dt_cliente);
         }, $request);

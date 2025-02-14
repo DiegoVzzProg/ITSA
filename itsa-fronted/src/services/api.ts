@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios";
-import { site } from "../utils/site";
+import { dgav, notify, site } from "../utils/site";
 import { numberCartShopping } from "../stores/countCartShopping";
+import { c_auth } from "./s_auth";
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -9,6 +10,10 @@ const api: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+/**
+ * Interceptor de peticiones: Añade el access token al header en cada solicitud
+ */
 
 api.interceptors.request.use(
   async (config) => {
@@ -20,24 +25,6 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    return Promise.reject(error);
-  }
-);
-
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response.status == 401) {
-      // site.allDeleteCookies();
-      // numberCartShopping().default();
-      // site.RedirectPage("home");
-      // site.setCookies(
-      //   {
-      //     session: "false",
-      //   },
-      //   false
-      // );
-    }
     return Promise.reject(error);
   }
 );

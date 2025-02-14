@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { dgav, IsNullOrEmpty, notify, site } from '../utils/site';
-import { c_clientes } from '../services/s_clientes';
-import { c_productos } from '../services/s_productos';
+import { site } from '../utils/site';
 import { numberCartShopping } from '../stores/countCartShopping';
+import { sp_add_product, sp_check_product_in_shopping_cart } from '../stores/store_customers';
 
 const props = defineProps<{
     id_producto: number;
@@ -18,46 +17,19 @@ const AddCartCostumer = async () => {
     if (userData) {
         const parsedData = JSON.parse(userData);
 
-        await c_clientes.addProduct({
+        const response: any = await sp_add_product().exec({
             id_usuario: parsedData.id_usuario,
             id_producto: props.id_producto,
             descripcion: props.subtitulo
         });
 
-        const message: any = dgav.dataBase.message;
-
-        if (!IsNullOrEmpty(message)) {
-            notify.error(message)
-            return;
+        if (response) {
+            numberCartShopping().update();
+            site.RedirectPage("home");
         }
-
-        numberCartShopping().update();
-
-        site.RedirectPage("home");
 
     } else {
         site.RedirectPage("login");
-    }
-}
-
-const Download = async () => {
-    const response: any = await c_productos.downloadFile(String(props.id_producto));
-    console.log(response);
-
-    if (response) {
-        // // Se crea una URL temporal a partir del blob recibido
-        // const blobUrl = window.URL.createObjectURL(new Blob([response.data]));
-
-        // // Se crea un elemento <a> para simular el clic y descargar el archivo
-        // const link = document.createElement("a");
-        // link.href = blobUrl;
-        // link.download = filename; // Nombre del archivo a descargar
-        // document.body.appendChild(link);
-        // link.click();
-
-        // // Se limpia el DOM y se libera la URL creada
-        // document.body.removeChild(link);
-        // window.URL.revokeObjectURL(blobUrl);
     }
 }
 
@@ -70,18 +42,18 @@ function GoCheckOut() {
 
 
 const existeArticuloEnCarrito = ref<boolean>(false);
-const habilitarDescarga = async () => {
+const habilitarBotonGoToCart = async () => {
 
-    const response: any = await c_clientes.checkProductInShoppingCart({
+    const response: any = await sp_check_product_in_shopping_cart().exec({
         id_producto: props.id_producto
-    });
+    })
 
     if (response) {
         existeArticuloEnCarrito.value = response.existe;
     }
 }
 onMounted(() => {
-    habilitarDescarga();
+    habilitarBotonGoToCart();
 });
 </script>
 

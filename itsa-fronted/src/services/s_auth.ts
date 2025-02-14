@@ -3,11 +3,19 @@ import { dgav } from "../utils/site";
 const urlAuth = "/auth";
 
 export class c_auth {
-  static async loginUser(data: Record<string, any>): Promise<any> {
+  public static async refreshToken(data: Record<string, any>): Promise<any> {
+    return await dgav.apiRequest(
+      `${urlAuth}/refreshToken`,
+      dgav.httpMethod.POST,
+      data
+    );
+  }
+
+  public static async loginUser(data: Record<string, any>): Promise<any> {
     return this.auth(1, data);
   }
 
-  static async registerUser(data: Record<string, any>): Promise<any> {
+  public static async registerUser(data: Record<string, any>): Promise<any> {
     return this.auth(2, data);
   }
 
@@ -37,7 +45,10 @@ export class c_auth {
   }
 
   public static async logoutUser() {
-    return await dgav.apiRequest(`${urlAuth}/logoutUser`, dgav.httpMethod.DELETE);
+    return await dgav.apiRequest(
+      `${urlAuth}/logoutUser`,
+      dgav.httpMethod.DELETE
+    );
   }
 
   public static async restorePassword(data: Record<string, any>) {

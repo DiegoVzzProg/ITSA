@@ -1,8 +1,7 @@
 import { ref } from "vue";
-import { c_productos } from "../../services/s_productos";
-import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
-import { c_clientes } from "../../services/s_clientes";
-import { sp_list_products } from "../../stores/sp_listProducts";
+import { site } from "../../utils/site";
+import { sp_list_products } from "../../stores/store_list_products";
+
 
 export const productos = ref<any>([]);
 export const imgsPrincipal = ref<any>([
@@ -110,16 +109,9 @@ export class class_home {
       id_producto: 0,
     };
 
-    const prueba: any = await sp_list_products().execute(data);
+    const response: any = await sp_list_products().exec(data);
 
-    const response: any = await c_productos.listProducts({
-      id_producto: 0,
-    });
     if (response) {
-      if (!IsNullOrEmpty(dgav.dataBase.message)) {
-        notify.error(dgav.dataBase.message);
-        return;
-      }
       productos.value = response;
     }
   }

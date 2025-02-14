@@ -4,10 +4,16 @@ import File from '../../components/File.vue';
 import CardProduct from '../../components/CardProduct.vue';
 import { class_universalIcons } from './UniversalIcons';
 import { IsNullOrEmpty } from '../../utils/site';
+import { sp_list_products } from '../../stores/store_list_products';
 
 
 onMounted(() => {
     class_universalIcons.onInit();
+
+    const data: any = {
+        id_producto: 2,
+    };
+    sp_list_products().exec(data);
 });
 
 onUnmounted(() => {
@@ -204,10 +210,10 @@ onUnmounted(() => {
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
-            v-if="!IsNullOrEmpty(class_universalIcons.producto.value)">
+            v-if="!IsNullOrEmpty(sp_list_products().products)">
             <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon pack"
                 descripcion="524 items <br/> available as: <br/> illustrator, figma, svg & pdf <br/> commercial & personal use"
-                :precio="`${class_universalIcons.producto.value.precio}`">
+                :precio="`${sp_list_products().products.precio}`">
             </CardProduct>
         </div>
     </div>

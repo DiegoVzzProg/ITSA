@@ -19,6 +19,8 @@ return new class extends Migration
             $table->timestamp('creacion');
             $table->boolean('activo')->default(true);
             $table->datetime('ultima_conexion')->default(now());
+            $table->string('remember_token')->nullable()->default(null);
+            $table->datetime('expires_at_token');
         });
     }
 

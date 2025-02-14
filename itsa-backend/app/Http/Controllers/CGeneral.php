@@ -62,18 +62,21 @@ class CGeneral extends Controller
         try {
             return $function();
         } catch (Exception $ex) {
-
-            if ($request) {
-                try {
+            try {
+                $user = null;
+                if ($request) {
                     $user = $request->user();
-                    return self::CreateTicketError($ex, $user->id_usuario);
-                } catch (Exception $ex) {
-                    return response()->json(data: [
-                        'message' => "Contact support",
-                        'data' => null
-                    ], status: 599);
                 }
+
+                $usuario_defualt = $user == null ? 0 : $user->id_usuario;
+                return self::CreateTicketError($ex, $usuario_defualt);
+            } catch (Exception $ex) {
+                return response()->json(data: [
+                    'message' => "Contact support",
+                    'data' => null
+                ], status: 599);
             }
+
             return response()->json(data: [
                 'message' => "Contact support",
                 'data' => null

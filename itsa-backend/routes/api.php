@@ -18,9 +18,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/loginUser', [CUsuarios::class, 'fn_login']);
         Route::post('/registerUser', [CUsuarios::class, 'fn_register']);
         Route::post('/restorePassword', [CUsuarios::class, 'fn_forgot_password_restore']);
+        Route::post('/refreshToken', [CUsuarios::class, 'fn_refresh_token']);
     });
 
-    Route::middleware('auth:sanctum', 'session.expire')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () { //, 'session.expire'
         Route::prefix('shoppingCart')->group(function () {
             Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);

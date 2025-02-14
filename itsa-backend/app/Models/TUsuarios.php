@@ -35,11 +35,14 @@ class TUsuarios extends Authenticatable
         'activo',
         'leyo_terms',
         'creacion',
-        'ultima_conexion'
+        'ultima_conexion',
+        'remember_token',
+        'expires_at_token'
     ];
 
     protected $hidden = [
-        'password'
+        'password',
+        'remember_token'
     ];
 
     protected $attributes = [];

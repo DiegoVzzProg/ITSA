@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import SelectCountry from "../../components/SelectCountry.vue";
-
-import { dgav, IsNullOrEmpty, notify, site } from '../../utils/site';
+import { IsNullOrEmpty, notify, site } from '../../utils/site';
 import File from '../../components/File.vue';
 import Loading from '../../components/Loading.vue';
-import { c_clientes } from '../../services/s_clientes';
 import { numberCartShopping } from '../../stores/countCartShopping';
 import { useRoute } from 'vue-router';
+import { sp_delete_product_from_shoppingCart, sp_get_customer, sp_proceed_to_checkout, sp_register_customer, sp_shopping_cart_client } from '../../stores/store_customers';
 
 const productData = ref<any>({});
 const productPrecio = ref<string>("");
@@ -85,8 +84,8 @@ const infoForms1 = async () => {
     const data: any = {
         id_usuario: site.userData().id_usuario,
     };
+    const response: any = await sp_get_customer().exec(data);
 
-    const response: any = await c_clientes.getCustomer(data);
     if (response) {
         clientDataExists.value = true;
         clientData.value = response;
@@ -132,24 +131,21 @@ const AddCliente = async () => {
     }
 
     if (site.userData()) {
-        await c_clientes.registerCustomer({
+
+        const response: any = await sp_register_customer().exec({
             id_usuario: site.userData().id_usuario,
             nombre: formCheckout1.name.value,
             numero_de_iva_empresa: formCheckout1.vat_number.value,
             direccion: formCheckout1.address.value,
-            id_pais: formCountry.country.value,
+            id_pais: formCountry.country.id_pais,
             estado: formCheckout2.state.value,
             codigo_postal: formCheckout2.postal_code.value,
         });
 
-        let message: string = dgav.dataBase.message;
-        if (!IsNullOrEmpty(message)) {
-            notify.error(message);
-            return;
+        if (response) {
+            notify.success("your billing information has been saved.");
+            clientData.value = response;
         }
-
-        notify.success("your billing information has been saved.");
-        clientDataExists.value = true;
     }
 }
 
@@ -234,15 +230,7 @@ const validateForms2 = (value: string, type: string) => {
 
 const productos = async () => {
     if (site.userData()) {
-        let response: any = await c_clientes.shoppingCartClient();
-
-        let message: string = dgav.dataBase.message;
-
-        if (!IsNullOrEmpty(message)) {
-            notify.error(message);
-            return;
-        }
-
+        let response: any = await sp_shopping_cart_client().exec();
         if (response) {
             productData.value = response.carrito_cliente;
             productPrecio.value = response.precio;
@@ -259,14 +247,9 @@ const checkoutSession = async () => {
         }
     }
 
-    const response: any = await c_clientes.proceedToCheckout({
+    const response: any = await sp_proceed_to_checkout().exec({
         cadena: cadena,
-    });
-
-    if (!IsNullOrEmpty(dgav.dataBase.message)) {
-        notify.error(dgav.dataBase.message);
-        return;
-    }
+    })
 
     if (response) {
         const url: any = response.redirectStripePayment;
@@ -281,7 +264,7 @@ const checkoutSession = async () => {
 }
 
 const validateCountry = () => {
-    if (IsNullOrEmpty(formCountry.country.value)) {
+    if (IsNullOrEmpty(formCountry.country.id_pais)) {
         formCountry.country.error = "Country is required.";
     } else {
         formCountry.country.error = "";
@@ -289,26 +272,19 @@ const validateCountry = () => {
 }
 
 const eliminarProductoDelCarrito = async (id_producto: string) => {
-
-    const response1: any = await c_clientes.deleteProductFromShoppingCart({
+    const response: any = await sp_delete_product_from_shoppingCart().exec({
         id_producto: btoa(id_producto)
-    });
+    })
 
-    if (!IsNullOrEmpty(dgav.dataBase.message)) {
-        notify.error(dgav.dataBase.message);
-        return;
-    }
-
-    if (response1) {
-        notify.success(response1.message);
-
+    if (response) {
+        notify.success("Product deleted");
         numberCartShopping().update();
 
-        if (response1.productos.length == 0) {
+        if (response.productos.length == 0) {
             site.RedirectPage("home");
             return;
         }
-        productData.value = response1.productos;
+        productData.value = response.productos;
 
     }
 }

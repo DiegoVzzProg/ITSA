@@ -157,13 +157,14 @@ export class c_registerView {
       site.setCookies(
         {
           "e.t": responseRegister.token,
+          "r.t": responseRegister.refresh_token,
         },
         false
       );
 
       const response = await c_general.SecretKey();
 
-      if (response) {
+      if (response && responseRegister) {
         site.setCookies(
           {
             "e.k": response.secretKey || "",

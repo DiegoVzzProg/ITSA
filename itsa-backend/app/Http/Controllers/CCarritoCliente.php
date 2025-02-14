@@ -52,7 +52,7 @@ class CCarritoCliente extends Controller
                 'foto_producto' => $producto->foto_miniatura
             ]);
 
-            return CGeneral::CreateMessage('', 200, null);
+            return CGeneral::CreateMessage('', 200, $producto);
         }, $request);
     }
 
@@ -91,7 +91,6 @@ class CCarritoCliente extends Controller
                 ->where('borrado', false)->get();
 
             return CGeneral::CreateMessage('', 200, [
-                "message" => "Product deleted",
                 "productos" => $productos
             ]);
         }, $request);

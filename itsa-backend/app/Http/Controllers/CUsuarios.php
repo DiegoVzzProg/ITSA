@@ -8,12 +8,77 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class CUsuarios extends Controller
 {
-    static function token($usuario): mixed
+    /**
+     * Genera el access token con una expiración corta (2 horas).
+     *
+     * @param  \TUsuarios  $usuario
+     * @return string
+     */
+    private static function generateAccessToken($usuario): string
     {
-        return $usuario->createToken('auth_token', ['*'], now()->addDays(1))->plainTextToken;
+        return $usuario->createToken('auth_token', ['*'], now()->addHours(2))->plainTextToken;
+    }
+
+    /**
+     * Genera el refresh token con una expiración más prolongada (7 días) y lo almacena.
+     *
+     * Nota: Para un entorno con múltiples dispositivos es recomendable
+     * utilizar una tabla separada de refresh tokens.
+     *
+     * @param  \TUsuarios  $usuario
+     * @return string
+     */
+    private static function generateRefreshToken($usuario): string
+    {
+        $refreshToken = Str::random(64);
+
+        // Almacenamos el refresh token y su fecha de expiración en el registro del usuario.
+        // Si planeas soportar múltiples sesiones, considera una tabla dedicada.
+        TUsuarios::where('id_usuario', $usuario->id_usuario)
+            ->update([
+                'remember_token'   => $refreshToken,
+                'expires_at_token' => now()->addDays(7)
+            ]);
+
+        return $refreshToken;
+    }
+
+
+    /**
+     * Endpoint para la renovación del access token usando el refresh token.
+     *
+     * En este endpoint no se depende del access token, sino que se valida el refresh token enviado.
+     */
+    public static function fn_refresh_token(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $refreshTokenProvided = $request->input('refresh_token');
+
+            if (!$refreshTokenProvided) {
+                return CGeneral::CreateMessage('Refresh token is required', 599, null);
+            }
+
+            // Buscamos al usuario asociado al refresh token activo y no expirado
+            $usuario = TUsuarios::where('remember_token', $refreshTokenProvided)
+                ->where('expires_at_token', '>', now())
+                ->first();
+
+            if (!$usuario) {
+                return CGeneral::CreateMessage('Invalid or expired refresh token', 599, null);
+            }
+
+            $accessToken  = self::generateAccessToken($usuario);
+            $newRefreshToken = self::generateRefreshToken($usuario);
+
+            return CGeneral::CreateMessage('', 200, [
+                "access_token"  => $accessToken,
+                "refresh_token" => $newRefreshToken,
+            ]);
+        }, $request);
     }
 
     public static function fn_login(Request $request)
@@ -21,20 +86,23 @@ class CUsuarios extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $credentials = $request->only('email', 'password');
 
-            $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
+            $usuario = TUsuarios::where('email', $credentials['email'])
+                ->where('activo', true)
+                ->first();
 
             if (!$usuario) {
-                return CGeneral::CreateMessage('User not found or inactive', 599,  null);
+                return CGeneral::CreateMessage('User not found', 599,  null);
             }
 
             if (!Hash::check($credentials['password'], $usuario->password)) {
                 return CGeneral::CreateMessage('Incorrect password', 599, null);
             }
 
-            $token = self::token(usuario: $usuario);
+            TUsuarios::where('id_usuario', $usuario->id_usuario)
+                ->update(['ultima_conexion' => now()]);
 
-
-            TUsuarios::where('id_usuario', $usuario->id_usuario)->update(['ultima_conexion' => now()]);
+            $accessToken  = self::generateAccessToken($usuario);
+            $refreshToken = self::generateRefreshToken($usuario);
 
             return CGeneral::CreateMessage('', 200,  [
                 "user_data" => [
@@ -42,9 +110,10 @@ class CUsuarios extends Controller
                     'email' => $usuario->email,
                     'nombre' => $usuario->nombre,
                 ],
-                "token" => $token
+                "token" => $accessToken,
+                "refresh_token" => $refreshToken
             ]);
-        });
+        }, $request);
     }
 
     public static function fn_register(Request $request)
@@ -55,7 +124,7 @@ class CUsuarios extends Controller
             $existeEmail = TUsuarios::where('email', $credentials['email'])->first();
 
             if ($existeEmail) {
-                return CGeneral::CreateMessage('Email already exists', 599, null);
+                return CGeneral::CreateMessage('User already exists', 599, null);
             }
 
             $usuario = TUsuarios::create([
@@ -64,10 +133,12 @@ class CUsuarios extends Controller
                 'password' => Hash::make($credentials['password']),
                 'leyo_terms' => $credentials['leyo_terms'],
                 'creacion' => now(),
-                'ultima_conexion' => now()
+                'ultima_conexion' => now(),
+                'expires_at_token' => now(),
             ]);
 
-            $token = self::token(usuario: $usuario);
+            $accessToken  = self::generateAccessToken($usuario);
+            $refreshToken = self::generateRefreshToken($usuario);
 
             return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
@@ -75,9 +146,10 @@ class CUsuarios extends Controller
                     'email' => $usuario->email,
                     'nombre' => $usuario->nombre,
                 ],
-                "token" => $token
+                "token" => $accessToken,
+                "refresh_token" => $refreshToken
             ]);
-        }, $request);
+        });
     }
 
     public static function fn_logout(Request $request)

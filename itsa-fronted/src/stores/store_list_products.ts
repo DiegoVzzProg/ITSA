@@ -1,21 +1,16 @@
 import { defineStore } from "pinia";
+import { c_productos } from "../services/s_productos";
 import { dgav, notify, site } from "../utils/site";
-
-const productosUrl: string = "/products";
 
 export const sp_list_products = defineStore("sp_list_products", {
   state: () => ({
-    products: [] as any[],
+    products: [] as any,
     loading: false,
   }),
   actions: {
-    async execute(data: Record<string, any>): Promise<any> {
+    async exec(data: Record<string, any>): Promise<any> {
       this.loading = true;
-      const response: any = await dgav.apiRequest(
-        `${productosUrl}/listProducts`,
-        dgav.httpMethod.POST,
-        data
-      );
+      const response: any = await c_productos.listProducts(data);
 
       if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
         notify.error(dgav.dataBase.message);
