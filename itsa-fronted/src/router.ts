@@ -7,6 +7,7 @@ import UniversalIcons from "./views/UniversalIcons/UniversalIcons.vue";
 import CheckOut from "./views/CheckOut/CheckOut.vue";
 import Register from "./views/Register/Register.vue";
 import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
+import PaymentCompleted from "./views/PaymentCompleted.vue";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
@@ -47,6 +48,12 @@ const routes: Array<RouteRecordRaw> = [
     name: "forgotpassword",
     component: ForgotPassword,
     meta: { layout: "Auth" },
+  },
+  {
+    path: "/payment/completed",
+    name: "paymentcompleted",
+    component: PaymentCompleted,
+    meta: { layout: "Main" },
   },
 ];
 

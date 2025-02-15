@@ -80,6 +80,30 @@ export const sp_register_customer = defineStore("sp_register_customer", {
   },
 });
 
+export const sp_edit_customer = defineStore("sp_edit_customer", {
+  state: () => ({
+    data: null as any,
+    loading: false,
+  }),
+  actions: {
+    async exec(data: Record<string, any>): Promise<any> {
+      this.loading = true;
+      const response: any = await c_clientes.editCustomer(data);
+
+      if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
+        notify.error(dgav.dataBase.message);
+        return null;
+      }
+
+      if (response) {
+        this.data = response;
+        this.loading = false;
+        return response;
+      }
+    },
+  },
+});
+
 export const sp_get_customer = defineStore("sp_get_customer", {
   state: () => ({
     data: null as any,
@@ -137,9 +161,9 @@ export const sp_proceed_to_checkout = defineStore("sp_proceed_to_checkout", {
     loading: false,
   }),
   actions: {
-    async exec(data: Record<string, any>): Promise<any> {
+    async exec(): Promise<any> {
       this.loading = true;
-      const response: any = await c_clientes.proceedToCheckout(data);
+      const response: any = await c_clientes.proceedToCheckout();
 
       if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
         notify.error(dgav.dataBase.message);

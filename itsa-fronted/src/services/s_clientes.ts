@@ -42,13 +42,10 @@ export class c_clientes {
       data
     );
   }
-  public static async proceedToCheckout(
-    data: Record<string, any>
-  ): Promise<any> {
+  public static async proceedToCheckout(): Promise<any> {
     return await dgav.apiRequest(
       `${shoppingCartUrl}/proceedToCheckout`,
-      dgav.httpMethod.POST,
-      data
+      dgav.httpMethod.GET
     );
   }
 
@@ -58,6 +55,14 @@ export class c_clientes {
     return await dgav.apiRequest(
       `${shoppingCartUrl}/deleteProductFromShoppingCart`,
       dgav.httpMethod.POST,
+      data
+    );
+  }
+
+  public static async editCustomer(data: Record<string, any>): Promise<any> {
+    return await dgav.apiRequest(
+      `${customersUrl}/editCustomer`,
+      dgav.httpMethod.PUT,
       data
     );
   }

@@ -10,30 +10,32 @@ use Illuminate\Http\Request;
 
 class CCarritoCliente extends Controller
 {
-    static function fn_l_carrito_cliente(Request $request)
+    public static function fn_l_carrito_cliente(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
-
             $user = $request->user();
 
-            $carrito_cliente = TCarritoCliente::where('id_usuario', $user->id_usuario)->where('borrado', false);
+            $carritoQuery = TCarritoCliente::where('id_usuario', $user->id_usuario)
+                ->where('borrado', false);
 
-            $tableCarritoCliente = $carrito_cliente->get();
+            $carritoItems = $carritoQuery->get();
 
-            if (!$tableCarritoCliente) {
-                return CGeneral::CreateMessage('Cart empty', 599, null);
+
+            $precioFormateado = 0;
+            $impuestoFormateado = 0;
+
+            if (!$carritoItems->isEmpty()) {
+                $precioSinImpuesto = $carritoQuery->sum('precio');
+                $montoImpuesto = round(($precioSinImpuesto * 0.16), 2);
+                $precioTotal = round($precioSinImpuesto + $montoImpuesto, 2);
+                $precioFormateado = number_format($precioTotal, 2, '.', ',');
+                $impuestoFormateado = number_format($montoImpuesto, 2, '.', ',');
             }
 
-            $precio = $carrito_cliente->sum('precio');
-
-            $montoImpuesto = ($precio * 16) / 100;
-
-            $precio = $precio + $montoImpuesto;
-
             return CGeneral::CreateMessage('', 200, [
-                "carrito_cliente" => $carrito_cliente->get(),
-                "precio" => $precio,
-                "impuesto" => $montoImpuesto
+                "carrito_cliente" => $carritoItems,
+                "precio" => $precioFormateado,
+                "impuesto" => $impuestoFormateado
             ]);
         }, $request);
     }

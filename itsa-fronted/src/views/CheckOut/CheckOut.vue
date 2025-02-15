@@ -3,10 +3,9 @@ import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import SelectCountry from "../../components/SelectCountry.vue";
 import { IsNullOrEmpty, notify, site } from '../../utils/site';
 import File from '../../components/File.vue';
-import Loading from '../../components/Loading.vue';
 import { numberCartShopping } from '../../stores/countCartShopping';
 import { useRoute } from 'vue-router';
-import { sp_delete_product_from_shoppingCart, sp_get_customer, sp_proceed_to_checkout, sp_register_customer, sp_shopping_cart_client } from '../../stores/store_customers';
+import { sp_delete_product_from_shoppingCart, sp_edit_customer, sp_get_customer, sp_proceed_to_checkout, sp_register_customer, sp_shopping_cart_client } from '../../stores/store_customers';
 
 const productData = ref<any>({});
 const productPrecio = ref<string>("");
@@ -14,6 +13,8 @@ const impuesto = ref<string>("");
 const clientDataExists = ref<boolean>(false);
 const clientData = ref<any>(null);
 const finish = ref<boolean>(false);
+const editar = ref<boolean>(false);
+
 
 const formCheckout1 = reactive({
     name: {
@@ -63,15 +64,14 @@ const formCountry = reactive({
 const route = useRoute();
 
 onMounted(() => {
-    const sessionId: string = route.query.session_id as string;
-    console.log(sessionId);
-
     productos();
     infoForms1();
 
     if (numberCartShopping().count == 0) {
         site.RedirectPage('home');
     }
+
+    CheckPurchasedProduct();
 });
 
 
@@ -79,6 +79,12 @@ onUnmounted(() => {
 
 });
 
+const CheckPurchasedProduct = async () => {
+    const sessionId: string = route.query.session_id as string;
+    if (sessionId != undefined && sessionId != null) {
+        await sp_shopping_cart_client().exec();
+    }
+}
 
 const infoForms1 = async () => {
     const data: any = {
@@ -240,16 +246,7 @@ const productos = async () => {
 }
 
 const checkoutSession = async () => {
-    let cadena: string = "";
-    for (let i = 0; i < productData.value.length; i++) {
-        if (Number(productData.value[i].precio) > 0) {
-            cadena += productData.value[i].id_producto + ";";
-        }
-    }
-
-    const response: any = await sp_proceed_to_checkout().exec({
-        cadena: cadena,
-    })
+    const response: any = await sp_proceed_to_checkout().exec();
 
     if (response) {
         const url: any = response.redirectStripePayment;
@@ -289,6 +286,72 @@ const eliminarProductoDelCarrito = async (id_producto: string) => {
     }
 }
 
+const functionEdit = async () => {
+    const form1: any = formCheckout1;
+    const form2: any = formCheckout2;
+
+    form1.name.value = clientData.value.nombre;
+    form1.vat_number.value = clientData.value.numero_de_iva_empresa;
+    form1.address.value = clientData.value.direccion;
+    form2.state.value = clientData.value.estado;
+    form2.postal_code.value = clientData.value.codigo_postal;
+    formCountry.country.id_pais = clientData.value.id_pais;
+}
+
+const editCliente = async () => {
+    const form1: any = formCheckout1;
+    const form2: any = formCheckout2;
+
+    const idsFormCheckout1: any = Object.values(
+        formCheckout1
+    ).map((field) => ({
+        id: field.id,
+        value: field.value,
+    }));
+
+    const idsFormCheckout2: any = Object.values(
+        formCheckout2
+    ).map((field) => ({
+        id: field.id,
+        value: field.value,
+    }));
+
+    for (const e of idsFormCheckout1) {
+        validateForms1(e.value, e.id);
+    }
+
+    for (const e of idsFormCheckout2) {
+        validateForms2(e.value, e.id);
+    }
+    validateCountry();
+
+    if (
+        !IsNullOrEmpty(form1.name.error) ||
+        !IsNullOrEmpty(form1.vat_number.error) ||
+        !IsNullOrEmpty(form1.address.error) ||
+        !IsNullOrEmpty(form2.state.error) ||
+        !IsNullOrEmpty(form2.postal_code.error) ||
+        !IsNullOrEmpty(formCountry.country.error)
+    ) {
+        return;
+    }
+
+    await sp_edit_customer().exec({
+        id_cliente: clientData.value.id_cliente,
+        nombre: formCheckout1.name.value,
+        direccion: formCheckout1.address.value,
+        numero_de_iva_empresa: formCheckout1.vat_number.value,
+        estado: formCheckout2.state.value,
+        id_pais: formCountry.country.id_pais,
+        codigo_postal: formCheckout2.postal_code.value
+    })
+
+    if (sp_edit_customer().data) {
+        notify.success("Customer updated");
+        clientData.value = sp_edit_customer().data;
+        window.location.reload();
+    }
+}
 </script>
 
 <template>
@@ -311,7 +374,7 @@ const eliminarProductoDelCarrito = async (id_producto: string) => {
                 </p>
                 <p>biling</p>
             </div>
-            <div class="flex flex-col gap-2 w-full" v-if="!clientData">
+            <div class="flex flex-col gap-2 w-full" v-if="!clientData || editar">
                 <div class="flex flex-col gap-1" v-for="item in formCheckout1">
                     <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
                         :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
@@ -338,11 +401,21 @@ const eliminarProductoDelCarrito = async (id_producto: string) => {
                         {{ formCountry.country.error }}
                     </span>
                 </div>
-                <button @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white">
+                <button @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white" v-if="!editar">
                     continue
                 </button>
+                <div v-else class="flex flex-row gap-2 w-full">
+                    <button @click="editCliente()" class="bg-black py-5 px-3 rounded-full text-white w-full">
+                        edit
+                    </button>
+                    <button @click="editar = !editar"
+                        class="border-black border py-5 px-3 rounded-full text-black w-full">
+                        to back
+                    </button>
+                </div>
             </div>
-            <div class="flex flex-col gap-2 w-full justify-between h-[min(500px,100%)]" v-else>
+            <div class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]"
+                v-else-if="clientData && !editar">
                 <div class="flex flex-col leading-1">
                     <p>
                         <strong>Name:</strong> {{ clientData.nombre }}
@@ -361,18 +434,29 @@ const eliminarProductoDelCarrito = async (id_producto: string) => {
                     <p>
                         <strong>Country:</strong> {{ clientData.pais }}
                     </p>
+                    <span class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
+                        @click="editar = !editar; functionEdit();">
+                        edit
+                    </span>
                 </div>
                 <div class="flex flex-col gap-3">
-                    <p>
+                    <p v-if="Number(productPrecio) > 0">
                         payment
+                    </p>
+                    <p v-else>
+                        download
                     </p>
                     <button v-on:click="finish = !finish" v-if="!finish"
                         class="bg-black py-5 px-3 rounded-full text-white">
                         finish
                     </button>
-                    <button v-if="finish" v-on:click="checkoutSession()"
+                    <button v-if="finish && Number(productPrecio) > 0" v-on:click="checkoutSession()"
                         class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
                         pay with card
+                    </button>
+                    <button v-else-if="!finish && Number(productPrecio) > 0"
+                        class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
+                        download
                     </button>
                 </div>
             </div>
@@ -420,7 +504,6 @@ const eliminarProductoDelCarrito = async (id_producto: string) => {
                         </button>
                     </div>
                 </div>
-                <Loading v-else />
                 <div class="flex flex-row justify-between items-center gap-2 border-y border-y-black py-2">
                     <p class="font-itsa-bold text-[clamp(1.2rem,3vw,2rem)]">
                         tax(16%)

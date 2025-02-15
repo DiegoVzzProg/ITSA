@@ -3,12 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\TCarritoCliente;
-use App\Models\TClientes;
+use App\Models\TErroresInternos;
 use App\Models\TProducto;
-use App\Models\TProductosCompradosCliente;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -18,12 +15,13 @@ class CStripe extends Controller
     public static function fn_stripe(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $user = $request->user();
+            $carritoQuery = TCarritoCliente::where('id_usuario', $user->id_usuario)
+                ->where('borrado', false);
 
-            $ids = explode(';', $request->cadena);
-            $ids = array_filter($ids);
-            $ids = array_map('intval', $ids);
+            $productosCarrito = $carritoQuery->pluck('id_producto')->toArray();
 
-            $productos = TProducto::whereIntegerInRaw('id_producto', $ids)->get();
+            $productos = TProducto::whereIntegerInRaw('id_producto', $productosCarrito)->get();
 
             if ($productos->isEmpty()) {
                 return CGeneral::CreateMessage('Products not found', 599, null);
@@ -46,10 +44,28 @@ class CStripe extends Controller
                 ];
             }
 
+            $precioSinImpuesto = round($carritoQuery->sum('precio'), 2);
+            $montoImpuesto = round($precioSinImpuesto * 0.16 * 100);
+
+            $lineItems[] = [
+                'price_data' => [
+                    "product_data" => [
+                        "name" => "IVA 16%",
+                    ],
+                    "currency" => "mxn",
+                    "unit_amount" => $montoImpuesto,
+                ],
+                'quantity' => 1,
+            ];
+
+
             $checkoutSession = Session::create([
                 'line_items' => $lineItems,
                 'mode' => 'payment',
-                'success_url' => env('CHECKOUT_SUCCESS_URL') . '?session_id={CHECKOUT_SESSION_ID}',
+                'metadata' => [
+                    'user_id' => $user->id_usuario,
+                ],
+                'success_url' => env('CHECKOUT_SUCCESS_URL'),
                 'cancel_url'  => env('CHECKOUT_CANCEL_URL'),
             ]);
 
@@ -65,7 +81,7 @@ class CStripe extends Controller
 
             $payload = $request->getContent();
             $sigHeader = $request->header('Stripe-Signature');
-            $webhookSecret = config('services.stripe.webhook_secret');
+            $webhookSecret = "whsec_cfAxIkUMPonkapWKhIl0BnDukKjZLNj6"; //cambiar config('services.stripe.webhook_secret');
 
             $event = Webhook::constructEvent(
                 $payload,
@@ -74,12 +90,24 @@ class CStripe extends Controller
             );
 
             if ($event->type == 'checkout.session.completed') {
-                $user = $request->user();
+                $session = $event->data->object;
+                $userId = $session->metadata->user_id ?? null;
 
-                TCarritoCliente::where('id_usuario', $user->id_usuario)
-                    ->where('borrado', false)
-                    ->update(['borrado' => true]);
+                if ($userId) {
+                    TCarritoCliente::where('id_usuario', $userId)
+                        ->where('borrado', false)
+                        ->update(['borrado' => true]);
+                } else {
+                    TErroresInternos::create([
+                        'id_ticket' => uniqid(),
+                        'codigo_error' => 599,
+                        'id_usuario' => 0,
+                        'detalle_error' => "Webhook recibido sin user_id en metadata.",
+                        'controlador' => __FILE__,
+                        'linea' => __LINE__
+                    ]);
+                }
             }
-        }, $request);
+        });
     }
 }

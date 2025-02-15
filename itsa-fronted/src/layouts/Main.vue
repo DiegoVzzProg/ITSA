@@ -36,7 +36,6 @@ onMounted(() => {
 </script>
 
 <template>
-    <Loading v-if="loading" />
     <Header />
     <main class="flex flex-col w-full min-h-[calc(100vh-76px)] px-[clamp(18px,5vw,68px)]" id="main_contenedor">
         <div class="flex flex-col w-full items-start justify-start min-h-full grow shrink-0">

@@ -4,7 +4,7 @@ import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
 import { numberCartShopping } from "../../stores/countCartShopping";
-import { sp_login_user } from "../../stores/sotre_auth";
+import { sp_login_user, sp_restore_password } from "../../stores/sotre_auth";
 
 export const forgotPassword = ref<boolean>(false);
 export const FormLogin = ref<any>({
@@ -37,18 +37,9 @@ export class c_loginView {
   }
 
   public static async RecuperarPassword() {
-    await c_auth.restorePassword({
+    await sp_restore_password().exec({
       email: FormLogin.value.email.value,
     });
-
-    const message = dgav.dataBase.message;
-    const status = dgav.dataBase.status;
-
-    if (status == 200) {
-      notify.success(message);
-    } else {
-      notify.error(message);
-    }
   }
 
   public static validaciones(value: string, seccion: string) {

@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
-import { c_auth } from "../../services/s_auth";
 import { c_general } from "../../services/s_general";
+import { sp_register_user } from "../../stores/sotre_auth";
 
 export const FormRegister = ref<any>({
   name: {
@@ -140,7 +140,7 @@ export class c_registerView {
     )
       return;
 
-    const responseRegister = await c_auth.registerUser({
+    await sp_register_user().exec({
       nombre: this.formsProps.name.value,
       email: this.formsProps.email.value,
       password: this.formsProps.password.value,
@@ -153,18 +153,18 @@ export class c_registerView {
       return;
     }
 
-    if (responseRegister) {
+    if (sp_register_user().data) {
       site.setCookies(
         {
-          "e.t": responseRegister.token,
-          "r.t": responseRegister.refresh_token,
+          "e.t": sp_register_user().data.token,
+          "r.t": sp_register_user().data.refresh_token,
         },
         false
       );
 
       const response = await c_general.SecretKey();
 
-      if (response && responseRegister) {
+      if (response && sp_register_user().data) {
         site.setCookies(
           {
             "e.k": response.secretKey || "",
@@ -174,7 +174,7 @@ export class c_registerView {
         );
 
         site.setCookies({
-          "e.u.d": JSON.stringify(responseRegister.user_data),
+          "e.u.d": JSON.stringify(sp_register_user().data.user_data),
         });
         site.RedirectPage("home");
       }

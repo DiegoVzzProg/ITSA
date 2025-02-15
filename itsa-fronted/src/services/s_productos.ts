@@ -18,5 +18,13 @@ export class c_productos {
     );
   }
 
-
+  public static async stripeCheckoutSuccess(
+    data: Record<string, any>
+  ): Promise<any> {
+    return await dgav.apiRequest(
+      `${productosUrl}/stripe/checkoutSuccess`,
+      dgav.httpMethod.POST,
+      data
+    );
+  }
 }

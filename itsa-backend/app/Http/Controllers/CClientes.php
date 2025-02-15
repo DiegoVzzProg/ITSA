@@ -22,12 +22,14 @@ class CClientes extends Controller
                     ->where('id_pais', $cliente->id_pais)->first();
 
                 $dt_cliente = [
+                    "id_cliente" => $cliente->id_cliente,
                     "nombre" => $cliente->nombre,
                     "numero_de_iva_empresa" => $cliente->numero_de_iva_empresa,
                     "direccion" => $cliente->direccion,
                     "estado" => $cliente->estado,
                     "codigo_postal" => $cliente->codigo_postal,
-                    "pais" => $paises->nombre
+                    "pais" => $paises->nombre,
+                    "id_pais" => $paises->id_pais
                 ];
             }
 
@@ -47,6 +49,24 @@ class CClientes extends Controller
                 'id_pais' => $request->input('id_pais'),
                 'codigo_postal' => $request->input('codigo_postal'),
             ]);
+
+            return CGeneral::CreateMessage('', 200, $cliente);
+        }, $request);
+    }
+
+    public static function fn_e_clientes(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+
+            $cliente = TClientes::where('id_cliente', $request->input('id_cliente'))
+                ->update([
+                    'nombre' => $request->input('nombre'),
+                    'numero_de_iva_empresa' => $request->input('numero_de_iva_empresa'),
+                    'direccion' => $request->input('direccion'),
+                    'estado' => $request->input('estado'),
+                    'id_pais' => $request->input('id_pais'),
+                    'codigo_postal' => $request->input('codigo_postal'),
+                ]);
 
             return CGeneral::CreateMessage('', 200, $cliente);
         }, $request);

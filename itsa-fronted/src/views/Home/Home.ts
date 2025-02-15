@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { site } from "../../utils/site";
-import { sp_list_products } from "../../stores/store_list_products";
+import { sp_list_products } from "../../stores/store_products";
 
 
 export const productos = ref<any>([]);

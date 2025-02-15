@@ -78,7 +78,6 @@ onBeforeUnmount(() => {
                     </div>
                 </div>
             </div>
-            <Loading v-else />
         </div>
     </div>
 </template>

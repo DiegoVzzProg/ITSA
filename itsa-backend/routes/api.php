@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::prefix('products')->group(function () {
         Route::post('/listProducts', [CProductos::class, 'fn_l_productos']);
+        Route::post('/stripe/checkoutSuccess', [CStripe::class, 'fn_stripe_success']);
     });
 
     Route::prefix('auth')->group(function () {
@@ -25,12 +26,13 @@ Route::prefix('v1')->group(function () {
         Route::prefix('shoppingCart')->group(function () {
             Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
-            Route::post('/proceedToCheckout', [CStripe::class, 'fn_stripe']);
+            Route::get('/proceedToCheckout', [CStripe::class, 'fn_stripe']);
             Route::post('/deleteProductFromShoppingCart', [CCarritoCliente::class, 'fn_b_producto_carrito_cliente']);
         });
 
         Route::prefix('customers')->group(function () {
             Route::post('/registerCustomer', [CClientes::class, 'fn_a_clientes']);
+            Route::put('/editCustomer', [CClientes::class, 'fn_e_clientes']);
             Route::post('/getCustomer', [CClientes::class, 'fn_l_clientes']);
             Route::post('/checkProductInShoppingCart', [CCarritoCliente::class, 'fn_existe_producto_carrito_cliente']);
         });
@@ -41,7 +43,6 @@ Route::prefix('v1')->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::get('/downloadFile/{id_producto}', [CProductos::class, 'fn_descargar_archivo']);
-            Route::post('/stripe/checkoutSuccess', [CStripe::class, 'fn_stripe_success']);
         });
 
         Route::get('/secretKey', [CGeneral::class, 'generarSecretKey']);

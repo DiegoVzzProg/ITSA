@@ -4,7 +4,7 @@ import File from '../../components/File.vue';
 import CardProduct from '../../components/CardProduct.vue';
 import { class_universalIcons } from './UniversalIcons';
 import { IsNullOrEmpty } from '../../utils/site';
-import { sp_list_products } from '../../stores/store_list_products';
+import { sp_list_products } from '../../stores/store_products';
 
 
 onMounted(() => {
