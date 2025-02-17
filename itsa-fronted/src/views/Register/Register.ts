@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
 import { c_general } from "../../services/s_general";
 import { sp_register_user } from "../../stores/sotre_auth";
+import { sp_secret_key } from "../../stores/store_general";
 
 export const FormRegister = ref<any>({
   name: {
@@ -162,12 +163,11 @@ export class c_registerView {
         false
       );
 
-      const response = await c_general.SecretKey();
-
-      if (response && sp_register_user().data) {
+      await sp_secret_key().exec();
+      if (sp_secret_key().data && sp_register_user().data) {
         site.setCookies(
           {
-            "e.k": response.secretKey || "",
+            "e.k": sp_secret_key().data.secretKey,
             logged_in_successfully: "false",
           },
           false

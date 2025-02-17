@@ -94,6 +94,22 @@ export class class_basicsIcons {
           headerComponent.value?.classList.remove("bg-white");
         }
       }
+
+      const card_section: HTMLElement = document.getElementById(
+        "card_section"
+      ) as HTMLElement;
+
+      const a_card_section: HTMLElement = document.getElementById(
+        "a_card_section"
+      ) as HTMLElement;
+
+
+      if (card_section.getBoundingClientRect().top <= 0) {
+        a_card_section.classList.add("hidden");
+      } else {
+        a_card_section.classList.remove("hidden");
+      }
+
     }
   };
 }

@@ -6,6 +6,7 @@ import File from '../../components/File.vue';
 import { numberCartShopping } from '../../stores/countCartShopping';
 import { useRoute } from 'vue-router';
 import { sp_delete_product_from_shoppingCart, sp_edit_customer, sp_get_customer, sp_proceed_to_checkout, sp_register_customer, sp_shopping_cart_client } from '../../stores/store_customers';
+import Loading from '../../components/Loading.vue';
 
 const productData = ref<any>({});
 const productPrecio = ref<string>("");
@@ -95,6 +96,7 @@ const infoForms1 = async () => {
     if (response) {
         clientDataExists.value = true;
         clientData.value = response;
+
     }
 }
 
@@ -269,20 +271,19 @@ const validateCountry = () => {
 }
 
 const eliminarProductoDelCarrito = async (id_producto: string) => {
-    const response: any = await sp_delete_product_from_shoppingCart().exec({
+    await sp_delete_product_from_shoppingCart().exec({
         id_producto: btoa(id_producto)
-    })
+    });
 
-    if (response) {
+    if (sp_delete_product_from_shoppingCart().data) {
         notify.success("Product deleted");
         numberCartShopping().update();
 
-        if (response.productos.length == 0) {
+        if (sp_delete_product_from_shoppingCart().data.productos.length == 0) {
             site.RedirectPage("home");
             return;
         }
-        productData.value = response.productos;
-
+        window.location.reload();
     }
 }
 
@@ -347,10 +348,16 @@ const editCliente = async () => {
     })
 
     if (sp_edit_customer().data) {
-        notify.success("Customer updated");
+        notify.success("your billing information has been saved.");
+        console.log(sp_edit_customer().data);
+
         clientData.value = sp_edit_customer().data;
-        window.location.reload();
+        editar.value = false;
     }
+}
+
+const downloadProduct = async () => {
+    site.RedirectPage("paymentcompleted");
 }
 </script>
 
@@ -374,90 +381,93 @@ const editCliente = async () => {
                 </p>
                 <p>biling</p>
             </div>
-            <div class="flex flex-col gap-2 w-full" v-if="!clientData || editar">
-                <div class="flex flex-col gap-1" v-for="item in formCheckout1">
-                    <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
-                        :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
-                    <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                        v-if="item.error">
-                        {{ item.error }}
-                    </span>
-                </div>
-                <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
-                    <div class="flex flex-col w-full gap-1" v-for="item in formCheckout2">
-                        <input v-model="item.value" type="text" @input="validateForms2(item.value, item.id)"
-                            class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder">
+            <Loading v-if="!clientData" />
+            <div class="flex flex-col w-full min-h-full grow shrink-0" v-else>
+                <div class="flex flex-col gap-2 w-full" v-if="!clientData || editar">
+                    <div class="flex flex-col gap-1" v-for="item in formCheckout1">
+                        <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
+                            :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
                         <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                             v-if="item.error">
                             {{ item.error }}
                         </span>
                     </div>
-                </div>
-                <div class="flex flex-col gap-1">
-                    <SelectCountry v-model="formCountry.country.id_pais" :placeholder="formCountry.country.placeholder"
-                        :id_pais="formCountry.country.id_pais" />
-                    <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                        v-if="formCountry.country.error">
-                        {{ formCountry.country.error }}
-                    </span>
-                </div>
-                <button @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white" v-if="!editar">
-                    continue
-                </button>
-                <div v-else class="flex flex-row gap-2 w-full">
-                    <button @click="editCliente()" class="bg-black py-5 px-3 rounded-full text-white w-full">
-                        edit
-                    </button>
-                    <button @click="editar = !editar"
-                        class="border-black border py-5 px-3 rounded-full text-black w-full">
-                        to back
-                    </button>
-                </div>
-            </div>
-            <div class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]"
-                v-else-if="clientData && !editar">
-                <div class="flex flex-col leading-1">
-                    <p>
-                        <strong>Name:</strong> {{ clientData.nombre }}
-                    </p>
-                    <p>
-                        <strong>Address:</strong> {{ clientData.direccion }}
-                    </p>
-                    <div class="flex flex-row gap-1">
-                        <p>
-                            <strong>Postal Code:</strong> {{ clientData.codigo_postal }},
-                        </p>
-                        <p>
-                            <strong>State:</strong> {{ clientData.estado }}
-                        </p>
+                    <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
+                        <div class="flex flex-col w-full gap-1" v-for="item in formCheckout2">
+                            <input v-model="item.value" type="text" @input="validateForms2(item.value, item.id)"
+                                class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder">
+                            <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                                v-if="item.error">
+                                {{ item.error }}
+                            </span>
+                        </div>
                     </div>
-                    <p>
-                        <strong>Country:</strong> {{ clientData.pais }}
-                    </p>
-                    <span class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
-                        @click="editar = !editar; functionEdit();">
-                        edit
-                    </span>
+                    <div class="flex flex-col gap-1">
+                        <SelectCountry v-model="formCountry.country.id_pais"
+                            :placeholder="formCountry.country.placeholder" :id_pais="formCountry.country.id_pais" />
+                        <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                            v-if="formCountry.country.error">
+                            {{ formCountry.country.error }}
+                        </span>
+                    </div>
+                    <button @click="AddCliente()" class="bg-black py-5 px-3 rounded-full text-white" v-if="!editar">
+                        continue
+                    </button>
+                    <div v-else class="flex flex-row gap-2 w-full">
+                        <button @click="editCliente()" class="bg-black py-5 px-3 rounded-full text-white w-full">
+                            edit
+                        </button>
+                        <button @click="editar = !editar"
+                            class="border-black border py-5 px-3 rounded-full text-black w-full">
+                            to back
+                        </button>
+                    </div>
                 </div>
-                <div class="flex flex-col gap-3">
-                    <p v-if="Number(productPrecio) > 0">
-                        payment
-                    </p>
-                    <p v-else>
-                        download
-                    </p>
-                    <button v-on:click="finish = !finish" v-if="!finish"
-                        class="bg-black py-5 px-3 rounded-full text-white">
-                        finish
-                    </button>
-                    <button v-if="finish && Number(productPrecio) > 0" v-on:click="checkoutSession()"
-                        class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
-                        pay with card
-                    </button>
-                    <button v-else-if="!finish && Number(productPrecio) > 0"
-                        class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
-                        download
-                    </button>
+                <div class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]"
+                    v-else-if="clientData && !editar">
+                    <div class="flex flex-col leading-1">
+                        <p>
+                            <strong>Name:</strong> {{ clientData.nombre }}
+                        </p>
+                        <p>
+                            <strong>Address:</strong> {{ clientData.direccion }}
+                        </p>
+                        <div class="flex flex-row gap-1">
+                            <p>
+                                <strong>Postal Code:</strong> {{ clientData.codigo_postal }},
+                            </p>
+                            <p>
+                                <strong>State:</strong> {{ clientData.estado }}
+                            </p>
+                        </div>
+                        <p>
+                            <strong>Country:</strong> {{ clientData.pais }}
+                        </p>
+                        <span class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
+                            @click="editar = !editar; functionEdit();">
+                            edit
+                        </span>
+                    </div>
+                    <div class="flex flex-col gap-3">
+                        <p v-if="Number(productPrecio) > 0">
+                            payment
+                        </p>
+                        <p v-else>
+                            click to download
+                        </p>
+                        <button v-on:click="finish = !finish" v-if="!finish"
+                            class="bg-black py-5 px-3 rounded-full text-white">
+                            finish
+                        </button>
+                        <button v-if="finish && Number(productPrecio) > 0" v-on:click="checkoutSession()"
+                            class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
+                            pay with card
+                        </button>
+                        <button v-else-if="finish && Number(productPrecio) == 0" v-on:click="downloadProduct()"
+                            class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
+                            download
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -493,6 +503,7 @@ const editCliente = async () => {
                             </p>
                         </div>
                         <button class="sticky right-0 rounded-s-full bg-white"
+                            :disabled="sp_delete_product_from_shoppingCart().loading"
                             @click="eliminarProductoDelCarrito(item.id_producto)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -504,6 +515,7 @@ const editCliente = async () => {
                         </button>
                     </div>
                 </div>
+                <Loading v-else />
                 <div class="flex flex-row justify-between items-center gap-2 border-y border-y-black py-2">
                     <p class="font-itsa-bold text-[clamp(1.2rem,3vw,2rem)]">
                         tax(16%)

@@ -17,14 +17,4 @@ export class c_productos {
       dgav.httpMethod.DOWNLOAD
     );
   }
-
-  public static async stripeCheckoutSuccess(
-    data: Record<string, any>
-  ): Promise<any> {
-    return await dgav.apiRequest(
-      `${productosUrl}/stripe/checkoutSuccess`,
-      dgav.httpMethod.POST,
-      data
-    );
-  }
 }

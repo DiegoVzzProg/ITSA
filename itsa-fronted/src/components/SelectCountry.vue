@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
 import { c_general } from '../services/s_general';
+import { sp_countries } from '../stores/store_general';
 
 interface Country {
     id_pais: number;
@@ -48,9 +49,9 @@ watch(countries, () => {
 });
 
 const fetchCountries = async () => {
-    const response = await c_general.countries();
-    if (response?.data_pais) {
-        countries.value = response.data_pais;
+    await sp_countries().exec();
+    if (sp_countries().data) {
+        countries.value = sp_countries().data.data_pais;
     }
 };
 

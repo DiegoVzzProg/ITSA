@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string("foto_miniatura")->nullable();
             $table->string("archivo")->nullable();
             $table->string("hover_efecto")->default("hover_efecto_basicsIcons");
+            $table->string("carpeta_recursos")->default(null)->nullable();
         });
     }
 

@@ -4,6 +4,7 @@ import router from "../router";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import CryptoJS from "crypto-js";
+import { RouteLocationRaw } from "vue-router";
 
 //#region  dgavClass
 
@@ -205,29 +206,33 @@ export class site {
   }
 
   static RedirectPage(
-    url: string,
-    parametros: Record<string, any> = {},
+    routeName: string,
+    parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
-    const settingsRouter: Record<string, any> = {
-      name: url,
-    };
+    const route = router.resolve({
+      name: routeName,
+      params: parameters,
+    } as RouteLocationRaw);
 
-    if (
-      parametros &&
-      (Array.isArray(parametros)
-        ? parametros.length > 0
-        : Object.keys(parametros).length > 0)
-    ) {
-      settingsRouter["params"] = parametros;
+    if (route?.path) {
+      router.push(route).then(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        functionOn?.();
+      }).catch((error) => {
+        console.error('Navigation error:', error);
+        this.fallbackRedirect();
+      });
+    } else {
+      this.fallbackRedirect();
     }
-    router.push(settingsRouter);
 
-    if (functionOn) {
-      functionOn();
-    }
+  }
 
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  private static fallbackRedirect(): void {
+    router.push('/').catch(() => {
+      window.location.href = '/';
+    });
   }
 
   public static replaceClass(

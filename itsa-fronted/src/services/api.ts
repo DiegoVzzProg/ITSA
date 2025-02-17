@@ -1,7 +1,25 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { dgav, notify, site } from "../utils/site";
-import { numberCartShopping } from "../stores/countCartShopping";
-import { c_auth } from "./s_auth";
+import { sp_refresh_token } from "../stores/sotre_auth";
+
+let isRefreshing = false;
+let failedRequestsQueue: Array<(token: string) => void> = [];
+
+const setAuthTokens = (access: string, refresh: string) => {
+  site.setCookies(
+    {
+      "e.t": access,
+      "r.t": refresh,
+    },
+    false
+  );
+};
+
+const handleLogout = (): void => {
+  site.allDeleteCookies();
+  notify.error("Session expired. Redirecting...");
+  setTimeout(() => (site.RedirectPage("login")), 2000);
+};
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -26,6 +44,58 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
+  }
+);
+
+api.interceptors.response.use(
+  (response: AxiosResponse) => response,
+  async (error: AxiosError) => {
+
+    const status = error.response?.status;
+    const originalRequest = error.config;
+
+    if (status != 401) {
+      return Promise.reject(error);
+    }
+
+    const refreshToken: any = site.getCookie("r.t", false);
+
+    if (site.IsNullOrEmpty(refreshToken)) {
+      handleLogout();
+      return Promise.reject(error);
+    }
+
+    if (!isRefreshing) {
+      try {
+        isRefreshing = true;
+        const newAccessToken = await sp_refresh_token().exec({
+          refresh_token: refreshToken,
+        });
+
+        const { access_token, refresh_token } = newAccessToken as any;
+
+        setAuthTokens(access_token, refresh_token);
+        api.defaults.headers.common["Authorization"] = `Bearer ${access_token}`;
+
+        failedRequestsQueue.forEach((cb) => cb(access_token));
+        failedRequestsQueue = [];
+
+        return api(originalRequest!);
+      }
+      catch (refreshError) {
+        handleLogout();
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    } else {
+      return new Promise((resolve, reject) => {
+        failedRequestsQueue.push((newToken: string) => {
+          originalRequest!.headers!["Authorization"] = `Bearer ${newToken}`;
+          resolve(api(originalRequest!));
+        });
+      });
+    }
   }
 );
 

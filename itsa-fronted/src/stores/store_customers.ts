@@ -10,6 +10,7 @@ export const sp_shopping_cart_client = defineStore("sp_shopping_cart_client", {
   persist: true,
   actions: {
     async exec() {
+      dgav.dataBase.message = "";
       this.loading = true;
 
       const response: any = await c_clientes.shoppingCartClient();
@@ -39,6 +40,7 @@ export const sp_add_product = defineStore("sp_add_product", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_clientes.addProduct(data);
 
@@ -63,6 +65,7 @@ export const sp_register_customer = defineStore("sp_register_customer", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_clientes.registerCustomer(data);
 
@@ -87,6 +90,7 @@ export const sp_edit_customer = defineStore("sp_edit_customer", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_clientes.editCustomer(data);
 
@@ -94,6 +98,9 @@ export const sp_edit_customer = defineStore("sp_edit_customer", {
         notify.error(dgav.dataBase.message);
         return null;
       }
+
+      console.log(response);
+
 
       if (response) {
         this.data = response;
@@ -111,6 +118,7 @@ export const sp_get_customer = defineStore("sp_get_customer", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_clientes.getCustomer(data);
 
@@ -137,6 +145,7 @@ export const sp_check_product_in_shopping_cart = defineStore(
     }),
     actions: {
       async exec(data: Record<string, any>): Promise<any> {
+        dgav.dataBase.message = "";
         this.loading = true;
         const response: any = await c_clientes.checkProductInShoppingCart(data);
 
@@ -162,6 +171,7 @@ export const sp_proceed_to_checkout = defineStore("sp_proceed_to_checkout", {
   }),
   actions: {
     async exec(): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_clientes.proceedToCheckout();
 
@@ -188,6 +198,7 @@ export const sp_delete_product_from_shoppingCart = defineStore(
     }),
     actions: {
       async exec(data: Record<string, any>): Promise<any> {
+        dgav.dataBase.message = "";
         this.loading = true;
         const response: any = await c_clientes.deleteProductFromShoppingCart(
           data

@@ -5,6 +5,7 @@ import { c_general } from "../../services/s_general";
 import { c_clientes } from "../../services/s_clientes";
 import { numberCartShopping } from "../../stores/countCartShopping";
 import { sp_login_user, sp_restore_password } from "../../stores/sotre_auth";
+import { sp_secret_key } from "../../stores/store_general";
 
 export const forgotPassword = ref<boolean>(false);
 export const FormLogin = ref<any>({
@@ -117,11 +118,11 @@ export class c_loginView {
         false
       );
 
-      const response = await c_general.SecretKey();
-      if (response && sp_login_user().data) {
+      await sp_secret_key().exec();
+      if (sp_secret_key().data && sp_login_user().data) {
         site.setCookies(
           {
-            "e.k": response.secretKey,
+            "e.k": sp_secret_key().data.secretKey,
           },
           false
         );

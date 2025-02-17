@@ -9,6 +9,7 @@ export const sp_login_user = defineStore("sp_login_user", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
 
       const response: any = await c_auth.loginUser(data);

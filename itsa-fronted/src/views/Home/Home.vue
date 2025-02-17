@@ -72,7 +72,8 @@ onBeforeUnmount(() => {
                     </div>
                     <div class="flex items-center justify-center w-full h-[calc(100%-100px)]">
                         <span class="flex w-full max-w-[320px]">
-                            <File folder="../assets/img/gallery" :file="producto.imagen" type="img"
+                            <File folder="../assets/img/gallery"
+                                :file="`${String(producto.carpeta_recursos)}/${String(producto.imagen)}`" type="img"
                                 :encrypted="false" />
                         </span>
                     </div>

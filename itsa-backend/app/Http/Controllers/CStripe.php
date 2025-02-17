@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\TCarritoCliente;
+use App\Models\TClientes;
 use App\Models\TErroresInternos;
 use App\Models\TProducto;
+use App\Models\TProductosCompradosCliente;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -94,9 +97,38 @@ class CStripe extends Controller
                 $userId = $session->metadata->user_id ?? null;
 
                 if ($userId) {
-                    TCarritoCliente::where('id_usuario', $userId)
+
+                    // Optimización 1: Seleccionar solo las columnas necesarias del carrito
+                    $carrito = TCarritoCliente::where('id_usuario', $userId)
                         ->where('borrado', false)
-                        ->update(['borrado' => true]);
+                        ->select('id_producto')
+                        ->get();
+
+                    // Optimización 2: Obtener cliente con firstOrFail para evitar null
+                    $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
+
+                    // Optimización 3: Creación masiva con inserción múltiple
+                    if ($carrito->isNotEmpty()) {
+
+                        $datosCompra = $carrito
+                            ->map(
+                                function ($item) use ($cliente) {
+                                    return [
+                                        'id_cliente' => $cliente->id_cliente,
+                                        'id_producto' => $item->id_producto,
+                                        'fecha' => date('Y-m-d'),
+                                        'activo' => true,
+                                    ];
+                                }
+                            )->toArray();
+
+                        // Optimización 4: Usar transacción para consistencia
+                        DB::transaction(function () use ($datosCompra) {
+                            TProductosCompradosCliente::insert($datosCompra);
+                        });
+
+                        $carrito->update(['borrado' => true]);
+                    }
                 } else {
                     TErroresInternos::create([
                         'id_ticket' => uniqid(),

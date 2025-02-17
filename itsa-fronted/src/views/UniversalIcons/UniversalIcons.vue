@@ -22,8 +22,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <a href="#card_section"
-        class="flex fixed bottom-[10px] transition-all hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
+    <a href="#card_section" id="a_card_section"
+        class="flex fixed bottom-[10px] transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
     <div class="min-h-screen grow shrink-0 flex flex-col">
@@ -72,47 +72,6 @@ onUnmounted(() => {
             </div>
         </div>
     </div>
-    <!-- <div
-        class="flex opacity-50 flex-row w-full left-0 top-0 h-full px-[clamp(18px,5vw,68px)] absolute justify-center items-center gap-8">
-        <File folder="../assets/img/gallery/universalicons" file="universalicon_cover.png" type="img" :encrypted="false"
-            class="max-[680px]:hidden" />
-        <File folder="../assets/img/gallery/universalicons" file="universalicon_cover_1_icon.png" type="img"
-            :encrypted="false" class="max-[680px]:block hidden" />
-    </div>
-    <div class="flex absolute top-0 left-0 h-screen bg-[rgb(0,0,0)] transition-all w-full opacity-0" id="overflow2">
-    </div>
-    <div class="flex absolute top-0 left-0 h-screen bg-[rgb(116,171,253)] transition-all w-full opacity-60"
-        id="overflow">
-    </div>
-    <div id="div_contenedor_gallery_basics_1"
-        class="flex flex-col min-h-screen h-screen overflow-y-auto w-full snap-y snap-mandatory relative pt-[76px] scroll-none">
-        <div id="div_sub_contenedor_1"
-            class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
-            <div class="flex flex-col w-full justify-center items-center">
-                <p
-                    class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
-                    universal <br> icon pack
-                </p>
-                <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
-                    a sleek & minimalist collection solid <br> of minimalist style icons.
-                </p>
-            </div>
-        </div>
-        <div id="div_sub_contenedor_2"
-            class="flex flex-col min-h-full grow shrink-0 snap-center items-center justify-center">
-            <div class="flex flex-col w-full justify-center items-center leading-[clamp(35px,10vw,120px)]">
-                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] font-bold flex text-white z-10">
-                    +500 elements
-                </p>
-                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] text-center font-bold flex text-white z-10">
-                    fully editable
-                </p>
-                <p class="font-itsa-bold text-[clamp(25px,7vw,208px)] text-center font-bold flex text-white z-10">
-                    personal & comercial use
-                </p>
-            </div>
-        </div>
-    </div> -->
     <div id="contenedor_gallery_basics"
         class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">

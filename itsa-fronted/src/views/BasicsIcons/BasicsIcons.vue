@@ -22,8 +22,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <a href="#card_section"
-        class="flex fixed bottom-[10px] transition-all hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[40px] rounded-full border border-black px-6 py-4 z-[9999]">
+    <a href="#card_section" id="a_card_section"
+        class="flex fixed bottom-[10px] transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
     <div class="min-h-screen grow shrink-0 flex flex-col">

@@ -43,7 +43,8 @@ onMounted(() => {
 <template>
     <header id="header" ref="headerComponent"
         class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center fixed top-0 left-0 bg-white z-[9999]">
-        <div class="flex flex-row items-center justify-between w-full h-full border-b border-black" id="header_div">
+        <div class="flex flex-row items-center justify-between w-full h-full border-b border-black gap-5"
+            id="header_div">
             <button @click="site.RedirectPage('home')" class="flex w-full h-full items-center max-w-[165px]">
                 <img :src="logo" alt="" srcset="" class="select-none">
             </button>

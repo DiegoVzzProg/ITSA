@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { site } from '../utils/site';
 import { numberCartShopping } from '../stores/countCartShopping';
 import { sp_add_product, sp_check_product_in_shopping_cart } from '../stores/store_customers';
+import Loading from './Loading.vue';
 
 const props = defineProps<{
     id_producto: number;
@@ -44,6 +45,11 @@ function GoCheckOut() {
 const existeArticuloEnCarrito = ref<boolean>(false);
 const habilitarBotonGoToCart = async () => {
 
+    const istoken: any = site.getCookie("e.t", false);
+    if (site.IsNullOrEmpty(istoken)) {
+        return;
+    }
+
     const response: any = await sp_check_product_in_shopping_cart().exec({
         id_producto: props.id_producto
     })
@@ -71,17 +77,18 @@ onMounted(() => {
         </p>
         <p class="w-full whitespace-pre-line" v-html="descripcion">
         </p>
-        <div class="flex">
+        <div class="flex" v-if="!sp_check_product_in_shopping_cart().loading">
             <button v-if="existeArticuloEnCarrito" v-on:click="GoCheckOut()"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
                 Go to cart
             </button>
             <button @click="AddCartCostumer"
-                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
+                class=" border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
                 v-else>
                 {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
             </button>
         </div>
+        <Loading v-else />
     </div>
 </template>
 
