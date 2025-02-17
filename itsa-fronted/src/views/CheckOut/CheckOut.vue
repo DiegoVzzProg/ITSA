@@ -362,28 +362,27 @@ const downloadProduct = async () => {
 </script>
 
 <template>
-    <div class="flex flex-row gap-2 pt-[76px] w-full min-h-[200px] mb-6 items-end justify-center">
-        <div class="flex flex-row w-full max-[1060px]:max-w-2xl gap-2">
-            <p>
-                hi user,
-            </p>
-            <p>
-                {{ site.userData().nombre }}!
-            </p>
-        </div>
+    <div class="pt-[76px] min-h-[200px] mb-6">
     </div>
     <div
         class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
         <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0">
             <div class="flex flex-col gap-1 text-[clamp(.85rem,3vw,1rem)]">
+                <div class="flex flex-row w-full gap-2 font-semibold">
+                    <p>
+                        hi user,
+                    </p>
+                    <p>
+                        {{ site.userData().nombre }}!
+                    </p>
+                </div>
                 <p>
                     your details
                 </p>
                 <p>biling</p>
             </div>
-            <Loading v-if="!clientData" />
-            <div class="flex flex-col w-full min-h-full grow shrink-0" v-else>
-                <div class="flex flex-col gap-2 w-full" v-if="!clientData || editar">
+            <div class="flex flex-col w-full min-h-full grow shrink-0">
+                <div v-if="!clientData || editar" class="flex flex-col gap-2 w-full">
                     <div class="flex flex-col gap-1" v-for="item in formCheckout1">
                         <input v-model="item.value" type="text" class="border border-black py-5 px-3 rounded-full"
                             :placeholder="item.placeholder" @input="validateForms1(item.value, item.id)">
@@ -423,8 +422,8 @@ const downloadProduct = async () => {
                         </button>
                     </div>
                 </div>
-                <div class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]"
-                    v-else-if="clientData && !editar">
+                <div v-else-if="clientData && !editar"
+                    class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]">
                     <div class="flex flex-col leading-1">
                         <p>
                             <strong>Name:</strong> {{ clientData.nombre }}
@@ -469,6 +468,7 @@ const downloadProduct = async () => {
                         </button>
                     </div>
                 </div>
+                <!-- <Loading v-else /> -->
             </div>
         </div>
 

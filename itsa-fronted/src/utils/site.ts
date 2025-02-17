@@ -217,7 +217,7 @@ export class site {
 
     if (route?.path) {
       router.push(route).then(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0 });
         functionOn?.();
       }).catch((error) => {
         console.error('Navigation error:', error);

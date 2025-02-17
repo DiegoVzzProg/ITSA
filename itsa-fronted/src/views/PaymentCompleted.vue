@@ -2,7 +2,21 @@
 import { onMounted } from 'vue';
 import { numberCartShopping } from '../stores/countCartShopping';
 import { notify, site } from '../utils/site';
+import { c_productos } from '../services/s_productos';
 
+const downloadProduct = async () => {
+    const response: any = await c_productos.downloadFile();
+
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.setAttribute('download', 'archivo_itsa_studio.zip');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl); // Limpieza
+}
 
 onMounted(() => {
     numberCartShopping().update();
@@ -10,6 +24,8 @@ onMounted(() => {
     if (numberCartShopping().count > 0) {
         notify.error("Payment not made");
         site.RedirectPage("home");
+    } else {
+
     }
 });
 

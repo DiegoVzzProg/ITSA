@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id('id_producto_comprado');
             $table->integer('id_cliente');
             $table->integer('id_producto');
-            $table->date('fecha');
-            $table->boolean('activo')->default(false);
+            $table->boolean('pago_confirmado')->default(false);
+            $table->boolean('descargado')->default(false);
+            $table->timestamps();
         });
     }
 

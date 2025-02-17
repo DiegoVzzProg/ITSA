@@ -37,7 +37,7 @@ export class c_clientes {
 
   public static async checkProductInShoppingCart(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `${customersUrl}/checkProductInShoppingCart`,
+      `${shoppingCartUrl}/checkProductInShoppingCart`,
       dgav.httpMethod.POST,
       data
     );

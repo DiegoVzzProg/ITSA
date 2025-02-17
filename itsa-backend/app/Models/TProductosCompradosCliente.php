@@ -14,8 +14,8 @@ class TProductosCompradosCliente extends Model
     protected $fillable = [
         'id_cliente',
         'id_producto',
-        'fecha',
-        'activo'
+        'pago_confirmado',
+        'descargado'
     ];
 
     protected $hidden = [
@@ -23,5 +23,5 @@ class TProductosCompradosCliente extends Model
     ];
 
 
-    public $timestamps = false;
+    public $timestamps = true;
 }

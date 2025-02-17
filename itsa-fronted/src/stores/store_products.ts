@@ -9,6 +9,7 @@ export const sp_list_products = defineStore("sp_list_products", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
       const response: any = await c_productos.listProducts(data);
 
@@ -26,18 +27,18 @@ export const sp_list_products = defineStore("sp_list_products", {
   },
 });
 
-export const sp_stripe_checkout_success = defineStore(
-  "sp_stripe_checkout_success",
+export const sp_add_product_download_list = defineStore(
+  "sp_add_product_download_list",
   {
     state: () => ({
-      products: [] as any,
+      data: [] as any,
       loading: false,
     }),
     actions: {
-      async exec(data: Record<string, any>): Promise<any> {
-        
+      async exec(): Promise<any> {
+        dgav.dataBase.message = "";
         this.loading = true;
-        const response: any = await c_productos.listProducts(data);
+        const response: any = await c_productos.addProductDownloadList();
 
         if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
           notify.error(dgav.dataBase.message);
@@ -45,7 +46,7 @@ export const sp_stripe_checkout_success = defineStore(
         }
 
         if (response) {
-          this.products = response;
+          this.data = response;
           this.loading = false;
           return response;
         }

@@ -98,16 +98,13 @@ class CStripe extends Controller
 
                 if ($userId) {
 
-                    // Optimización 1: Seleccionar solo las columnas necesarias del carrito
                     $carrito = TCarritoCliente::where('id_usuario', $userId)
                         ->where('borrado', false)
                         ->select('id_producto')
                         ->get();
 
-                    // Optimización 2: Obtener cliente con firstOrFail para evitar null
                     $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
 
-                    // Optimización 3: Creación masiva con inserción múltiple
                     if ($carrito->isNotEmpty()) {
 
                         $datosCompra = $carrito
@@ -117,17 +114,16 @@ class CStripe extends Controller
                                         'id_cliente' => $cliente->id_cliente,
                                         'id_producto' => $item->id_producto,
                                         'fecha' => date('Y-m-d'),
-                                        'activo' => true,
+                                        'pago_confirmado' => true,
+                                        'descargado' => false,
                                     ];
                                 }
                             )->toArray();
 
-                        // Optimización 4: Usar transacción para consistencia
-                        DB::transaction(function () use ($datosCompra) {
+                        DB::transaction(function () use ($datosCompra, $carrito) {
                             TProductosCompradosCliente::insert($datosCompra);
+                            $carrito->update(['borrado' => true]);
                         });
-
-                        $carrito->update(['borrado' => true]);
                     }
                 } else {
                     TErroresInternos::create([
