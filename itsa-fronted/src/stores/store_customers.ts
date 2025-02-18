@@ -21,6 +21,7 @@ export const sp_shopping_cart_client = defineStore("sp_shopping_cart_client", {
       }
 
       if (response) {
+        this.data = response;
         this.loading = false;
         return response;
       }
@@ -98,9 +99,6 @@ export const sp_edit_customer = defineStore("sp_edit_customer", {
         notify.error(dgav.dataBase.message);
         return null;
       }
-
-      console.log(response);
-
 
       if (response) {
         this.data = response;

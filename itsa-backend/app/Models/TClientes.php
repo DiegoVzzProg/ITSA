@@ -18,7 +18,8 @@ class TClientes extends Model
         'direccion',
         'estado',
         'id_pais',
-        'codigo_postal'
+        'codigo_postal',
+        'telefono'
     ];
 
     protected $hidden = [

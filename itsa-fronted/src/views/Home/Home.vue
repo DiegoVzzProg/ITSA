@@ -3,8 +3,6 @@ import { onBeforeUnmount, onMounted } from 'vue';
 import { site } from '../../utils/site';
 import { class_home, imgsPrincipal, productos } from './Home';
 import File from '../../components/File.vue';
-import Loading from '../../components/Loading.vue';
-
 
 onMounted(() => {
     class_home.onInit();

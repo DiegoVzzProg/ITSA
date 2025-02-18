@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { layout: "Main" },
   },
   {
-    path: "/checkout",
+    path: "/checkout/:uuid",
     name: "checkout",
     component: CheckOut,
     meta: { layout: "Main" },

@@ -35,6 +35,7 @@ export const sp_register_user = defineStore("sp_register_user", {
   }),
   actions: {
     async exec(data: Record<string, any>): Promise<any> {
+      dgav.dataBase.message = "";
       this.loading = true;
 
       const response: any = await c_auth.registerUser(data);

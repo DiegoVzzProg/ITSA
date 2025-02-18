@@ -4,6 +4,7 @@ import { site } from '../utils/site';
 import { numberCartShopping } from '../stores/countCartShopping';
 import { sp_add_product, sp_check_product_in_shopping_cart } from '../stores/store_customers';
 import Loading from './Loading.vue';
+import { session_checkout } from '../stores/store_session';
 
 const props = defineProps<{
     id_producto: number;
@@ -37,7 +38,9 @@ const AddCartCostumer = async () => {
 function GoCheckOut() {
     const userData = site.getCookie('e.u.d');
     if (userData) {
-        site.RedirectPage('checkout');
+        site.RedirectPage('checkout', {
+            id: session_checkout().guid
+        });
     }
 }
 

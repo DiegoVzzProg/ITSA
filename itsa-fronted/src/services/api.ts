@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
-import { dgav, notify, site } from "../utils/site";
+import { notify, site } from "../utils/site";
 import { sp_refresh_token } from "../stores/sotre_auth";
 
 let isRefreshing = false;
@@ -18,7 +18,7 @@ const setAuthTokens = (access: string, refresh: string) => {
 const handleLogout = (): void => {
   site.allDeleteCookies();
   notify.error("Session expired. Redirecting...");
-  setTimeout(() => (site.RedirectPage("login")), 2000);
+  setTimeout(() => site.RedirectPage("login"), 2000);
 };
 
 const api: AxiosInstance = axios.create({
@@ -36,9 +36,12 @@ const api: AxiosInstance = axios.create({
 api.interceptors.request.use(
   async (config) => {
     const token = site.getCookie("e.t", false);
-
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
+    }
+    const sessionToken = site.getCookie("s.t", false);
+    if (sessionToken) {
+      config.headers["X-Session-Token"] = `${sessionToken}`;
     }
     return config;
   },
@@ -50,7 +53,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-
+    const response: any = error.response;
     const status = error.response?.status;
     const originalRequest = error.config;
 
@@ -81,8 +84,7 @@ api.interceptors.response.use(
         failedRequestsQueue = [];
 
         return api(originalRequest!);
-      }
-      catch (refreshError) {
+      } catch (refreshError) {
         handleLogout();
         return Promise.reject(refreshError);
       } finally {

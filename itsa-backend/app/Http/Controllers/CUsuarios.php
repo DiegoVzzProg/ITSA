@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TClientes;
+use App\Models\TPaises;
 use App\Models\TUsuarios;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -45,6 +48,15 @@ class CUsuarios extends Controller
         return $refreshToken;
     }
 
+    private static function generateSessionToken($usuario): string
+    {
+        $token = Str::random(64);
+        TUsuarios::where('id_usuario', $usuario->id_usuario)
+            ->update([
+                'session_token' => $token,
+            ]);
+        return $token;
+    }
 
     /**
      * Endpoint para la renovación del access token usando el refresh token.
@@ -99,8 +111,11 @@ class CUsuarios extends Controller
             TUsuarios::where('id_usuario', $usuario->id_usuario)
                 ->update(['ultima_conexion' => now()]);
 
+            $dt_cliente = CClientes::ObtenerDatosCiente($usuario->id_usuario);
+
             $accessToken  = self::generateAccessToken($usuario);
             $refreshToken = self::generateRefreshToken($usuario);
+            $sessionToken = self::generateSessionToken($usuario);
 
             return CGeneral::CreateMessage('', 200,  [
                 "user_data" => [
@@ -108,8 +123,10 @@ class CUsuarios extends Controller
                     'email' => $usuario->email,
                     'nombre' => $usuario->nombre,
                 ],
+                "client_data" => $dt_cliente,
                 "token" => $accessToken,
-                "refresh_token" => $refreshToken
+                "refresh_token" => $refreshToken,
+                "session_token" => $sessionToken
             ]);
         }, $request);
     }
@@ -117,35 +134,78 @@ class CUsuarios extends Controller
     public static function fn_register(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
-            $credentials = $request->only('nombre', 'email', 'password', 'leyo_terms');
+            $credentials = $request->only(
+                'user_name',
+                'email',
+                'password',
+                'leyo_terms',
+                'id_pais',
+                'nombre',
+                'numero_de_iva_empresa',
+                'direccion',
+                'estado',
+                'codigo_postal',
+                'telefono'
+            );
 
             $existeEmail = TUsuarios::where('email', $credentials['email'])->first();
+            $exite_cliente = TClientes::where('telefono', $credentials['telefono'])->first();
 
             if ($existeEmail) {
                 return CGeneral::CreateMessage('User already exists', 599, null);
             }
 
-            $usuario = TUsuarios::create([
-                'nombre' => $credentials['nombre'],
-                'email' => $credentials['email'],
-                'password' => Hash::make($credentials['password']),
-                'leyo_terms' => $credentials['leyo_terms'],
-                'creacion' => now(),
-                'ultima_conexion' => now(),
-                'expires_at_token' => now(),
-            ]);
+            if ($exite_cliente) {
+                return CGeneral::CreateMessage('The details you provided already exist.', 599, null);
+            }
 
-            $accessToken  = self::generateAccessToken($usuario);
-            $refreshToken = self::generateRefreshToken($usuario);
+
+            $transaccion = DB::transaction(function () use ($credentials) {
+                $usuario = TUsuarios::create([
+                    'nombre' => $credentials['user_name'],
+                    'email' => $credentials['email'],
+                    'password' => Hash::make($credentials['password']),
+                    'leyo_terms' => $credentials['leyo_terms'],
+                    'creacion' => now(),
+                    'ultima_conexion' => now(),
+                    'expires_at_token' => now(),
+                ]);
+
+                TClientes::create([
+                    'id_usuario' => $usuario->id_usuario,
+                    'nombre' => $credentials['nombre'],
+                    'numero_de_iva_empresa' => $credentials['numero_de_iva_empresa'],
+                    'direccion' => $credentials['direccion'],
+                    'estado' => $credentials['estado'],
+                    'id_pais' => $credentials['id_pais'],
+                    'codigo_postal' => $credentials['codigo_postal'],
+                    'telefono' => $credentials['telefono']
+                ]);
+
+                $accessToken  = self::generateAccessToken($usuario);
+                $refreshToken = self::generateRefreshToken($usuario);
+                $sessionToken = self::generateSessionToken($usuario);
+
+                return [
+                    'usuario' => $usuario,
+                    'refreshToken' => $refreshToken,
+                    'accessToken' => $accessToken,
+                    'sessionToken' => $sessionToken
+                ];
+            });
+
+            $dt_cliente = CClientes::ObtenerDatosCiente($transaccion['usuario']->id_usuario);
 
             return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
-                    'id_usuario' => $usuario->id_usuario,
-                    'email' => $usuario->email,
-                    'nombre' => $usuario->nombre,
+                    'id_usuario' => $transaccion['usuario']->id_usuario,
+                    'email' => $transaccion['usuario']->email,
+                    'nombre' => $transaccion['usuario']->nombre,
                 ],
-                "token" => $accessToken,
-                "refresh_token" => $refreshToken
+                "client_data" => $dt_cliente,
+                "token" => $transaccion['accessToken'],
+                "refresh_token" => $transaccion['refreshToken'],
+                "session_token" => $transaccion['sessionToken']
             ]);
         });
     }

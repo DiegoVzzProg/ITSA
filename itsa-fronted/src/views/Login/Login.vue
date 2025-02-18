@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { site } from '../../utils/site';
-import { c_loginView, forgotPassword, FormLogin } from './Login';
+import { LoginClass } from './Login';
 
 onMounted(() => {
-    c_loginView.onInit();
+    LoginClass.OnInit();
 });
 
 </script>
@@ -29,21 +29,22 @@ onMounted(() => {
                 log in to your account
             </p>
             <div class="flex flex-col gap-3">
-                <div class="flex flex-col gap-1" v-for="(item, index) in FormLogin" :key="index">
+                <div class="flex flex-col gap-1" v-for="(item, index) in LoginClass.FormLogin.User" :key="index">
                     <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
                         :placeholder="item.placeholder" :maxlength="item.maxLength"
-                        v-on:input="c_loginView.validaciones(item.value, item.placeholder)">
+                        v-on:input="LoginClass.ValidateForm(item)">
                     <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                         v-if="item.error">
                         {{ item.error }}
                     </span>
                 </div>
             </div>
-            <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="forgotPassword">
-                <button class="underline underline-offset-2" v-on:click="c_loginView.RecuperarPassword()">forgot
+            <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="LoginClass.ForgotPassword">
+                <button class="underline underline-offset-2" v-on:click="LoginClass.RetrievePassword()">forgot
                     password?</button>
             </div>
-            <button @click="c_loginView.Login" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
+            <button id="btnLogin" @click="LoginClass.btnLogin_OnClick()" type="submit"
+                class="bg-black py-5 px-3 rounded-full text-white">
                 login
             </button>
         </div>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string("estado");
             $table->integer("id_pais");
             $table->string("codigo_postal");
+            $table->string("telefono");
             $table->timestamps();
         });
     }

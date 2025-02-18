@@ -1,125 +1,117 @@
-import { ref } from "vue";
-import { dgav, IsNullOrEmpty, notify, site } from "../../utils/site";
-import { c_auth } from "../../services/s_auth";
-import { c_general } from "../../services/s_general";
-import { c_clientes } from "../../services/s_clientes";
+import { reactive, ref } from "vue";
+import { site } from "../../utils/site";
 import { numberCartShopping } from "../../stores/countCartShopping";
 import { sp_login_user, sp_restore_password } from "../../stores/sotre_auth";
 import { sp_secret_key } from "../../stores/store_general";
 
-export const forgotPassword = ref<boolean>(false);
-export const FormLogin = ref<any>({
-  email: {
-    placeholder: "email",
-    value: "",
-    error: "",
-    maxLength: 254,
-    type: "text",
+export const LoginClass = {
+  ForgotPassword: ref<boolean>(false),
+
+  FormLogin: reactive({
+    User: {
+      email: {
+        placeholder: "email",
+        value: "",
+        error: "",
+        maxLength: 254,
+        type: "text",
+      },
+      password: {
+        placeholder: "password",
+        value: "",
+        error: "",
+        maxLength: 20,
+        type: "password",
+      },
+    },
+    Reset: function (): void {
+      this.User.email.value = "";
+      this.User.password.value = "";
+      this.User.email.error = "";
+      this.User.password.error = "";
+    },
+  }),
+
+  OnInit: function (): void {
+    this.FormLogin.Reset();
   },
-  password: {
-    placeholder: "password",
-    value: "",
-    error: "",
-    maxLength: 20,
-    type: "password",
+
+  RetrievePassword: async function (): Promise<any> {
+    const data = {
+      email: this.FormLogin.User.email.value,
+    };
+    await sp_restore_password().exec(data);
   },
-});
 
-export class c_loginView {
-  public static onInit() {
-    this.ResetFormLogin();
-  }
-
-  public static ResetFormLogin() {
-    FormLogin.value.email.value = "";
-    FormLogin.value.password.value = "";
-    FormLogin.value.email.error = "";
-    FormLogin.value.password.error = "";
-  }
-
-  public static async RecuperarPassword() {
-    await sp_restore_password().exec({
-      email: FormLogin.value.email.value,
-    });
-  }
-
-  public static validaciones(value: string, seccion: string) {
-    switch (seccion) {
+  ValidateForm: function (item: any): void {
+    switch (item.id) {
       case "email":
-        this.validateEmail(value);
+        this.ValidateEmail(item.value);
         break;
       case "password":
-        this.validatePassword(value);
-        break;
-      default:
+        this.ValidatePassword(item.value);
         break;
     }
-  }
+  },
 
-  public static validateEmail = (value: string) => {
-    const formEmail = FormLogin.value.email;
+  ValidateEmail: function (value: string): void {
+    const email = this.FormLogin.User.email;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    forgotPassword.value = false;
+    this.ForgotPassword.value = false;
 
     if (!emailRegex.test(value)) {
-      formEmail.error = "The email is invalid";
+      email.error = "The email is invalid";
       return;
     }
 
     if (value.length > 254) {
-      formEmail.error = "The email should not exceed 254 characters";
+      email.error = "The email should not exceed 254 characters";
       return;
     }
 
-    forgotPassword.value = true;
-    formEmail.error = "";
-  };
+    this.ForgotPassword.value = true;
+    email.error = "";
+  },
 
-  public static validatePassword = (value: string) => {
-    const formPassword = FormLogin.value.password;
+  ValidatePassword: function (value: string): void {
+    const password = this.FormLogin.User.password;
     if (value.length < 8) {
-      formPassword.error = "Password must be at least 8 characters long";
+      password.error = "Password must be at least 8 characters long";
     } else if (value.length > 20) {
-      formPassword.error = "Password should not exceed 20 characters";
+      password.error = "Password should not exceed 20 characters";
     } else {
-      formPassword.error = "";
+      password.error = "";
     }
-  };
+  },
 
-  public static Login = async () => {
-    const formEmail = FormLogin.value.email;
-    const formPassword = FormLogin.value.password;
+  btnLogin_OnClick: async function (): Promise<void> {
+    const UserForm1: any = this.FormLogin.User;
+    Object.keys(UserForm1).forEach((key) => {
+      this.ValidateForm(UserForm1[key]);
+    });
 
-    this.validateEmail(formEmail.value);
-    this.validatePassword(formPassword.value);
-
-    if (formEmail.error || formPassword.error) return;
+    if (UserForm1.email.error || UserForm1.password.error) return;
 
     const data: any = {
-      email: formEmail.value,
-      password: formPassword.value,
+      email: UserForm1.email.value,
+      password: UserForm1.password.value,
     };
 
     await sp_login_user().exec(data);
-
-    const message: string = dgav.dataBase.message;
-    if (!IsNullOrEmpty(message)) {
-      notify.error(message);
-      return;
-    }
 
     if (sp_login_user().data) {
       site.setCookies(
         {
           "e.t": sp_login_user().data.token,
           "r.t": sp_login_user().data.refresh_token,
+          "s.t": sp_login_user().data.session_token,
         },
         false
       );
 
       await sp_secret_key().exec();
-      if (sp_secret_key().data && sp_login_user().data) {
+      if (sp_secret_key().data) {
         site.setCookies(
           {
             "e.k": sp_secret_key().data.secretKey,
@@ -129,6 +121,7 @@ export class c_loginView {
 
         site.setCookies({
           "e.u.d": JSON.stringify(sp_login_user().data.user_data),
+          "e.c.d": JSON.stringify(sp_login_user().data.client_data),
         });
 
         site.setCookies(
@@ -142,11 +135,9 @@ export class c_loginView {
 
         if (userData) {
           numberCartShopping().update();
-
-          this.ResetFormLogin();
           site.RedirectPage("home");
         }
       }
     }
-  };
-}
+  },
+};

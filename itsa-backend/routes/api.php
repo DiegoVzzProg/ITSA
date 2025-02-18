@@ -10,6 +10,8 @@ use App\Http\Controllers\CUsuarios;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+    Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
+
     Route::prefix('products')->group(function () {
         Route::post('/list/products', [CProductos::class, 'fn_l_productos']);
         Route::post('/stripe/checkout/success', [CStripe::class, 'fn_stripe_success']);
@@ -47,6 +49,5 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('/secretKey', [CGeneral::class, 'generarSecretKey']);
-        Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
     });
 });
