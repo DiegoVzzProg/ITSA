@@ -5,7 +5,6 @@ import { site } from '../utils/site';
 import { useRoute } from 'vue-router';
 import { numberCartShopping } from '../stores/countCartShopping'
 import { sp_logout_user } from '../stores/sotre_auth';
-import { session_checkout } from '../stores/store_session';
 
 const id_usuario = ref<number>(0);
 const router = useRoute();
@@ -27,9 +26,7 @@ const LogOut = async () => {
 
 function GoCheckOut() {
     if (site.userData() && numberCartShopping().count > 0) {
-        site.RedirectPage('checkout', {
-            uuid: session_checkout().guid
-        });
+        site.RedirectPage('checkout');
     }
 }
 

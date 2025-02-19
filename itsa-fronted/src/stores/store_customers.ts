@@ -7,7 +7,6 @@ export const sp_shopping_cart_client = defineStore("sp_shopping_cart_client", {
     loading: false,
     data: null as any,
   }),
-  persist: true,
   actions: {
     async exec() {
       dgav.dataBase.message = "";
@@ -109,31 +108,6 @@ export const sp_edit_customer = defineStore("sp_edit_customer", {
   },
 });
 
-export const sp_get_customer = defineStore("sp_get_customer", {
-  state: () => ({
-    data: null as any,
-    loading: false,
-  }),
-  actions: {
-    async exec(data: Record<string, any>): Promise<any> {
-      dgav.dataBase.message = "";
-      this.loading = true;
-      const response: any = await c_clientes.getCustomer(data);
-
-      if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
-        notify.error(dgav.dataBase.message);
-        return null;
-      }
-
-      if (response) {
-        this.data = response;
-        this.loading = false;
-        return response;
-      }
-    },
-  },
-});
-
 export const sp_check_product_in_shopping_cart = defineStore(
   "sp_check_product_in_shopping_cart",
   {
@@ -193,6 +167,7 @@ export const sp_delete_product_from_shoppingCart = defineStore(
     state: () => ({
       data: null as any,
       loading: false,
+      click: 0,
     }),
     actions: {
       async exec(data: Record<string, any>): Promise<any> {
@@ -208,10 +183,15 @@ export const sp_delete_product_from_shoppingCart = defineStore(
         }
 
         if (response) {
+          this.click++;
           this.data = response;
           this.loading = false;
           return response;
         }
+      },
+
+      reset() {
+        this.click = 0;
       },
     },
   }

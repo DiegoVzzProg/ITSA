@@ -8,9 +8,13 @@ import CheckOut from "./views/CheckOut/CheckOut.vue";
 import Register from "./views/Register/Register.vue";
 import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
 import PaymentCompleted from "./views/PaymentCompleted.vue";
+import { UniqueGuid } from "./stores/store_session";
+import { numberCartShopping } from "./stores/countCartShopping";
+import { site } from "./utils/site";
 
 const routes: Array<RouteRecordRaw> = [
-  { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
+  { path: "/", redirect: "/home" },
+  { path: "/home", name: "home", component: Home, meta: { layout: "Main" } },
   {
     path: "/gallery/basics-icons",
     name: "basicsicons",
@@ -30,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { layout: "Main" },
   },
   {
-    path: "/checkout/:uuid",
+    path: "/checkout",
     name: "checkout",
     component: CheckOut,
     meta: { layout: "Main" },
@@ -60,6 +64,38 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const redirectToHome = {
+    name: "home",
+    query: {
+      key: UniqueGuid().guid,
+    },
+  };
+
+  if (String(to.meta.layout).toLowerCase() === "auth") {
+    return next();
+  }
+
+  if (!site.IsNullOrEmpty(to.query.key)) {
+    if (UniqueGuid().guid !== to.query.key) {
+      return next(redirectToHome);
+    }
+
+    const token: string = site.getCookie("e.t", false) ?? null;
+    if (
+      !site.IsNullOrEmpty(token) &&
+      (String(to.name).toLowerCase() == "paymentcompleted" ||
+        String(to.name).toLowerCase() == "checkout")
+    ) {
+      numberCartShopping().update();
+    }
+  } else {
+    return next(redirectToHome);
+  }
+
+  next();
 });
 
 export default router;

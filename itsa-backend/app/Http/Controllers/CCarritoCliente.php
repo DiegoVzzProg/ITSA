@@ -97,4 +97,18 @@ class CCarritoCliente extends Controller
             ]);
         }, $request);
     }
+
+    public static function fn_cantidad_carrito(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $user = $request->user();
+
+            $cantidad = TCarritoCliente::where('id_usuario', $user->id_usuario)
+                ->where('borrado', false)->count();
+
+            return CGeneral::CreateMessage('', 200, [
+                "cantidad" => $cantidad
+            ]);
+        }, $request);
+    }
 }

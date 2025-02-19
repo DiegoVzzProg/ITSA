@@ -1,9 +1,13 @@
 import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 
-export const session_checkout = defineStore("session_checkout", {
+export const UniqueGuid = defineStore("UniqueGuid", {
   state: () => ({
-    guid: uuidv4(),
+    guid: uuidv4().toUpperCase(),
   }),
-  actions: {},
+  actions: {
+    updateGuid() {
+      this.guid = uuidv4().toUpperCase();
+    },
+  },
 });

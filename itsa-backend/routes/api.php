@@ -25,18 +25,18 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () { //, 'session.expire'
-        Route::prefix('shoppingCart')->group(function () {
+        Route::prefix('shopping/cart')->group(function () {
             Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
-            Route::post('/addProduct', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
-            Route::get('/proceedToCheckout', [CStripe::class, 'fn_stripe']);
-            Route::post('/deleteProductFromShoppingCart', [CCarritoCliente::class, 'fn_b_producto_carrito_cliente']);
-            Route::post('/checkProductInShoppingCart', [CCarritoCliente::class, 'fn_existe_producto_carrito_cliente']);
+            Route::post('/add/product', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
+            Route::get('/proceed/to/checkout', [CStripe::class, 'fn_stripe']);
+            Route::post('/delete/product/from', [CCarritoCliente::class, 'fn_b_producto_carrito_cliente']);
+            Route::post('/check/product/from', [CCarritoCliente::class, 'fn_existe_producto_carrito_cliente']);
+            Route::get('/check/number', [CCarritoCliente::class, 'fn_cantidad_carrito']);
         });
 
         Route::prefix('customers')->group(function () {
-            Route::post('/registerCustomer', [CClientes::class, 'fn_a_clientes']);
-            Route::put('/editCustomer', [CClientes::class, 'fn_e_clientes']);
-            Route::post('/getCustomer', [CClientes::class, 'fn_l_clientes']);
+            Route::post('/register/customer', [CClientes::class, 'fn_a_clientes']);
+            Route::put('/edit/customer', [CClientes::class, 'fn_e_clientes']);
         });
 
         Route::prefix('auth')->group(function () {

@@ -17,11 +17,4 @@ class TProductosCompradosCliente extends Model
         'pago_confirmado',
         'descargado'
     ];
-
-    protected $hidden = [
-        'fecha'
-    ];
-
-
-    public $timestamps = true;
 }

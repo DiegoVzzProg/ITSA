@@ -66,6 +66,8 @@ const selectCountry = (country: Country) => {
     showCountries.value = false;
     search.value = '';
     emit('update:modelValue', country.id_pais);
+    console.log(country.id_pais);
+
     emit('change', country);
 };
 

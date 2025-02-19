@@ -1,14 +1,3 @@
-<script setup lang="ts">
-import { onMounted } from 'vue';
-import { site } from '../../utils/site';
-import { LoginClass } from './Login';
-
-onMounted(() => {
-    LoginClass.OnInit();
-});
-
-</script>
-
 <template>
     <div class="flex w-full max-w-md h-full flex-col justify-center gap-3">
         <div class="flex flex-col gap-3 pb-6">
@@ -22,28 +11,28 @@ onMounted(() => {
                     <path d="M5 12l6 -6" />
                 </svg>
                 <p>
-                    regresar
+                    to back
                 </p>
             </button>
             <p class="px-[clamp(18px,3vw,28px)]">
                 log in to your account
             </p>
             <div class="flex flex-col gap-3">
-                <div class="flex flex-col gap-1" v-for="(item, index) in LoginClass.FormLogin.User" :key="index">
+                <div class="flex flex-col gap-1" v-for="(item, index) in FormLogin.User" :key="index">
                     <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
-                        :placeholder="item.placeholder" :maxlength="item.maxLength"
-                        v-on:input="LoginClass.ValidateForm(item)">
+                        :placeholder="item.placeholder" :maxlength="item.maxLength" v-on:input="ValidateForm(item)">
                     <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                         v-if="item.error">
                         {{ item.error }}
                     </span>
                 </div>
             </div>
-            <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="LoginClass.ForgotPassword">
-                <button class="underline underline-offset-2" v-on:click="LoginClass.RetrievePassword()">forgot
+            <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="ForgotPassword">
+                <button class="underline underline-offset-2" v-on:click="RetrievePassword()">forgot
                     password?</button>
             </div>
-            <button id="btnLogin" @click="LoginClass.btnLogin_OnClick()" type="submit"
+            <Loading v-if="sp_login_user().loading" />
+            <button id="btnLogin" @click="btnLogin_OnClick()" v-else type="submit"
                 class="bg-black py-5 px-3 rounded-full text-white">
                 login
             </button>
@@ -59,5 +48,163 @@ onMounted(() => {
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted, reactive, ref } from 'vue';
+import { site } from '../../utils/site';
+import { sp_login_user, sp_restore_password } from '../../stores/sotre_auth';
+import { sp_secret_key } from '../../stores/store_general';
+import { numberCartShopping } from '../../stores/countCartShopping';
+import Loading from '../../components/Loading.vue';
+const ForgotPassword = ref<boolean>(false)
+
+const FormLogin = reactive({
+    User: {
+        email: {
+            id: "email",
+            placeholder: "email",
+            value: "",
+            error: "",
+            maxLength: 254,
+            type: "text",
+        },
+        password: {
+            id: "password",
+            placeholder: "password",
+            value: "",
+            error: "",
+            maxLength: 20,
+            type: "password",
+        },
+    },
+    Reset: function (): void {
+        this.User.email.value = "";
+        this.User.password.value = "";
+        this.User.email.error = "";
+        this.User.password.error = "";
+    },
+})
+
+
+onMounted(() => {
+    FormLogin.Reset();
+});
+
+
+async function RetrievePassword(): Promise<any> {
+    const data = {
+        email: FormLogin.User.email.value,
+    };
+    await sp_restore_password().exec(data);
+}
+
+
+function ValidateForm(item: any): void {
+    switch (item.id) {
+        case "email":
+            ValidateEmail(item.value);
+            break;
+        case "password":
+            ValidatePassword(item.value);
+            break;
+    }
+}
+
+function ValidateEmail(value: string): void {
+    const email = FormLogin.User.email;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    ForgotPassword.value = false;
+
+    if (!emailRegex.test(value)) {
+        email.error = "The email is invalid";
+        return;
+    }
+
+    if (value.length > 254) {
+        email.error = "The email should not exceed 254 characters";
+        return;
+    }
+
+    ForgotPassword.value = true;
+    email.error = "";
+}
+
+function ValidatePassword(value: string): void {
+    const password = FormLogin.User.password;
+    if (value.length < 8) {
+        password.error = "Password must be at least 8 characters long";
+    } else if (value.length > 20) {
+        password.error = "Password should not exceed 20 characters";
+    } else {
+        password.error = "";
+    }
+}
+
+async function btnLogin_OnClick(): Promise<void> {
+    const UserForm1: any = FormLogin.User;
+    Object.keys(UserForm1).forEach((key) => {
+        ValidateForm(UserForm1[key]);
+    });
+
+    if (UserForm1.email.error || UserForm1.password.error) return;
+
+    const data: any = {
+        email: UserForm1.email.value,
+        password: UserForm1.password.value,
+    };
+
+    await sp_login_user().exec(data);
+
+    if (!sp_login_user().data) {
+        FormLogin.Reset();
+        return;
+    }
+
+    sp_login_user().loading = true;
+
+    site.setCookies(
+        {
+            "e.t": sp_login_user().data.token,
+            "r.t": sp_login_user().data.refresh_token,
+            "s.t": sp_login_user().data.session_token,
+        },
+        false,
+        1
+    );
+
+    await sp_secret_key().exec();
+    if (sp_secret_key().data) {
+        site.setCookies(
+            {
+                "e.k": sp_secret_key().data.secretKey,
+            },
+            false
+        );
+
+        site.setCookies({
+            "e.u.d": JSON.stringify(sp_login_user().data.user_data),
+            "e.c.d": JSON.stringify(sp_login_user().data.client_data),
+        });
+
+        site.setCookies(
+            {
+                logged_in_successfully: "false",
+            },
+            false
+        );
+
+        const userData = site.getCookie("e.u.d");
+
+        if (userData) {
+            sp_login_user().loading = false;
+            numberCartShopping().update();
+            site.RedirectPage("home");
+        }
+    }
+
+}
+
+</script>
 
 <style scoped></style>

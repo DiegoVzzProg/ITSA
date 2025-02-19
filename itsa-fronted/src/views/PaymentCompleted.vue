@@ -7,26 +7,22 @@ import { c_productos } from '../services/s_productos';
 const downloadProduct = async () => {
     const response: any = await c_productos.downloadFile();
 
-    const blob = await response.blob();
-    const blobUrl = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = blobUrl;
-    link.setAttribute('download', 'archivo_itsa_studio.zip');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(blobUrl); // Limpieza
+    console.log(response);
+
+
+    // const blob = await response.blob();
+    // const blobUrl = window.URL.createObjectURL(blob);
+    // const link = document.createElement('a');
+    // link.href = blobUrl;
+    // link.setAttribute('download', 'archivo_itsa_studio.zip');
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
+    // window.URL.revokeObjectURL(blobUrl); // Limpieza
 }
 
 onMounted(() => {
-    numberCartShopping().update();
-
-    if (numberCartShopping().count > 0) {
-        notify.error("Payment not made");
-        site.RedirectPage("home");
-    } else {
-
-    }
+    downloadProduct();
 });
 
 </script>
@@ -38,8 +34,7 @@ onMounted(() => {
                 thank you!
             </p>
             <p>
-                you can access the purchase details <br>
-                packs in the downloads files <br>
+                you can access package details in the download files <br>
                 of the computer
             </p>
         </div>

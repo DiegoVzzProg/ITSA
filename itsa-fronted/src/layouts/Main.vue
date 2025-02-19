@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
 import { isNotified, site } from '../utils/site';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
-import Loading from '../components/Loading.vue';
 import { dgav } from '../utils/site';
+
+
 const loading = ref(dgav.dataBase.isLoading);
 watch(() => dgav.dataBase.isLoading, (newVal) => {
     loading.value = newVal;
 });
+
 
 onMounted(() => {
     const userData = site.getCookie('e.u.d');

@@ -1,31 +1,15 @@
-<script setup lang="ts">
-import { onMounted } from 'vue';
-import SelectCountry from "../../components/SelectCountry.vue";
-import { site } from '../../utils/site';
-import File from '../../components/File.vue';
-import { sp_delete_product_from_shoppingCart, sp_shopping_cart_client, } from '../../stores/store_customers';
-import Loading from '../../components/Loading.vue';
-import { CheckOutClass } from './CheckOut';
-
-onMounted(() => {
-    CheckOutClass.OnInit();
-});
-
-</script>
-
 <template>
-
-    <div class="pt-[76px] min-h-[200px] mb-6">
+    <div class="pt-[76px] min-h-[200px] mb-6 max-[1060px]:min-h-[100px] ">
     </div>
     <div
         class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
-        <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0">
-            <div class="flex flex-col gap-1 text-[clamp(.85rem,3vw,1rem)]">
+        <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0 max-[1060px]:pt-6">
+            <div class="flex flex-col gap-1 text-[1rem]">
                 <div class="flex flex-row w-full gap-2 font-semibold">
                     <p>
                         hi user,
                     </p>
-                    <p>
+                    <p v-if="site.userData()">
                         {{ site.userData().nombre }}!
                     </p>
                 </div>
@@ -35,22 +19,20 @@ onMounted(() => {
                 <p>biling</p>
             </div>
             <div class="flex flex-col w-full min-h-full grow shrink-0">
-                <div v-if="!CheckOutClass.ClientData.value || CheckOutClass.Editar.value"
-                    class="flex flex-col gap-2 w-full">
-                    <div class="flex flex-col gap-1" v-for="item in CheckOutClass.FormCostumer.Customer.Form1">
+                <div v-if="!ClientData || Editar" class="flex flex-col gap-2 w-full">
+                    <div class="flex flex-col gap-1" v-for="item in FormCostumer.Customer.Form1">
                         <input v-model="item.value" type="text" :maxlength="item.maxLength"
                             class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder"
-                            v-on:input="CheckOutClass.ValidateRegistrationForm(item)">
+                            v-on:input="ValidateRegistrationForm(item)">
                         <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                             v-if="item.error">
                             {{ item.error }}
                         </span>
                     </div>
                     <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
-                        <div class="flex flex-col w-full gap-1"
-                            v-for="item in CheckOutClass.FormCostumer.Customer.Form2">
+                        <div class="flex flex-col w-full gap-1" v-for="item in FormCostumer.Customer.Form2">
                             <input v-model="item.value" type="text" :maxlength="item.maxLength"
-                                v-on:input="CheckOutClass.ValidateRegistrationForm(item)"
+                                v-on:input="ValidateRegistrationForm(item)"
                                 class="border border-black py-5 px-3 rounded-full" :placeholder="item.placeholder">
                             <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
                                 v-if="item.error">
@@ -59,19 +41,18 @@ onMounted(() => {
                         </div>
                     </div>
                     <div class="flex flex-col gap-1">
-                        <SelectCountry v-model="CheckOutClass.FormCostumer.Customer.Form3.country.id_pais"
-                            :placeholder="CheckOutClass.FormCostumer.Customer.Form3.country.placeholder" />
+                        <SelectCountry v-model="FormCostumer.Customer.Form3.country.id_pais"
+                            :placeholder="FormCostumer.Customer.Form3.country.placeholder" />
                         <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                            v-if="CheckOutClass.FormCostumer.Customer.Form3.country.error">
-                            {{ CheckOutClass.FormCostumer.Customer.Form3.country.error }}
+                            v-if="FormCostumer.Customer.Form3.country.error">
+                            {{ FormCostumer.Customer.Form3.country.error }}
                         </span>
                     </div>
-                    <div v-if="CheckOutClass.Editar.value" class="flex flex-row gap-2 w-full">
-                        <button @click="CheckOutClass.FunctionEditClient()"
-                            class="bg-black py-5 px-3 rounded-full text-white w-full">
+                    <div v-if="Editar" class="flex flex-row gap-2 w-full">
+                        <button @click="FunctionEditClient()" class="bg-black py-5 px-3 rounded-full text-white w-full">
                             edit
                         </button>
-                        <button @click="CheckOutClass.Editar.value = !CheckOutClass.Editar.value"
+                        <button @click="Editar = !Editar; FormCostumer.Reset();"
                             class="border-black border py-5 px-3 rounded-full text-black w-full">
                             to back
                         </button>
@@ -80,49 +61,42 @@ onMounted(() => {
                 <div v-else class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]">
                     <div class="flex flex-col leading-1">
                         <p>
-                            <strong>Name:</strong> {{ CheckOutClass.ClientData.value.nombre }}
+                            <strong>Name:</strong> {{ ClientData.nombre }}
                         </p>
                         <p>
-                            <strong>Phone:</strong> {{ CheckOutClass.ClientData.value.telefono }}
+                            <strong>Phone:</strong> {{ ClientData.telefono }}
                         </p>
                         <p>
-                            <strong>Address:</strong> {{ CheckOutClass.ClientData.value.direccion }}
+                            <strong>Address:</strong> {{ ClientData.direccion }}
                         </p>
                         <div class="flex flex-row gap-1">
                             <p>
-                                <strong>Postal Code:</strong> {{ CheckOutClass.ClientData.value.codigo_postal }},
+                                <strong>Postal Code:</strong> {{ ClientData.codigo_postal }}, {{
+                                    ClientData.municipio }}
                             </p>
                             <p>
-                                <strong>State:</strong> {{ CheckOutClass.ClientData.value.estado }}
+                                <strong>State:</strong> {{ ClientData.estado }}
                             </p>
                         </div>
                         <p>
-                            <strong>Country:</strong> {{ CheckOutClass.ClientData.value.pais }}
+                            <strong>Country:</strong> {{ ClientData.pais }}
                         </p>
                         <span class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
-                            @click="CheckOutClass.FunctionEdit();">
+                            @click="FunctionEdit();">
                             edit
                         </span>
                     </div>
                     <div class="flex flex-col gap-3">
-                        <p v-if="Number(CheckOutClass.ProductPrecio.value) > 0">
-                            payment
+                        <p>
+                            click on finish
                         </p>
-                        <p v-else>
-                            click to download
-                        </p>
-                        <button v-on:click="CheckOutClass.FunctionFinish()" v-if="!CheckOutClass.Finish.value"
+                        <button v-on:click="FunctionFinish()" v-if="!Finish"
                             class="bg-black py-5 px-3 rounded-full text-white">
                             finish
                         </button>
-                        <button v-if="CheckOutClass.Finish.value && Number(CheckOutClass.ProductPrecio.value) > 0"
-                            v-on:click="CheckOutClass.CheckoutSession()"
+                        <button v-if="Finish" v-on:click="CheckoutSession()"
                             class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
-                            pay with card
-                        </button>
-                        <button v-else-if="CheckOutClass.Finish.value && Number(CheckOutClass.ProductPrecio.value) == 0"
-                            class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
-                            download
+                            continue to download
                         </button>
                     </div>
                 </div>
@@ -147,7 +121,7 @@ onMounted(() => {
                 </div>
                 <div v-if="!sp_shopping_cart_client().loading" class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
                     <div class="flex relative flex-row items-center gap-2" :key="index"
-                        v-for="(item, index) in CheckOutClass.ProductData.value">
+                        v-for="(item, index) in ProductData">
                         <div class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded">
                             <File folder="../assets/img/gallery" :file="item.foto_producto" type="img"
                                 :encrypted="false" />
@@ -160,7 +134,7 @@ onMounted(() => {
                         </div>
                         <button class="sticky right-0 rounded-s-full bg-white"
                             :disabled="sp_delete_product_from_shoppingCart().loading"
-                            v-on:click="CheckOutClass.DeleteProduct(item.id_producto)">
+                            v-on:click="DeleteProduct(item.id_producto)">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-x">
@@ -177,7 +151,7 @@ onMounted(() => {
                         tax(16%)
                     </p>
                     <p class="text-[1rem]">
-                        ${{ CheckOutClass.Impuesto.value }}
+                        ${{ Impuesto }}
                     </p>
                 </div>
                 <div class="flex flex-row justify-between gap-2 py-2 items-center">
@@ -185,12 +159,385 @@ onMounted(() => {
                         total
                     </p>
                     <p class="text-[1rem]">
-                        ${{ CheckOutClass.ProductPrecio.value }}
+                        ${{ ProductPrecio }}
                     </p>
                 </div>
             </div>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import SelectCountry from "../../components/SelectCountry.vue";
+import { notify, site } from '../../utils/site';
+import File from '../../components/File.vue';
+import { sp_delete_product_from_shoppingCart, sp_edit_customer, sp_proceed_to_checkout, sp_shopping_cart_client, } from '../../stores/store_customers';
+import Loading from '../../components/Loading.vue';
+import { onMounted, reactive, ref } from "vue";
+import { sp_add_product_download_list } from "../../stores/store_products";
+import { numberCartShopping } from "../../stores/countCartShopping";
+
+onMounted(() => {
+    ClientData.value = JSON.parse(site.getCookie("e.c.d"));
+    Productos();
+});
+
+const ProductData = ref<any>({});
+const ProductPrecio = ref<string>("");
+const Impuesto = ref<string>("");
+const ClientData = ref<any>(null);
+const Finish = ref<boolean>(false);
+const Editar = ref<boolean>(false);
+
+const FormCostumer = reactive({
+    Customer: {
+        Form1: {
+            name: {
+                id: "name",
+                value: "",
+                placeholder: "Name",
+                error: "",
+                maxLength: 255,
+            },
+            vat_number: {
+                id: "vat_number",
+                value: "",
+                placeholder: "Vat number",
+                error: "",
+                maxLength: 12,
+            },
+            address: {
+                id: "address",
+                value: "",
+                placeholder: "Address",
+                error: "",
+                maxLength: 255,
+            },
+            phone: {
+                id: "phone",
+                value: "",
+                placeholder: "Phone",
+                error: "",
+                maxLength: 10,
+            },
+        },
+        Form2: {
+            postal_code: {
+                id: "postal_code",
+                value: "",
+                placeholder: "Postal Code",
+                error: "",
+                maxLength: 10,
+            },
+            state: {
+                id: "state",
+                value: "",
+                placeholder: "State",
+                error: "",
+                maxLength: 50,
+            },
+        },
+        Form3: {
+            country: {
+                id: "country",
+                value: "",
+                placeholder: "Country",
+                error: "",
+                id_pais: 0,
+            },
+        },
+    },
+
+    Reset: function () {
+        Object.values(this.Customer.Form1).forEach((field) => (field.value = field.error = ""));
+        Object.values(this.Customer.Form2).forEach((field) => (field.value = field.error = ""));
+        this.Customer.Form3.country.value = "";
+        this.Customer.Form3.country.error = "";
+    },
+});
+
+async function Productos(): Promise<any> {
+    await sp_shopping_cart_client().exec();
+
+    ProductData.value = sp_shopping_cart_client().data.carrito_cliente;
+    ProductPrecio.value = sp_shopping_cart_client().data.precio;
+    Impuesto.value = sp_shopping_cart_client().data.impuesto;
+
+    site.setCookies({
+        precio: ProductPrecio.value,
+    });
+}
+
+function ValidateRegistrationForm(item: any) {
+    item.value = site.IsNullOrEmpty(item.value) ? "" : item.value.trim();
+    switch (item.id) {
+        case "name":
+            ValidateName(item.value);
+            break;
+        case "address":
+            ValidateAddress(item.value);
+            break;
+        case "vat_number":
+            ValidateVatNumber(item.value);
+            break;
+        case "postal_code":
+            ValidatePostalCode(item.value);
+            break;
+        case "state":
+            ValidateState(item.value);
+            break;
+        case "country":
+            ValidateCountry();
+            break;
+        case "phone":
+            ValidatePhone(item.value);
+            break;
+    }
+}
+
+function ValidateName(value: string) {
+    const name: any = FormCostumer.Customer.Form1.name;
+
+    if (site.IsNullOrEmpty(value)) {
+        name.error = "field is required.";
+        return;
+    }
+    if (value.length > 255) {
+        name.error = "The input cannot exceed 255 characters.";
+        return;
+    }
+    if (!/^[a-zA-Z\u00C0-\u00FF\s]+$/.test(value)) {
+        name.error = "The input can only contain letters.";
+        return;
+    }
+    name.error = "";
+}
+
+function ValidateVatNumber(value: string) {
+    const vat_number: any = FormCostumer.Customer.Form1.vat_number;
+
+    if (value == "") return;
+
+    if (value.length < 8 || value.length > 12) {
+        vat_number.error = "VAT number must be between 8 and 12 characters.";
+        return;
+    }
+    if (!/^[A-Z]{2}/.test(value)) {
+        vat_number.error =
+            "VAT number must start with a country code (e.g., ES, DE, FR).";
+        return;
+    }
+    if (!/^[A-Z]{2}[0-9A-Z]+$/.test(value)) {
+        vat_number.error = "VAT number can only contain letters and numbers.";
+        return;
+    }
+    vat_number.error = "";
+}
+
+function ValidateAddress(value: string) {
+    const address: any = FormCostumer.Customer.Form1.address;
+    if (site.IsNullOrEmpty(value)) {
+        address.error = "Address is required.";
+        return;
+    }
+    if (value.length > 255) {
+        address.error = "Address cannot exceed 255 characters.";
+        return;
+    }
+    address.error = "";
+}
+
+function ValidatePostalCode(value: string) {
+    const postal_code: any = FormCostumer.Customer.Form2.postal_code;
+    if (site.IsNullOrEmpty(value)) {
+        postal_code.error = "Postal code is required.";
+
+        return;
+    }
+    if (value.length < 3) {
+        postal_code.error = "Postal code must be at least 3 characters long.";
+        return;
+    }
+    if (value.length > 10) {
+        postal_code.error = "Postal code cannot exceed 10 characters.";
+        return;
+    }
+    if (!/^[A-Za-z0-9\s\-]+$/.test(value)) {
+        postal_code.error = "Postal code contains invalid characters.";
+
+        return;
+    }
+    postal_code.error = "";
+}
+
+function ValidateState(value: string): void {
+    const state: any = FormCostumer.Customer.Form2.state;
+    if (site.IsNullOrEmpty(value)) {
+        state.error = "State is required.";
+        return;
+    }
+    if (value.length < 2) {
+        state.error = "State must be at least 2 characters long.";
+        return;
+    }
+    if (value.length > 50) {
+        state.error = "State cannot exceed 50 characters.";
+        return;
+    }
+
+    if (!/^[A-Za-z\s\-]+$/.test(value)) {
+        state.error = "State contains invalid characters.";
+        return;
+    }
+    state.error = "";
+}
+
+function ValidateCountry(): void {
+    const country: any = FormCostumer.Customer.Form3.country;
+    if (country.id_pais == 0) {
+        country.error = "Country is required.";
+        return;
+    }
+    country.error = "";
+}
+
+function ValidatePhone(value: string): void {
+    const phone: any = FormCostumer.Customer.Form1.phone;
+    if (site.IsNullOrEmpty(value)) {
+        phone.error = "Phone is required.";
+        return;
+    }
+
+    if (!/^[0-9\s\-]+$/.test(value)) {
+        phone.error = "Phone contains invalid characters.";
+        return;
+    }
+
+    if (value.length < 10 || value.length > 10) {
+        phone.error = "Phone must be at least 10 characters long.";
+        return;
+    }
+
+    phone.error = "";
+}
+
+async function CheckoutSession(): Promise<any> {
+    if (sp_delete_product_from_shoppingCart().click > 0) {
+        await Productos();
+    }
+
+    const precio: number = Number(site.getCookie("precio") || 0);
+    sp_delete_product_from_shoppingCart().reset();
+
+    if (precio <= 0) {
+        await sp_add_product_download_list().exec();
+
+        if (sp_add_product_download_list().data) {
+            site.RedirectPage(
+                sp_add_product_download_list().data.redirectToDownload
+            );
+        }
+
+        return;
+    }
+
+    await sp_proceed_to_checkout().exec();
+
+    if (sp_proceed_to_checkout().data) {
+        const url: any = sp_proceed_to_checkout().data.redirectStripePayment;
+
+        if (site.IsNullOrEmpty(url)) {
+            return;
+        }
+
+        window.location.href = url;
+    }
+}
+
+function FunctionEdit(): void {
+    Editar.value = !Editar.value;
+    const form1: any = FormCostumer.Customer.Form1;
+    const form2: any = FormCostumer.Customer.Form2;
+    const form3: any = FormCostumer.Customer.Form3;
+
+    form1.name.value = ClientData.value.nombre;
+    form1.vat_number.value = ClientData.value.numero_de_iva_empresa;
+    form1.address.value = ClientData.value.direccion;
+    form1.phone.value = ClientData.value.telefono;
+    form2.state.value = ClientData.value.estado;
+    form2.postal_code.value = ClientData.value.codigo_postal;
+    form3.country.id_pais = ClientData.value.id_pais;
+}
+
+async function FunctionEditClient(): Promise<any> {
+    const CustomerForm1: any = FormCostumer.Customer.Form1;
+
+    Object.keys(CustomerForm1).forEach((key) => {
+        ValidateRegistrationForm(CustomerForm1[key]);
+    });
+
+    const CustomerForm2: any = FormCostumer.Customer.Form2;
+    Object.keys(CustomerForm2).forEach((key) => {
+        ValidateRegistrationForm(CustomerForm2[key]);
+    });
+
+    const CustomerForm3: any = FormCostumer.Customer.Form3;
+    ValidateRegistrationForm(CustomerForm3.country);
+
+    if (
+        !site.IsNullOrEmpty(CustomerForm1.name.error) ||
+        !site.IsNullOrEmpty(CustomerForm1.vat_number.error) ||
+        !site.IsNullOrEmpty(CustomerForm1.address.error) ||
+        !site.IsNullOrEmpty(CustomerForm2.state.error) ||
+        !site.IsNullOrEmpty(CustomerForm2.postal_code.error) ||
+        !site.IsNullOrEmpty(CustomerForm3.country.error)
+    )
+        return;
+
+    await sp_edit_customer().exec({
+        id_cliente: ClientData.value.id_cliente,
+        nombre: CustomerForm1.name.value,
+        numero_de_iva_empresa: CustomerForm1.vat_number.value,
+        direccion: CustomerForm1.address.value,
+        codigo_postal: CustomerForm2.postal_code.value,
+        estado: CustomerForm2.state.value,
+        id_pais: CustomerForm3.country.id_pais,
+        telefono: CustomerForm1.phone.value,
+    });
+
+    if (sp_edit_customer().data) {
+        notify.success("your billing information has been saved.");
+        ClientData.value = sp_edit_customer().data;
+        site.setCookies({
+            "e.c.d": JSON.stringify(sp_edit_customer().data),
+        });
+        Editar.value = false;
+    }
+}
+
+function FunctionFinish(): void {
+    Finish.value = !Finish.value;
+}
+
+async function DeleteProduct(id_producto: string) {
+    await sp_delete_product_from_shoppingCart().exec({
+        id_producto: btoa(id_producto),
+    });
+
+    if (sp_delete_product_from_shoppingCart().data) {
+        numberCartShopping().update();
+        notify.success("Product deleted");
+
+        if (sp_delete_product_from_shoppingCart().data.productos.length == 0) {
+            site.RedirectPage("home");
+            return;
+        }
+
+        Productos();
+    }
+}
+
+
+</script>
 
 <style scoped></style>

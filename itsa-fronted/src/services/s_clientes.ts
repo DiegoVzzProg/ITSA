@@ -1,6 +1,6 @@
 import { dgav } from "../utils/site";
 
-const shoppingCartUrl = "/shoppingCart";
+const shoppingCartUrl = "/shopping/cart";
 const customersUrl = "/customers";
 
 export class c_clientes {
@@ -13,7 +13,7 @@ export class c_clientes {
 
   public static async addProduct(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `${shoppingCartUrl}/addProduct`,
+      `${shoppingCartUrl}/add/product`,
       dgav.httpMethod.POST,
       data
     );
@@ -21,15 +21,7 @@ export class c_clientes {
 
   public static async registerCustomer(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `${customersUrl}/registerCustomer`,
-      dgav.httpMethod.POST,
-      data
-    );
-  }
-
-  public static async getCustomer(data: Record<string, any>) {
-    return await dgav.apiRequest(
-      `${customersUrl}/getCustomer`,
+      `${customersUrl}/register/customer`,
       dgav.httpMethod.POST,
       data
     );
@@ -37,14 +29,14 @@ export class c_clientes {
 
   public static async checkProductInShoppingCart(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `${shoppingCartUrl}/checkProductInShoppingCart`,
+      `${shoppingCartUrl}/check/product/from`,
       dgav.httpMethod.POST,
       data
     );
   }
   public static async proceedToCheckout(): Promise<any> {
     return await dgav.apiRequest(
-      `${shoppingCartUrl}/proceedToCheckout`,
+      `${shoppingCartUrl}/proceed/to/checkout`,
       dgav.httpMethod.GET
     );
   }
@@ -53,7 +45,7 @@ export class c_clientes {
     data: Record<string, any>
   ): Promise<any> {
     return await dgav.apiRequest(
-      `${shoppingCartUrl}/deleteProductFromShoppingCart`,
+      `${shoppingCartUrl}/delete/product/from`,
       dgav.httpMethod.POST,
       data
     );
@@ -61,9 +53,16 @@ export class c_clientes {
 
   public static async editCustomer(data: Record<string, any>): Promise<any> {
     return await dgav.apiRequest(
-      `${customersUrl}/editCustomer`,
+      `${customersUrl}/edit/customer`,
       dgav.httpMethod.PUT,
       data
+    );
+  }
+
+  public static async checkNumberCartShopping() {
+    return await dgav.apiRequest(
+      `${shoppingCartUrl}/check/number`,
+      dgav.httpMethod.GET
     );
   }
 }

@@ -5,6 +5,7 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import CryptoJS from "crypto-js";
 import { RouteLocationRaw } from "vue-router";
+import { UniqueGuid } from "../stores/store_session";
 
 //#region  dgavClass
 
@@ -178,13 +179,15 @@ export class site {
 
   public static setCookies(
     cookies: Record<string, string>,
-    encrypted: boolean = true
+    encrypted: boolean = true,
+    expireDays?: number
   ): void {
     Object.entries(cookies).forEach(([key, value]) => {
       Cookies.set(key, encrypted ? this.encryptData(value) : value, {
         path: "/",
         sameSite: "Strict",
-        expires: 1,
+        expires: expireDays || 20,
+        secure: true,
       });
     });
   }
@@ -205,33 +208,48 @@ export class site {
     });
   }
 
-  static RedirectPage(
+  public static RedirectPage(
     routeName: string,
     parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
-    const route = router.resolve({
+    UniqueGuid().updateGuid();
+
+    const dataRoute: any = {
       name: routeName,
       params: parameters,
-    } as RouteLocationRaw);
+    };
+
+    const routeActual: any = router
+      .getRoutes()
+      .find((route) => route.name === routeName);
+
+    if (String(routeActual?.meta?.layout).toLowerCase() !== "auth") {
+      dataRoute.query = {
+        key: UniqueGuid().guid,
+      };
+    }
+
+    const route = router.resolve(dataRoute as RouteLocationRaw);
 
     if (route?.path) {
-      router.push(route).then(() => {
-        window.scrollTo({ top: 0 });
-        functionOn?.();
-      }).catch((error) => {
-        console.error('Navigation error:', error);
-        this.fallbackRedirect();
-      });
+      router
+        .push(route)
+        .then(() => {
+          window.scrollTo({ top: 0 });
+          functionOn?.();
+        })
+        .catch(() => {
+          this.fallbackRedirect();
+        });
     } else {
       this.fallbackRedirect();
     }
-
   }
 
   private static fallbackRedirect(): void {
-    router.push('/').catch(() => {
-      window.location.href = '/';
+    router.push("/").catch(() => {
+      window.location.href = "/";
     });
   }
 

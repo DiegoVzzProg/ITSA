@@ -52,13 +52,13 @@ class CProductos extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $user = $request->user();
+            $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
 
             $carrito = TCarritoCliente::where('id_usuario', $user->id_usuario)
                 ->where('borrado', false)
                 ->select('id_producto')
                 ->get();
 
-            $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
 
             if ($carrito->isNotEmpty()) {
 
@@ -68,55 +68,67 @@ class CProductos extends Controller
                             return [
                                 'id_cliente' => $cliente->id_cliente,
                                 'id_producto' => $item->id_producto,
-                                'fecha' => date('Y-m-d'),
                                 'pago_confirmado' => true,
                                 'descargado' => false,
                             ];
                         }
                     )->toArray();
 
-                DB::transaction(function () use ($datosCompra, $carrito) {
+                $id_usuario = $user->id_usuario;
+                DB::transaction(function () use ($datosCompra, $id_usuario) {
                     TProductosCompradosCliente::insert($datosCompra);
-                    $carrito->update(['borrado' => true]);
+                    TCarritoCliente::where('id_usuario', $id_usuario)->update(['borrado' => true]);
                 });
             }
 
             return CGeneral::CreateMessage('', 200, [
-                'redirectToDownload' => env('CHECKOUT_SUCCESS_URL')
+                'redirectToDownload' => 'paymentcompleted'
             ]);
         }, $request);
     }
 
-    // public static function fn_get_downloads_productos($request)
-    // {
-    //     return CGeneral::invokeFunctionAPI(function () use ($request) {
-    //         $user = $request->user();
+    public static function fn_get_downloads_productos($request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $user = $request->user();
 
-    //         $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
+            $cliente = TClientes::where('id_usuario', $user->id_usuario)
+                ->firstOrFail();
 
-    //         $compras = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
-    //             ->where('descargado', false)
-    //             ->with('producto')
-    //             ->get();
+            $compras = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
+                ->where('descargado', false)
+                ->get();
 
-    //         $descargas = $compras->map(function ($compra) {
-    //             return [
-    //                 'url' => Storage::disk('private')->temporaryUrl(
-    //                     $compra->producto->ruta_archivo,
-    //                     now()->addMinutes(30)
-    //                 ),
-    //                 'id_producto_comprado' => $compra->id_producto_comprado
-    //             ];
-    //         });
+            $producto = TProducto::whereIn('id_producto', $compras->pluck('id_producto'))->get();
 
-    //         DB::transaction(function () use ($descargas) {
-    //             TProductosCompradosCliente::whereIn('id_producto_comprado', $descargas->pluck('id_producto_comprado'))
-    //                 ->update(['descargado' => true]);
-    //         });
+            $descargas = collect();
 
-    //         return CGeneral::CreateMessage('', 200, [
-    //             'urls' => $descargas,
-    //         ]);
-    //     }, $request);
-    // }
+            DB::transaction(function () use ($producto, &$descargas) {
+                foreach ($producto as $compra) {
+                    try {
+                        $rutaArchivo = $compra->carpeta_recursos . '/' . $compra->archivo;
+
+                        if (!Storage::disk('private')->exists($rutaArchivo)) {
+                            throw new \Exception("File Not Found" . $compra->archivo);
+                        }
+
+                        // Para storage local usar URL firmada
+                        $url = "prueba";
+
+                        $descargas->push([
+                            'url' => $url
+                        ]);
+
+                        $compra->update(['descargado' => true]);
+                    } catch (\Exception $e) {
+                        throw new \Exception($e->getMessage());
+                    }
+                }
+            });
+
+            return CGeneral::CreateMessage('', 200, [
+                'urls' => $descargas
+            ]);
+        }, $request);
+    }
 }

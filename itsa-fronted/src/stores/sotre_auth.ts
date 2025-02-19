@@ -16,6 +16,7 @@ export const sp_login_user = defineStore("sp_login_user", {
 
       if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
         notify.error(dgav.dataBase.message);
+        this.loading = false;
         return null;
       }
 
@@ -42,6 +43,7 @@ export const sp_register_user = defineStore("sp_register_user", {
 
       if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
         notify.error(dgav.dataBase.message);
+        this.loading = false;
         return null;
       }
 

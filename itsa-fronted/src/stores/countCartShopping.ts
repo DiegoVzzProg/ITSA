@@ -12,16 +12,15 @@ export const numberCartShopping = defineStore("numberCartShopping", {
     async update() {
       this.loading = true;
 
-      const response: any = await c_clientes.shoppingCartClient();
+      const response: any = await c_clientes.checkNumberCartShopping();
 
       if (!site.IsNullOrEmpty(dgav.dataBase.message)) {
         notify.error(dgav.dataBase.message);
         return;
       }
 
-      if (response.carrito_cliente) {
-        let value: number = response.carrito_cliente.length ?? 0;
-
+      if (response) {
+        const value: number = response.cantidad ?? 0;
         this.count = value;
         this.loading = false;
       }

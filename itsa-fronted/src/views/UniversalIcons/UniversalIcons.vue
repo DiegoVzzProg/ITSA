@@ -1,26 +1,3 @@
-<script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
-import File from '../../components/File.vue';
-import CardProduct from '../../components/CardProduct.vue';
-import { class_universalIcons } from './UniversalIcons';
-import { IsNullOrEmpty } from '../../utils/site';
-import { sp_list_products } from '../../stores/store_products';
-
-
-onMounted(() => {
-    class_universalIcons.onInit();
-
-    const data: any = {
-        id_producto: 2,
-    };
-    sp_list_products().exec(data);
-});
-
-onUnmounted(() => {
-    class_universalIcons.onUnInit();
-});
-</script>
-
 <template>
     <a href="#card_section" id="a_card_section"
         class="flex fixed bottom-[10px] transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
@@ -177,5 +154,131 @@ onUnmounted(() => {
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue';
+import File from '../../components/File.vue';
+import CardProduct from '../../components/CardProduct.vue';
+import { IsNullOrEmpty, site } from '../../utils/site';
+import { sp_list_products } from '../../stores/store_products';
+
+const headerComponent = ref<HTMLElement | null>(null);
+const padre_contenedor_scroll = ref<HTMLElement | null>(null);
+const contenedor_scroll = ref<HTMLElement | null>(null);
+const contenedor_children_scroll = ref<HTMLElement | null>(null);
+const children_elemento1_scroll = ref<HTMLElement | null>(null);
+const children_elemento2_scroll = ref<HTMLElement | null>(null);
+const contenedor_gallery_basics = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+    headerComponent.value = document.getElementById("header") as HTMLElement;
+    headerComponent.value?.classList.add("bg-transparent");
+    headerComponent.value?.classList.remove("bg-white");
+    padre_contenedor_scroll.value = document.getElementById(
+        "padre_contenedor_scroll"
+    ) as HTMLElement;
+    contenedor_scroll.value = document.getElementById(
+        "contenedor_scroll"
+    ) as HTMLElement;
+    contenedor_children_scroll.value = document.getElementById(
+        "contenedor_children_scroll"
+    ) as HTMLElement;
+    children_elemento1_scroll.value = document.getElementById(
+        "children_elemento1_scroll"
+    ) as HTMLElement;
+    children_elemento2_scroll.value = document.getElementById(
+        "children_elemento2_scroll"
+    ) as HTMLElement;
+    contenedor_gallery_basics.value = document.getElementById(
+        "contenedor_gallery_basics"
+    ) as HTMLElement;
+
+    window.addEventListener("scroll", handleScroll);
+
+    const data: any = {
+        id_producto: 2,
+    };
+    sp_list_products().exec(data);
+});
+
+onUnmounted(() => {
+    headerComponent.value?.classList.add("bg-white");
+    headerComponent.value?.classList.remove("bg-transparent");
+    window.removeEventListener("scroll", handleScroll);
+});
+
+function handleScroll() {
+    if (
+        contenedor_scroll.value &&
+        contenedor_children_scroll.value &&
+        padre_contenedor_scroll.value &&
+        contenedor_gallery_basics.value
+    ) {
+        const rect = contenedor_scroll.value.getBoundingClientRect();
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const topAbsoluto = rect.top + scrollTop;
+
+        const vpadre_contenedor_scroll: any = padre_contenedor_scroll.value;
+        const IsMiddle =
+            vpadre_contenedor_scroll.getBoundingClientRect().height / 2 <=
+            topAbsoluto;
+        const vchildren_elemento1_scroll: any = children_elemento1_scroll.value;
+        const vchildren_elemento2_scroll: any = children_elemento2_scroll.value;
+
+        if (IsMiddle) {
+            site.replaceClass(vchildren_elemento1_scroll, "flex", "hidden");
+            site.replaceClass(vchildren_elemento2_scroll, "hidden", "flex");
+            site.replaceClass(
+                vpadre_contenedor_scroll,
+                "after:opacity-0",
+                "after:opacity-30"
+            );
+        } else {
+            site.replaceClass(vchildren_elemento1_scroll, "hidden", "flex");
+            site.replaceClass(vchildren_elemento2_scroll, "flex", "hidden");
+            site.replaceClass(
+                vpadre_contenedor_scroll,
+                "after:opacity-30",
+                "after:opacity-0"
+            );
+        }
+
+        const headerRect = headerComponent.value?.getBoundingClientRect();
+        const galleryRect =
+            contenedor_gallery_basics.value?.getBoundingClientRect();
+
+        if (headerRect && galleryRect) {
+            const headerBottom = headerRect.bottom;
+            const galleryTop = galleryRect.top;
+            const distance = galleryTop - headerBottom;
+
+            if (distance <= 0) {
+                headerComponent.value?.classList.add("bg-white");
+                headerComponent.value?.classList.remove("bg-transparent");
+            } else {
+                headerComponent.value?.classList.add("bg-transparent");
+                headerComponent.value?.classList.remove("bg-white");
+            }
+        }
+
+        const card_section: HTMLElement = document.getElementById(
+            "card_section"
+        ) as HTMLElement;
+
+        const a_card_section: HTMLElement = document.getElementById(
+            "a_card_section"
+        ) as HTMLElement;
+
+        if (card_section && a_card_section) {
+            if (card_section.getBoundingClientRect().top <= 0) {
+                a_card_section.classList.add("hidden");
+            } else {
+                a_card_section.classList.remove("hidden");
+            }
+        }
+    }
+};
+</script>
+
 
 <style scoped></style>
