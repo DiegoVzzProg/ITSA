@@ -69,12 +69,12 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const redirectToHome = {
     name: "home",
-    query: {
-      key: UniqueGuid().guid,
-    },
   };
 
-  if (String(to.meta.layout).toLowerCase() === "auth") {
+  if (
+    String(to.meta.layout).toLowerCase() === "auth" ||
+    String(to.name).toLowerCase() === "home"
+  ) {
     return next();
   }
 

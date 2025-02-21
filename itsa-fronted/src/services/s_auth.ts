@@ -5,7 +5,7 @@ const urlAuth = "/auth";
 export class c_auth {
   public static async refreshToken(data: Record<string, any>): Promise<any> {
     return await dgav.apiRequest(
-      `${urlAuth}/refreshToken`,
+      `${urlAuth}/refresh/token`,
       dgav.httpMethod.POST,
       data
     );
@@ -28,14 +28,14 @@ export class c_auth {
     switch (opcion) {
       case 1:
         response = await dgav.apiRequest(
-          `${urlAuth}/loginUser`,
+          `${urlAuth}/login/user`,
           dgav.httpMethod.POST,
           data
         );
         break;
       case 2:
         response = await dgav.apiRequest(
-          `${urlAuth}/registerUser`,
+          `${urlAuth}/register/user`,
           dgav.httpMethod.POST,
           data
         );
@@ -46,14 +46,14 @@ export class c_auth {
 
   public static async logoutUser() {
     return await dgav.apiRequest(
-      `${urlAuth}/logoutUser`,
+      `${urlAuth}/logout/user`,
       dgav.httpMethod.DELETE
     );
   }
 
   public static async restorePassword(data: Record<string, any>) {
     return await dgav.apiRequest(
-      `${urlAuth}/restorePassword`,
+      `${urlAuth}/restore/password`,
       dgav.httpMethod.POST,
       data
     );

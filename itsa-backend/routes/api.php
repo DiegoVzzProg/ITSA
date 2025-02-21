@@ -18,10 +18,10 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('auth')->group(function () {
-        Route::post('/loginUser', [CUsuarios::class, 'fn_login']);
-        Route::post('/registerUser', [CUsuarios::class, 'fn_register']);
-        Route::post('/restorePassword', [CUsuarios::class, 'fn_forgot_password_restore']);
-        Route::post('/refreshToken', [CUsuarios::class, 'fn_refresh_token']);
+        Route::post('/login/user', [CUsuarios::class, 'fn_login']);
+        Route::post('/register/user', [CUsuarios::class, 'fn_register']);
+        Route::post('/restore/password', [CUsuarios::class, 'fn_forgot_password_restore']);
+        Route::post('/refresh/token', [CUsuarios::class, 'fn_refresh_token']);
     });
 
     Route::middleware('auth:sanctum')->group(function () { //, 'session.expire'
@@ -40,7 +40,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('auth')->group(function () {
-            Route::delete('/logoutUser', [CUsuarios::class, 'fn_logout']);
+            Route::delete('/logout/user', [CUsuarios::class, 'fn_logout']);
         });
 
         Route::prefix('products')->group(function () {
@@ -48,6 +48,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar']);
         });
 
-        Route::get('/secretKey', [CGeneral::class, 'generarSecretKey']);
+        Route::get('/secret/key', [CGeneral::class, 'generarSecretKey']);
     });
 });

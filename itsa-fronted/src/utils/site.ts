@@ -224,7 +224,21 @@ export class site {
       .getRoutes()
       .find((route) => route.name === routeName);
 
-    if (String(routeActual?.meta?.layout).toLowerCase() !== "auth") {
+    console.log(routeName);
+
+    const validar = () => {
+      const meta = String(routeActual?.meta?.layout).toLowerCase();
+      switch (meta) {
+        case "main":
+          return String(routeName).toLowerCase() !== "home";
+        case "auth":
+          return false;
+        default:
+          return false;
+      }
+    };
+
+    if (validar()) {
       dataRoute.query = {
         key: UniqueGuid().guid,
       };
@@ -273,6 +287,31 @@ export class site {
   public static IsNullOrEmpty = (value: any): boolean => {
     return value == null || value == undefined || value == "";
   };
+
+  public static addClass(
+    elements: HTMLElement | HTMLElement[] | NodeListOf<HTMLElement> | null,
+    classNames: string
+  ): void {
+    if (!elements) return;
+
+    const elems: HTMLElement[] =
+      elements instanceof HTMLElement ? [elements] : Array.from(elements);
+
+    const classes = classNames.split(/\s+/).filter(Boolean);
+
+    elems.forEach((el) => {
+      classes.forEach((cls) => {
+        if (el.classList) {
+          el.classList.add(cls);
+        } else {
+          const currentClasses = el.className.split(/\s+/);
+          if (!currentClasses.includes(cls)) {
+            el.className = [...currentClasses, cls].join(" ");
+          }
+        }
+      });
+    });
+  }
 }
 
 /**
