@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { notify, site } from "../utils/site";
-import { sp_refresh_token } from "../stores/sotre_auth";
+import { s_auth } from "../modules/auth/services/s_auth";
 
 let isRefreshing = false;
 let failedRequestsQueue: Array<(token: string) => void> = [];
@@ -53,7 +53,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error: AxiosError) => {
-    const response: any = error.response;
     const status = error.response?.status;
     const originalRequest = error.config;
 
@@ -71,7 +70,7 @@ api.interceptors.response.use(
     if (!isRefreshing) {
       try {
         isRefreshing = true;
-        const newAccessToken = await sp_refresh_token().exec({
+        const newAccessToken = await s_auth.refreshToken({
           refresh_token: refreshToken,
         });
 

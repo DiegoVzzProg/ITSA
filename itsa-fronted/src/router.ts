@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "./views/Home/Home.vue";
-import Information from "./views/Information.vue";
-import Login from "./views/Login/Login.vue";
-import BasicsIcons from "./views/BasicsIcons/BasicsIcons.vue";
-import UniversalIcons from "./views/UniversalIcons/UniversalIcons.vue";
-import CheckOut from "./views/CheckOut/CheckOut.vue";
-import Register from "./views/Register/Register.vue";
-import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
-import PaymentCompleted from "./views/PaymentCompleted.vue";
-import { UniqueGuid } from "./stores/store_session";
-import { numberCartShopping } from "./stores/countCartShopping";
+import Home from "./modules/home/UI/Home.vue";
+import Information from "./modules/home/UI/Information.vue";
+import Login from "./modules/auth/UI/LoginUI.vue";
+import BasicsIcons from "./modules/home/UI/BasicsIcons.vue";
+import UniversalIcons from "./modules/home/UI/UniversalIcons.vue";
+import CheckOut from "./modules/home/UI/CheckOut.vue";
+import Register from "./modules/auth/UI/RegisterUI.vue";
+//import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
+import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
+import { numberCartShopping } from "./modules/home/stores/CustomerStore";
 import { site } from "./utils/site";
+import { GeneralStores } from "./modules/stores/GeneralStores";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
@@ -47,12 +47,12 @@ const routes: Array<RouteRecordRaw> = [
     component: Register,
     meta: { layout: "Auth" },
   },
-  {
-    path: "/forgot/password",
-    name: "forgotpassword",
-    component: ForgotPassword,
-    meta: { layout: "Auth" },
-  },
+  // {
+  //   path: "/forgot/password",
+  //   name: "forgotpassword",
+  //   component: ForgotPassword,
+  //   meta: { layout: "Auth" },
+  // },
   {
     path: "/payment/completed",
     name: "paymentcompleted",
@@ -79,7 +79,7 @@ router.beforeEach((to, from, next) => {
   }
 
   if (!site.IsNullOrEmpty(to.query.key)) {
-    if (UniqueGuid().guid !== to.query.key) {
+    if (GeneralStores().data.guid !== to.query.key) {
       return next(redirectToHome);
     }
 

@@ -5,7 +5,7 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import CryptoJS from "crypto-js";
 import { RouteLocationRaw } from "vue-router";
-import { UniqueGuid } from "../stores/store_session";
+import { GeneralStores } from "../modules/stores/GeneralStores";
 
 //#region  dgavClass
 
@@ -213,7 +213,7 @@ export class site {
     parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
-    UniqueGuid().updateGuid();
+    GeneralStores().updateGuid();
 
     const dataRoute: any = {
       name: routeName,
@@ -223,8 +223,6 @@ export class site {
     const routeActual: any = router
       .getRoutes()
       .find((route) => route.name === routeName);
-
-    console.log(routeName);
 
     const validar = () => {
       const meta = String(routeActual?.meta?.layout).toLowerCase();
@@ -240,7 +238,7 @@ export class site {
 
     if (validar()) {
       dataRoute.query = {
-        key: UniqueGuid().guid,
+        key: GeneralStores().data.guid,
       };
     }
 

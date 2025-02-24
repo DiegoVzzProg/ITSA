@@ -43,10 +43,11 @@ class CCarritoCliente extends Controller
     static function fn_a_carrito_cliente(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $user = $request->user();
             $producto = TProducto::where('id_producto', $request->id_producto)->first();
 
             TCarritoCliente::create([
-                'id_usuario' => $request->id_usuario,
+                'id_usuario' => $user->id_usuario,
                 'id_producto' => $request->id_producto,
                 'descripcion' => $request->descripcion,
                 'fecha_creacion' => now(),
@@ -80,7 +81,7 @@ class CCarritoCliente extends Controller
             $user = $request->user();
 
             $producto = TCarritoCliente::where('id_usuario', $user->id_usuario)
-                ->where('id_producto', base64_decode($request->id_producto))
+                ->where('id_producto', $request->id_producto)
                 ->where('borrado', false)->first();
 
             if (!$producto) {

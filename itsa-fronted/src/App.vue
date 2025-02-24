@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import Main from './layouts/Main.vue';
-import Auth from './layouts/Auth.vue';
+import Main from './modules/layouts/Main.vue';
+import Auth from './modules/layouts/Auth.vue';
 
 
 const route = useRoute();
