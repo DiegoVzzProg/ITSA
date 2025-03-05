@@ -80,7 +80,9 @@ body {
 }
 
 .times-new-roman-font {
-  font-family: "Times New Roman", Times, serif;
+  font-family: "adriane", sans-serif;
+  font-weight: 400;
+  font-style: italic;
 }
 .bd {
   border: 1px solid black;

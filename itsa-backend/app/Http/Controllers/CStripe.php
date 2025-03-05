@@ -19,48 +19,57 @@ class CStripe extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $user = $request->user();
-            $carritoQuery = TCarritoCliente::where('id_usuario', $user->id_usuario)
-                ->where('borrado', false);
 
-            $productosCarrito = $carritoQuery->pluck('id_producto')->toArray();
+            $carritoItems = TCarritoCliente::with('producto')
+                ->where('id_usuario', $user->id_usuario)
+                ->where('borrado', false)
+                ->get();
 
-            $productos = TProducto::whereIntegerInRaw('id_producto', $productosCarrito)->get();
-
-            if ($productos->isEmpty()) {
+            if ($carritoItems->isEmpty()) {
                 return CGeneral::CreateMessage('Products not found', 599, null);
             }
 
             Stripe::setApiKey(config('services.stripe.secret'));
 
             $lineItems = [];
-            foreach ($productos as $producto) {
+            $totalSinImpuesto = 0;
+
+            foreach ($carritoItems as $item) {
+                if (!$item->producto) {
+                    continue;
+                }
+                $producto = $item->producto;
+
+                $subtotal = round($producto->precio * 1, 2);
+                $totalSinImpuesto += $subtotal;
+
                 $lineItems[] = [
                     'price_data' => [
-                        "product_data" => [
-                            "name" => $producto->titulo,
-                            "description" => $producto->subtitulo,
+                        'product_data' => [
+                            'name' => $producto->titulo,
+                            'description' => $producto->subtitulo,
                         ],
-                        "currency" => "mxn",
-                        "unit_amount" => $producto->precio * 100,
+                        'currency' => 'mxn',
+                        'unit_amount' => (int) round($producto->precio * 100),
                     ],
                     'quantity' => 1,
                 ];
             }
 
-            $precioSinImpuesto = round($carritoQuery->sum('precio'), 2);
-            $montoImpuesto = round($precioSinImpuesto * 0.16 * 100);
+            $totalSinImpuesto = round($totalSinImpuesto, 2);
+            $montoImpuesto = round($totalSinImpuesto * 0.16, 2);
+            $montoImpuestoCents = (int) round($montoImpuesto * 100);
 
             $lineItems[] = [
                 'price_data' => [
-                    "product_data" => [
-                        "name" => "IVA 16%",
+                    'product_data' => [
+                        'name' => 'IVA 16%',
                     ],
-                    "currency" => "mxn",
-                    "unit_amount" => $montoImpuesto,
+                    'currency' => 'mxn',
+                    'unit_amount' => $montoImpuestoCents,
                 ],
                 'quantity' => 1,
             ];
-
 
             $checkoutSession = Session::create([
                 'line_items' => $lineItems,
@@ -68,8 +77,8 @@ class CStripe extends Controller
                 'metadata' => [
                     'user_id' => $user->id_usuario,
                 ],
-                'success_url' => env('CHECKOUT_SUCCESS_URL'),
-                'cancel_url'  => env('CHECKOUT_CANCEL_URL'),
+                'success_url' => config('services.stripe.checkout_success_url'),
+                'cancel_url'  => config('services.stripe.checkout_cancel_url'),
             ]);
 
             return CGeneral::CreateMessage('', 200, [
@@ -84,7 +93,7 @@ class CStripe extends Controller
 
             $payload = $request->getContent();
             $sigHeader = $request->header('Stripe-Signature');
-            $webhookSecret = "whsec_cfAxIkUMPonkapWKhIl0BnDukKjZLNj6"; //cambiar config('services.stripe.webhook_secret');
+            $webhookSecret = config('services.stripe.webhook_secret');
 
             $event = Webhook::constructEvent(
                 $payload,
@@ -95,45 +104,36 @@ class CStripe extends Controller
             if ($event->type == 'checkout.session.completed') {
                 $session = $event->data->object;
                 $userId = $session->metadata->user_id ?? null;
+                if ($userId == null) {
+                    throw new \Exception("No existe el usuario");
+                }
 
-                if ($userId) {
+                $carrito = TCarritoCliente::where('id_usuario', $userId)
+                    ->where('borrado', false)
+                    ->select('id_producto')
+                    ->get();
 
-                    $carrito = TCarritoCliente::where('id_usuario', $userId)
-                        ->where('borrado', false)
-                        ->select('id_producto')
-                        ->get();
+                $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
 
-                    $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
+                if ($carrito->isNotEmpty()) {
 
-                    if ($carrito->isNotEmpty()) {
+                    $datosCompra = $carrito
+                        ->map(
+                            function ($item) use ($cliente) {
+                                return [
+                                    'id_cliente' => $cliente->id_cliente,
+                                    'id_producto' => $item->id_producto,
+                                    'fecha' => date('Y-m-d'),
+                                    'pago_confirmado' => true,
+                                    'descargado' => false,
+                                ];
+                            }
+                        )->toArray();
 
-                        $datosCompra = $carrito
-                            ->map(
-                                function ($item) use ($cliente) {
-                                    return [
-                                        'id_cliente' => $cliente->id_cliente,
-                                        'id_producto' => $item->id_producto,
-                                        'fecha' => date('Y-m-d'),
-                                        'pago_confirmado' => true,
-                                        'descargado' => false,
-                                    ];
-                                }
-                            )->toArray();
-
-                        DB::transaction(function () use ($datosCompra, $carrito) {
-                            TProductosCompradosCliente::insert($datosCompra);
-                            $carrito->update(['borrado' => true]);
-                        });
-                    }
-                } else {
-                    TErroresInternos::create([
-                        'id_ticket' => uniqid(),
-                        'codigo_error' => 599,
-                        'id_usuario' => 0,
-                        'detalle_error' => "Webhook recibido sin user_id en metadata.",
-                        'controlador' => __FILE__,
-                        'linea' => __LINE__
-                    ]);
+                    DB::transaction(function () use ($datosCompra, $carrito) {
+                        TProductosCompradosCliente::insert($datosCompra);
+                        $carrito->update(['borrado' => true]);
+                    });
                 }
             }
         });

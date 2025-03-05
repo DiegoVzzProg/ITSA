@@ -1,5 +1,5 @@
 import { dgav, notify, site } from "../../../utils/site";
-const shoppingCartUrl = "/shopping/cart";
+const shoppingCartUrl = "/shopping-cart";
 const customersUrl = "/customers";
 
 export const s_costumers = {

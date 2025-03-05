@@ -12,14 +12,14 @@ const auth = async (
   switch (opcion) {
     case 1:
       response = await dgav.apiRequest(
-        `${urlAuth}/login/user`,
+        `${urlAuth}/login`,
         dgav.httpMethod.POST,
         data
       );
       break;
     case 2:
       response = await dgav.apiRequest(
-        `${urlAuth}/register/user`,
+        `${urlAuth}/register`,
         dgav.httpMethod.POST,
         data
       );
@@ -47,7 +47,7 @@ export const s_auth = {
   async refreshToken(data: Record<string, any>): Promise<any> {
     dgav.dataBase.message = "";
     const response: any = await dgav.apiRequest(
-      `${urlAuth}/refresh/token`,
+      `${urlAuth}/token/refresh`,
       dgav.httpMethod.POST,
       data
     );
@@ -65,8 +65,9 @@ export const s_auth = {
     dgav.dataBase.message = "";
 
     const response: any = await dgav.apiRequest(
-      `${urlAuth}/logout/user`,
-      dgav.httpMethod.DELETE
+      `${urlAuth}/logout`,
+      dgav.httpMethod.POST,
+      {}
     );
 
     const message: string = dgav.dataBase.message;
@@ -80,9 +81,9 @@ export const s_auth = {
 
   async restorePassword(data: Record<string, any>) {
     dgav.dataBase.message = "";
-    
+
     const response: any = await dgav.apiRequest(
-      `${urlAuth}/restore/password`,
+      `${urlAuth}/password/forgot`,
       dgav.httpMethod.POST,
       data
     );
@@ -98,7 +99,7 @@ export const s_auth = {
   async secretKey() {
     dgav.dataBase.message = "";
     const response: any = await dgav.apiRequest(
-      "/secret/key",
+      "/secret-key",
       dgav.httpMethod.GET
     );
     const message: string = dgav.dataBase.message;

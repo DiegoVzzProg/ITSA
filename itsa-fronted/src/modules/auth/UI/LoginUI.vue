@@ -171,10 +171,11 @@ async function btnLogin_OnClick(): Promise<void> {
     );
 
     const response: any = await s_auth.secretKey();
-    if (response) {
+
+    if (response.secretKey) {
         site.setCookies(
             {
-                "e.k": response.secret_key,
+                "e.k": response.secretKey,
             },
             false
         );

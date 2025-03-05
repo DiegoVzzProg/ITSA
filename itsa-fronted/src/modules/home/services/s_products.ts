@@ -6,7 +6,7 @@ export const s_products = {
     dgav.dataBase.message = "";
 
     const response: any = await dgav.apiRequest(
-      `${productosUrl}/list/products`,
+      `${productosUrl}/list`,
       dgav.httpMethod.POST,
       data
     );

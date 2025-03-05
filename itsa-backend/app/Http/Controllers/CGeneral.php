@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TErroresInternos;
 use App\Models\TPaises;
+use App\Models\TUsuarios;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +66,12 @@ class CGeneral extends Controller
             try {
                 $user = null;
                 if ($request) {
+                    $user_meta_data_id_user = $request->input('metadata.user_id');
                     $user = $request->user();
+
+                    if (!$request->user() && $user_meta_data_id_user) {
+                        $user = TUsuarios::find($user_meta_data_id_user);
+                    }
                 }
 
                 $usuario_defualt = $user == null ? 0 : $user->id_usuario;

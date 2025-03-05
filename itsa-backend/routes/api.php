@@ -6,26 +6,27 @@ use App\Http\Controllers\CGeneral;
 use App\Http\Controllers\CProductos;
 use App\Http\Controllers\CStripe;
 use App\Http\Controllers\CUsuarios;
-
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
+    Route::post('products/stripe/checkout/success', [CStripe::class, 'fn_stripe_success'])->withoutMiddleware([VerifyCsrfToken::class]);;
+
     Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
 
     Route::prefix('products')->group(function () {
-        Route::post('/list/products', [CProductos::class, 'fn_l_productos']);
-        Route::post('/stripe/checkout/success', [CStripe::class, 'fn_stripe_success']);
+        Route::post('/list', [CProductos::class, 'fn_l_productos']);
     });
 
     Route::prefix('auth')->group(function () {
-        Route::post('/login/user', [CUsuarios::class, 'fn_login']);
-        Route::post('/register/user', [CUsuarios::class, 'fn_register']);
-        Route::post('/restore/password', [CUsuarios::class, 'fn_forgot_password_restore']);
-        Route::post('/refresh/token', [CUsuarios::class, 'fn_refresh_token']);
+        Route::post('/login', [CUsuarios::class, 'fn_login'])->middleware('throttle:5,1');
+        Route::post('/register', [CUsuarios::class, 'fn_register'])->middleware('throttle:5,1');
+        Route::post('/password/forgot', [CUsuarios::class, 'fn_forgot_password_restore'])->middleware('throttle:3,1');;
+        Route::post('/token/refresh', [CUsuarios::class, 'fn_refresh_token'])->middleware('throttle:2,1');
     });
 
     Route::middleware('auth:sanctum')->group(function () { //, 'session.expire'
-        Route::prefix('shopping/cart')->group(function () {
+        Route::prefix('shopping-cart')->group(function () {
             Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/add/product', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
             Route::get('/proceed/to/checkout', [CStripe::class, 'fn_stripe']);
@@ -40,7 +41,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('auth')->group(function () {
-            Route::delete('/logout/user', [CUsuarios::class, 'fn_logout']);
+            Route::post('/logout', [CUsuarios::class, 'fn_logout']);
         });
 
         Route::prefix('products')->group(function () {
@@ -48,6 +49,6 @@ Route::prefix('v1')->group(function () {
             Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar']);
         });
 
-        Route::get('/secret/key', [CGeneral::class, 'generarSecretKey']);
+        Route::get('/secret-key', [CGeneral::class, 'generarSecretKey']);
     });
 });

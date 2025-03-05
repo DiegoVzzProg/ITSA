@@ -123,9 +123,9 @@ import AI from '../../../assets/img/gallery/basicsIcons/Ai.png'
 import SVG from '../../../assets/img/gallery/basicsIcons/SVG.png'
 import basic_set_50 from '../../../assets/img/gallery/basicsIcons/basic_set_50.png'
 import gif_coleccion_1 from '../../../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
-import { site } from '../../../utils/site';
 import File from '../components/File.vue';
 import CardProduct from '../components/CardProduct.vue';
+import { $v2 } from '../../../utils/JQueryV2';
 
 const headerComponent = ref<HTMLElement | null>(null);
 const padre_contenedor_scroll = ref<HTMLElement | null>(null);
@@ -137,8 +137,7 @@ const contenedor_gallery_basics = ref<HTMLElement | null>(null);
 
 onMounted(() => {
     headerComponent.value = document.getElementById("header") as HTMLElement;
-    headerComponent.value?.classList.add("bg-transparent");
-    headerComponent.value?.classList.remove("bg-white");
+    $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
     padre_contenedor_scroll.value = document.getElementById(
         "padre_contenedor_scroll"
     ) as HTMLElement;
@@ -163,8 +162,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    headerComponent.value?.classList.add("bg-white");
-    headerComponent.value?.classList.remove("bg-transparent");
+    $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
     window.removeEventListener("scroll", handleScroll);
 })
 
@@ -187,21 +185,13 @@ function handleScroll() {
         const vchildren_elemento2_scroll: any = children_elemento2_scroll.value;
 
         if (IsMiddle) {
-            site.replaceClass(vchildren_elemento1_scroll, "flex", "hidden");
-            site.replaceClass(vchildren_elemento2_scroll, "hidden", "flex");
-            site.replaceClass(
-                vpadre_contenedor_scroll,
-                "bg-[rgba(183,164,237,0.45)]",
-                "bg-[rgba(25,18,44,0.7)]"
-            );
+            $v2(vchildren_elemento1_scroll).replaceClass("flex", "hidden");
+            $v2(vchildren_elemento2_scroll).replaceClass("hidden", "flex");
+            $v2(vpadre_contenedor_scroll).replaceClass("bg-[rgba(183,164,237,0.45)]", "bg-[rgba(25,18,44,0.7)]");
         } else {
-            site.replaceClass(vchildren_elemento1_scroll, "hidden", "flex");
-            site.replaceClass(vchildren_elemento2_scroll, "flex", "hidden");
-            site.replaceClass(
-                vpadre_contenedor_scroll,
-                "bg-[rgba(25,18,44,0.7)]",
-                "bg-[rgba(183,164,237,0.45)]"
-            );
+            $v2(vchildren_elemento1_scroll).replaceClass("hidden", "flex");
+            $v2(vchildren_elemento2_scroll).replaceClass("flex", "hidden");
+            $v2(vpadre_contenedor_scroll).replaceClass("bg-[rgba(25,18,44,0.7)]", "bg-[rgba(183,164,237,0.45)]");
         }
 
         const headerRect = headerComponent.value?.getBoundingClientRect();
@@ -214,11 +204,9 @@ function handleScroll() {
             const distance = galleryTop - headerBottom;
 
             if (distance <= 0) {
-                headerComponent.value?.classList.add("bg-white");
-                headerComponent.value?.classList.remove("bg-transparent");
+                $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
             } else {
-                headerComponent.value?.classList.add("bg-transparent");
-                headerComponent.value?.classList.remove("bg-white");
+                $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
             }
         }
 
@@ -231,9 +219,9 @@ function handleScroll() {
         ) as HTMLElement;
 
         if (card_section.getBoundingClientRect().top <= 0) {
-            a_card_section.classList.add("hidden");
+            $v2(a_card_section).addClass("hidden");
         } else {
-            a_card_section.classList.remove("hidden");
+            $v2(a_card_section).removeClass("hidden");
         }
     }
 }
@@ -262,6 +250,4 @@ function handleScroll() {
     animation-timing-function: linear;
     animation-iteration-count: infinite;
 }
-
-.animate-scroll-principal {}
 </style>

@@ -4,7 +4,7 @@ import router from "../router";
 import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import CryptoJS from "crypto-js";
-import { RouteLocationRaw } from "vue-router";
+import { RouteLocationRaw, RouteRecordName } from "vue-router";
 import { GeneralStores } from "../modules/stores/GeneralStores";
 
 //#region  dgavClass
@@ -209,71 +209,44 @@ export class site {
   }
 
   public static RedirectPage(
-    routeName: string,
+    routeName: RouteRecordName,
     parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
     GeneralStores().updateGuid();
 
-    const dataRoute: any = {
+    const dataRoute: RouteLocationRaw = {
       name: routeName,
       params: parameters,
     };
 
-    const routeActual: any = router
+    const routeActual = router
       .getRoutes()
       .find((route) => route.name === routeName);
+    const layout = routeActual?.meta?.layout?.toString().toLowerCase();
 
-    const validar = () => {
-      const meta = String(routeActual?.meta?.layout).toLowerCase();
-      switch (meta) {
-        case "main":
-          return String(routeName).toLowerCase() !== "home";
-        case "auth":
-          return false;
-        default:
-          return false;
-      }
-    };
-
-    if (validar()) {
-      dataRoute.query = {
-        key: GeneralStores().data.guid,
-      };
+    // Añadir query.key solo si el layout es Main y no es la ruta home
+    if (layout === "main" && routeName?.toString().toLowerCase() !== "home") {
+      dataRoute.query = { key: GeneralStores().data.guid };
     }
 
-    const route = router.resolve(dataRoute as RouteLocationRaw);
-
-    if (route?.path) {
-      router
-        .push(route)
-        .then(() => {
-          window.scrollTo({ top: 0 });
-          functionOn?.();
-        })
-        .catch(() => {
+    router
+      .push(dataRoute)
+      .then(() => {
+        window.scrollTo({ top: 0 });
+        functionOn?.();
+      })
+      .catch((error) => {
+        if (error.name !== "NavigationDuplicated") {
           this.fallbackRedirect();
-        });
-    } else {
-      this.fallbackRedirect();
-    }
+        }
+      });
   }
 
   private static fallbackRedirect(): void {
     router.push("/").catch(() => {
       window.location.href = "/";
     });
-  }
-
-  public static replaceClass(
-    element: HTMLElement,
-    oldClass: string,
-    newClass: string
-  ): void {
-    if (element.classList.contains(oldClass)) {
-      element.classList.remove(oldClass);
-      element.classList.add(newClass);
-    }
   }
 
   public static formatNumber = (num: number): string => {
@@ -285,49 +258,6 @@ export class site {
   public static IsNullOrEmpty = (value: any): boolean => {
     return value == null || value == undefined || value == "";
   };
-
-  public static addClass(
-    elements: HTMLElement | HTMLElement[] | NodeListOf<HTMLElement> | null,
-    classNames: string
-  ): void {
-    if (!elements) return;
-
-    const elems: HTMLElement[] =
-      elements instanceof HTMLElement ? [elements] : Array.from(elements);
-
-    const classes = classNames.split(/\s+/).filter(Boolean);
-
-    elems.forEach((el) => {
-      classes.forEach((cls) => {
-        if (el.classList) {
-          el.classList.add(cls);
-        } else {
-          const currentClasses = el.className.split(/\s+/);
-          if (!currentClasses.includes(cls)) {
-            el.className = [...currentClasses, cls].join(" ");
-          }
-        }
-      });
-    });
-  }
-}
-
-/**
- * Reemplaza clases CSS en un elemento HTML.
- *
- * @param element - El elemento HTML al que se le reemplazarán las clases.
- * @param oldClass - La clase que será reemplazada.
- * @param newClass - La nueva clase que reemplazará a la antigua.
- */
-export function replaceClass(
-  element: HTMLElement,
-  oldClass: string,
-  newClass: string
-): void {
-  if (element.classList.contains(oldClass)) {
-    element.classList.remove(oldClass);
-    element.classList.add(newClass);
-  }
 }
 
 export const isNotified = Cookies.get("logged_in_successfully");

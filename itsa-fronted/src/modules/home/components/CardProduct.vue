@@ -59,8 +59,8 @@ const habilitarBotonGoToCart = async () => {
         existeArticuloEnCarrito.value = response.existe;
     }
 }
-onMounted(async () => {
-    await habilitarBotonGoToCart();
+onMounted(() => {
+    habilitarBotonGoToCart();
 });
 </script>
 

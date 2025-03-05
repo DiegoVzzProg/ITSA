@@ -517,10 +517,10 @@ async function btnRegisterUser_OnClick() {
     );
 
     const response: any = await s_auth.secretKey();
-    if (response.secret_key) {
+    if (response.secretKey) {
         site.setCookies(
             {
-                "e.k": response.secret_key,
+                "e.k": response.secretKey,
                 logged_in_successfully: "false",
             },
             false

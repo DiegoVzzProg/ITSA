@@ -32,4 +32,9 @@ class TCarritoCliente extends Model
     protected $hidden = [];
 
     protected $attributes = [];
+
+    public function producto()
+    {
+        return $this->belongsTo(TProducto::class, 'id_producto', 'id_producto');
+    }
 }

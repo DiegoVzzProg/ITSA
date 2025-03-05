@@ -161,6 +161,7 @@ import File from '../components/File.vue'
 import CardProduct from '../components/CardProduct.vue';
 import { site } from '../../../utils/site';
 import { s_products } from '../services/s_products';
+import { $v2 } from '../../../utils/JQueryV2';
 
 const headerComponent = ref<HTMLElement | null>(null);
 const padre_contenedor_scroll = ref<HTMLElement | null>(null);
@@ -173,8 +174,7 @@ const products: any = ref<any>(null);
 
 onMounted(async () => {
     headerComponent.value = document.getElementById("header") as HTMLElement;
-    headerComponent.value?.classList.add("bg-transparent");
-    headerComponent.value?.classList.remove("bg-white");
+    $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
     padre_contenedor_scroll.value = document.getElementById(
         "padre_contenedor_scroll"
     ) as HTMLElement;
@@ -202,8 +202,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-    headerComponent.value?.classList.add("bg-white");
-    headerComponent.value?.classList.remove("bg-transparent");
+    $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
     window.removeEventListener("scroll", handleScroll);
 });
 
@@ -226,21 +225,13 @@ function handleScroll() {
         const vchildren_elemento2_scroll: any = children_elemento2_scroll.value;
 
         if (IsMiddle) {
-            site.replaceClass(vchildren_elemento1_scroll, "flex", "hidden");
-            site.replaceClass(vchildren_elemento2_scroll, "hidden", "flex");
-            site.replaceClass(
-                vpadre_contenedor_scroll,
-                "after:opacity-0",
-                "after:opacity-30"
-            );
+            $v2(vchildren_elemento1_scroll).replaceClass("flex", "hidden");
+            $v2(vchildren_elemento2_scroll).replaceClass("hidden", "flex");
+            $v2(vpadre_contenedor_scroll).replaceClass("after:opacity-0", "after:opacity-30");
         } else {
-            site.replaceClass(vchildren_elemento1_scroll, "hidden", "flex");
-            site.replaceClass(vchildren_elemento2_scroll, "flex", "hidden");
-            site.replaceClass(
-                vpadre_contenedor_scroll,
-                "after:opacity-30",
-                "after:opacity-0"
-            );
+            $v2(vchildren_elemento1_scroll).replaceClass("hidden", "flex");
+            $v2(vchildren_elemento2_scroll).replaceClass("flex", "hidden");
+            $v2(vpadre_contenedor_scroll).replaceClass("after:opacity-30", "after:opacity-0");
         }
 
         const headerRect = headerComponent.value?.getBoundingClientRect();
@@ -253,11 +244,9 @@ function handleScroll() {
             const distance = galleryTop - headerBottom;
 
             if (distance <= 0) {
-                headerComponent.value?.classList.add("bg-white");
-                headerComponent.value?.classList.remove("bg-transparent");
+                $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
             } else {
-                headerComponent.value?.classList.add("bg-transparent");
-                headerComponent.value?.classList.remove("bg-white");
+                $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
             }
         }
 
@@ -271,9 +260,9 @@ function handleScroll() {
 
         if (card_section && a_card_section) {
             if (card_section.getBoundingClientRect().top <= 0) {
-                a_card_section.classList.add("hidden");
+                $v2(a_card_section).addClass("hidden");
             } else {
-                a_card_section.classList.remove("hidden");
+                $v2(a_card_section).removeClass("hidden");
             }
         }
     }

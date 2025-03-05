@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ITSA - Welcome</title>
+    <link rel="stylesheet" href="https://use.typekit.net/thl5bxc.css" />
+    <style>
+      @font-face {
+        font-family: "Itsa Bold";
+        src: url("./assets/font/itsa-Regular.30422c880-Bold.woff2")
+            format("woff2"),
+          url("./assets/font/itsa-Regular.30422c880-Bold.woff") format("woff"),
+          url("./assets/font/itsa-Regular.30422c880-Bold.ttf")
+            format("truetype");
+        font-weight: bold;
+        font-style: normal;
+      }
+
+      *,
+      *::after,
+      *::before {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Itsa Bold", sans-serif;
+        background-color: hsl(0, 0%, 96%);
+      }
+
+      html {
+        width: 100%;
+        min-width: 375px;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        gap: 4em;
+        padding-top: min(4em, 8%);
+        align-items: center;
+      }
+
+      .logo {
+        width: 100%;
+        max-width: 160px;
+      }
+
+      .gif {
+        width: 100%;
+        max-width: 540px;
+        transform: translateY(-50px);
+      }
+
+      h1 {
+        font-size: clamp(4.5rem, 4vw, 10rem);
+      }
+
+      h2 {
+        font-family: "adriane", sans-serif;
+        font-weight: 400;
+        font-style: italic;
+        font-size: 2rem;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    </style>
+    <script>
+      function UUID() {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) =>
+          (
+            c ^
+            (crypto.getRandomValues(new Uint8Array(1))[0] & (15 >> (c / 4)))
+          ).toString(16)
+        );
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const img = document.getElementById("gif");
+        img.src = "assets/new_web_itsastudio.gif?v=" + UUID();
+      });
+    </script>
+  </head>
+  <body>
+    <img src="assets/svg/logo.svg" class="logo" />
+    <div>
+      <h1>new web</h1>
+      <h2>coming soon</h2>
+    </div>
+    <img src="assets/new_web_itsastudio.gif" alt="" class="gif" id="gif" />
+  </body>
+</html>
