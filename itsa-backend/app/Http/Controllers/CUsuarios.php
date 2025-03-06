@@ -8,7 +8,9 @@ use App\Models\TUsuarios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class CUsuarios extends Controller
@@ -94,6 +96,21 @@ class CUsuarios extends Controller
     public static function fn_login(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $validator = Validator::make($request->all(), [
+                'email'    => 'required|email|max:254',
+                'password' => 'required|string|min:8',
+            ], [
+                'email.required'    => 'The email is required.',
+                'email.email'       => 'The email must be a valid email address.',
+                'email.max'         => 'The email should not exceed 254 characters.',
+                'password.required' => 'The password is required.',
+                'password.min'      => 'Password must be at least 8 characters long.',
+            ]);
+
+            if ($validator->fails()) {
+                return CGeneral::CreateMessage('There were validation errors', 599, $validator->errors());
+            }
+
             $credentials = $request->only('email', 'password');
 
             $usuario = TUsuarios::where('email', $credentials['email'])
@@ -108,8 +125,7 @@ class CUsuarios extends Controller
                 return CGeneral::CreateMessage('Incorrect password', 599, null);
             }
 
-            TUsuarios::where('id_usuario', $usuario->id_usuario)
-                ->update(['ultima_conexion' => now()]);
+            $usuario->update(['ultima_conexion' => now()]);
 
             $dt_cliente = CClientes::ObtenerDatosCiente($usuario->id_usuario);
 
@@ -117,16 +133,16 @@ class CUsuarios extends Controller
             $refreshToken = self::generateRefreshToken($usuario);
             $sessionToken = self::generateSessionToken($usuario);
 
-            return CGeneral::CreateMessage('', 200,  [
+            return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
                     'id_usuario' => $usuario->id_usuario,
-                    'email' => $usuario->email,
-                    'nombre' => $usuario->nombre,
+                    'email'      => $usuario->email,
+                    'nombre'     => $usuario->nombre,
                 ],
-                "client_data" => $dt_cliente,
-                "token" => $accessToken,
-                "refresh_token" => $refreshToken,
-                "session_token" => $sessionToken
+                "client_data"    => $dt_cliente,
+                "token"          => $accessToken,
+                "refresh_token"  => $refreshToken,
+                "session_token"  => $sessionToken,
             ]);
         }, $request);
     }
@@ -216,25 +232,38 @@ class CUsuarios extends Controller
             $user = $request->user();
             $user->tokens()->delete();
 
-            return CGeneral::CreateMessage('', 200,  []);
+            return CGeneral::CreateMessage('', 200, []);
         }, $request);
     }
 
     public static function fn_forgot_password_restore(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $validator = Validator::make($request->all(), [
+                'email'    => 'required|email|max:254'
+            ], [
+                'email.required'    => 'The email is required.',
+                'email.email'       => 'The email must be a valid email address.',
+                'email.max'         => 'The email should not exceed 254 characters.'
+            ]);
+
+            if ($validator->fails()) {
+                return CGeneral::CreateMessage('There were validation errors', 599, $validator->errors());
+            }
+
             $credentials = $request->only('email');
 
             $usuario = TUsuarios::where('email', $credentials['email'])->where('activo', true)->first();
 
             if (!$usuario) {
-                return CGeneral::CreateMessage('User not found or inactive', 599, null);
+                Log::info('Intento de recuperación de contraseña para email inexistente o inactivo: ' . $credentials['email']);
+                return CGeneral::CreateMessage('A message will be sent to reset the password', 599, null);
             }
 
             $token = Password::CreateToken($usuario);
 
             $usuario->notify(new \App\Notifications\NotForgotPassword($token));
-            return CGeneral::CreateMessage('Message sent', 200, null);
+            return CGeneral::CreateMessage('A message will be sent to reset the password', 200, null);
         }, $request);
     }
 }

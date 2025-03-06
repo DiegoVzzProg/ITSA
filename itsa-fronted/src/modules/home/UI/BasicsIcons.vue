@@ -204,9 +204,9 @@ function handleScroll() {
             const distance = galleryTop - headerBottom;
 
             if (distance <= 0) {
-                $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
-            } else {
                 $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
+            } else {
+                $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
             }
         }
 
