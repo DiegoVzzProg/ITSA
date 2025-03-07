@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import contact from '../../../assets/img/contact.png'
 
 </script>
 
@@ -7,7 +6,8 @@ import contact from '../../../assets/img/contact.png'
     <div class="flex flex-col items-center justify-center w-full min-h-full grow shrink-0">
         <section
             class="seccion-1-app-license max-w-[900px] py-[10rem] flex w-full h-full max-h-[360px] items-center justify-center pb-[4rem]">
-            <img loading="lazy" alt="_" :src="contact" class="w-auto h-full" />
+            <File file="contact.png" type="img" class="w-auto h-full">
+            </File>
         </section>
         <div class="flex flex-col w-full h-full max-w-[900px]">
             <section class="flex flex-col pb-[4rem]">

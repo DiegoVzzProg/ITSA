@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import terms_and_conditions from '../../../assets/img/terms_and_conditions.png'
 
 </script>
 
@@ -68,7 +67,8 @@ import terms_and_conditions from '../../../assets/img/terms_and_conditions.png'
         </div>
         <div
             class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]">
-            <img :src="terms_and_conditions" alt="_" class="w-full max-w-[210px] h-full max-h-[200px]" loading="lazy">
+            <File file="terms_and_conditions.png" type="img" class="w-full max-w-[210px] h-full max-h-[200px]">
+            </File>
         </div>
     </div>
 </template>

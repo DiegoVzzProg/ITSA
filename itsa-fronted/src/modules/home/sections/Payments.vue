@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import payments from '../../../assets/img/payments.png'
-
 </script>
 
 <template>
@@ -51,9 +49,9 @@ import payments from '../../../assets/img/payments.png'
             </section>
         </div>
         <div class="flex w-full md:min-h-[calc(100vh-86px)] items-center justify-center max-[500px]:pb-[2rem]">
-            <img :src="payments" alt="_"
-                class="w-full max-w-[320px] h-full max-h-[220px] max-[500px]:max-h-[180px] max-[500px]:max-w-[280px]"
-                loading="lazy">
+            <File file="payments.png" type="img"
+                class="w-full max-w-[320px] h-full max-h-[220px] max-[500px]:max-h-[180px] max-[500px]:max-w-[280px]">
+            </File>
         </div>
     </div>
 </template>

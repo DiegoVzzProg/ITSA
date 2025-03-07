@@ -10,7 +10,7 @@ const route = useRoute();
 </script>
 
 <template>
-    <div class="flex flex-col pt-[76px] w-full">
+    <div class="flex flex-col w-full">
         <License v-if="route.params.select == 'license'" />
         <Payments v-if="route.params.select == 'payments'" />
         <Terms v-if="route.params.select == 'terms'" />

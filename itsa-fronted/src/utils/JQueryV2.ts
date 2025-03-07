@@ -29,6 +29,15 @@ class JQueryV2 {
     });
     return this;
   }
+
+  addStyle(newStyle: string): JQueryV2 {
+    this.elements.forEach((element) => {
+      if (element instanceof HTMLElement) {
+        element.style.cssText += ` ${newStyle}`;
+      }
+    });
+    return this;
+  }
 }
 
 export function $v2(selector: string | HTMLElement): JQueryV2 {

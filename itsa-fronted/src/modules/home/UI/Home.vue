@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col grow shrink-0 min-h-screen w-full">
-    <div class="min-h-screen flex flex-col pt-[76px] justify-center items-center" ref="section1">
+    <div class="min-h-screen flex flex-col justify-center items-center" ref="section1">
       <div class="flex flex-col max-h-[40px] overflow-hidden text-center">
         <span v-for="(item, index) in texts" :key="index" :class="[
           item.class,
@@ -42,7 +42,7 @@
             <div class="flex translate-y-[-8px] flex-col items-start">
               <p class="max-w-[230px] leading-6">
                 <i class="times-new-roman-font text-[1rem] lg:text-[1.4rem] xl:text-[1.4rem]">{{ producto.subtitulo
-                  }}</i>
+                }}</i>
               </p>
               <p class="text-[clamp(.6em,2vw,.7em)]">
                 {{ producto.descripcion }}
@@ -51,9 +51,7 @@
           </div>
           <div class="flex items-center justify-center w-full h-[calc(100%-100px)]">
             <span class="flex w-[320px]">
-              <File folder="../../../assets/img/gallery" :file="`${String(producto.carpeta_recursos)}/${String(
-                producto.imagen
-              )}`" type="img" :encrypted="false" />
+              <File :file="`${String(producto.imagen)}`" type="img" />
             </span>
           </div>
         </div>

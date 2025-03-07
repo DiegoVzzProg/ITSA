@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import privacy_policy from '../../../assets/img/privacy_policy.png'
-
 </script>
 
 <template>
@@ -83,7 +81,7 @@ import privacy_policy from '../../../assets/img/privacy_policy.png'
         </div>
         <div
             class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]">
-            <img :src="privacy_policy" alt="_" class="w-full max-w-[210px] h-full max-h-[200px]" loading="lazy">
+            <File file="privacy_policy.png" type="img" class="w-full max-w-[210px] h-full max-h-[200px]"></File>
         </div>
     </div>
 </template>

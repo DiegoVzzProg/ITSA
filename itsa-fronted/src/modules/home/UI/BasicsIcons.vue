@@ -38,11 +38,11 @@
             id="contenedor_children_scroll">
             <div
                 class="flex opacity-50 flex-row w-full justify-between max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
-                <img :src="icon_morado_1" alt="_" loading="lazy"
-                    class="flex w-full max-w-[clamp(130px,18vw,280px)] max-[1090px]:hidden" />
-                <img :src="icon_morado_2" alt="_" loading="lazy" class="w-full flex max-w-[560px]" />
-                <img :src="icon_morado_3" alt="_" loading="lazy"
-                    class="w-full flex max-w-[clamp(130px,18vw,215px)] max-[1090px]:hidden" />
+                <File file="icon_morado_1.png" type="img"
+                    class="flex w-full max-w-[clamp(130px,18vw,280px)] max-[1090px]:hidden"></File>
+                <File file="icon_morado_2.png" type="img" class="w-full flex max-w-[560px]"></File>
+                <File file="icon_morado_3.png" type="img"
+                    class="w-full flex max-w-[clamp(130px,18vw,215px)] max-[1090px]:hidden"></File>
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
                 fresh icons
             </p>
             <div class="flex rounded-[2em] overflow-hidden">
-                <img :src="gif_coleccion_1" alt="_" loading="lazy" class="object-contain" />
+                <File file="gif_coleccion_1.gif" type="img"></File>
             </div>
         </div>
         <div class="flex flex-row w-full h-screen max-[1024px]:flex-col-reverse grow shrink-0">
@@ -73,16 +73,16 @@
                     </p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
-                    <img :src="AI" alt="_" loading="lazy" class="w-full max-w-[44px]" />
-                    <img :src="SVG" alt="_" loading="lazy" class="w-full max-w-[34px]" />
-                    <img :src="PDF" alt="_" loading="lazy" class="w-full max-w-[34px]" />
+                    <File file="Ai.png" type="img" class="w-full max-w-[44px]"></File>
+                    <File file="SVG.png" type="img" class="w-full max-w-[34px]"></File>
+                    <File file="PDF.png" type="img" class="w-full max-w-[34px]"></File>
                 </div>
             </div>
             <div
                 class="flex flex-col justify-center items-end max-[1024px]:items-center w-full max-[1024px]:grow max-[1024px]:shrink-0">
                 <div
                     class="flex items-center justify-center rounded-[1em] p-5 w-full max-w-[732px] h-full max-h-[732px] bg-[rgba(115,64,255,0.45)]">
-                    <img :src="basic_set_50" alt="_" loading="lazy" class="flex w-full max-w-[220px]" />
+                    <File file="basic_set_50.png" type="img" class="flex w-full max-w-[220px]"></File>
                 </div>
             </div>
         </div>
@@ -115,14 +115,6 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import icon_morado_1 from '../../../assets/img/gallery/basicsIcons/icon_morado_1.png'
-import icon_morado_2 from '../../../assets/img/gallery/basicsIcons/icon_morado_2.png'
-import icon_morado_3 from '../../../assets/img/gallery/basicsIcons/icon_morado_3.png'
-import PDF from '../../../assets/img/gallery/basicsIcons/PDF.png'
-import AI from '../../../assets/img/gallery/basicsIcons/Ai.png'
-import SVG from '../../../assets/img/gallery/basicsIcons/SVG.png'
-import basic_set_50 from '../../../assets/img/gallery/basicsIcons/basic_set_50.png'
-import gif_coleccion_1 from '../../../assets/img/gallery/basicsIcons/gif_coleccion_1.gif'
 import File from '../components/File.vue';
 import CardProduct from '../components/CardProduct.vue';
 import { $v2 } from '../../../utils/JQueryV2';

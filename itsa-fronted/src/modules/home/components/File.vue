@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref } from 'vue';
 const props = defineProps<{
-    folder: string;
     file: string;
     type: string;
-    encrypted: boolean;
 }>();
 
 const archivo = ref<string>('');
 
 const getArchivo = async (): Promise<void> => {
 
-    archivo.value = new URL(`${props.folder}/${props.file}`, import.meta.url).href
+    archivo.value = `${import.meta.env.VITE_URL_RECURSOS}${props.file}`
 
 };
 

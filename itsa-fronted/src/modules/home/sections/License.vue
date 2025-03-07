@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import license from '../../../assets/img/license.png'
 
 </script>
 
@@ -46,7 +45,8 @@ import license from '../../../assets/img/license.png'
             </section>
         </div>
         <div class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center">
-            <img :src="license" alt="_" class="w-full max-w-[200px] h-full max-h-[200px]" loading="lazy">
+            <File file="license.png" type="img" class="w-full max-w-[200px] h-full max-h-[200px]">
+            </File>
         </div>
     </div>
 </template>

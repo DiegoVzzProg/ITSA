@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { site } from '../../../utils/site';
-import Loading from '../../components/Loading.vue';
 import { numberCartShopping } from '../stores/CustomerStore';
 import { s_costumers } from '../services/s_costumers';
-const responseShopingCart = ref<any>(null);
 const props = defineProps<{
     id_producto: number;
     titulo: string;
@@ -51,11 +49,7 @@ const habilitarBotonGoToCart = async () => {
         id_producto: props.id_producto
     });
 
-
-
-    responseShopingCart.value = response;
-
-    if (responseShopingCart.value) {
+    if (response) {
         existeArticuloEnCarrito.value = response.existe;
     }
 }
@@ -78,7 +72,7 @@ onMounted(() => {
         </p>
         <p class="w-full whitespace-pre-line" v-html="descripcion">
         </p>
-        <div class="flex" v-if="responseShopingCart">
+        <div class="flex">
             <button v-if="existeArticuloEnCarrito" v-on:click="GoCheckOut()"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
                 Go to cart
@@ -89,7 +83,6 @@ onMounted(() => {
                 {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
             </button>
         </div>
-        <Loading v-else />
     </div>
 </template>
 

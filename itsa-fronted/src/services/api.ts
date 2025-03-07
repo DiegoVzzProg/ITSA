@@ -90,7 +90,7 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     } else {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         failedRequestsQueue.push((newToken: string) => {
           originalRequest!.headers!["Authorization"] = `Bearer ${newToken}`;
           resolve(api(originalRequest!));

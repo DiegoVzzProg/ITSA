@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-[76px] min-h-[200px] mb-6 max-[1060px]:min-h-[100px] ">
+    <div class="min-h-[200px] mb-6 max-[1060px]:min-h-[100px] ">
     </div>
     <div
         class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
