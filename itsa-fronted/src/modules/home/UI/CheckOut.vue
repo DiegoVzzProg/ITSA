@@ -95,7 +95,7 @@
                             class="bg-black py-5 px-3 rounded-full text-white">
                             finish
                         </button>
-                        <button v-if="Finish" v-on:click="CheckoutSession()"
+                        <button v-if="Finish" v-on:click="CheckoutSession($event)"
                             class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
                             continue to download
                         </button>
@@ -121,11 +121,11 @@
                     </p>
                 </div>
                 <div v-if="!site.IsNullOrEmpty(cartClient)" class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
-                    <div class="flex relative flex-row items-center gap-2" :key="index"
-                        v-for="(item, index) in ProductData">
+                    <div class="flex relative flex-row items-center gap-2" v-for="item in ProductData"
+                        :key="item.id_producto">
                         <div class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded">
-                            <File folder="../../../assets/img/gallery" :file="item.foto_producto" type="img"
-                                :encrypted="false" />
+                            <File v-if="item.foto_producto" :file="item.foto_producto" type="img" />
+                            <Loading v-else />
                         </div>
                         <div class="flex flex-row w-full justify-between gap-4 text-[clamp(.85rem,3vw,1rem)]">
                             <p class="truncate">{{ item.descripcion }}</p>
@@ -179,7 +179,6 @@ import { s_products } from "../services/s_products";
 
 onMounted(() => {
     ClientData.value = JSON.parse(site.getCookie("e.c.d"));
-
     Productos();
 });
 
@@ -266,10 +265,6 @@ async function Productos(): Promise<any> {
         ProductData.value = response.carrito_cliente;
         ProductPrecio.value = response.precio;
         Impuesto.value = response.impuesto;
-
-        site.setCookies({
-            precio: ProductPrecio.value,
-        });
     }
 }
 
@@ -426,37 +421,32 @@ function ValidatePhone(value: string): void {
     phone.error = "";
 }
 
-async function CheckoutSession(): Promise<any> {
-    // if (CustomerStore().delete_product.click > 0) {
-    //     await Productos();
-    // }
+async function CheckoutSession(elemento: any): Promise<any> {
+    elemento.target.disabled = true;
 
-    const precio: number = Number(site.getCookie("precio") || 0);
-    //CustomerStore().delete_product.click = 0;
+    if (Number(ProductPrecio.value) == 0) {
+        const response: any = await s_products.addProductDownloadList();
+        console.log(response);
 
-    if (precio <= 0) {
-        const repsonse: any = await s_products.addProductDownloadList();
+        if (!response)
+            return;
 
-        if (repsonse) {
-            site.RedirectPage(
-                repsonse.redirectToDownload
-            );
-        }
+        site.RedirectPage(response.redirectToDownload);
+    } else {
+        const response: any = await s_costumers.proceedToCheckout();
 
-        return;
-    }
+        if (!response)
+            return;
 
-    const response: any = await s_costumers.proceedToCheckout();
-
-    if (response) {
         const url: any = response.redirectStripePayment;
 
-        if (site.IsNullOrEmpty(url)) {
-            return;
-        }
+        if (site.IsNullOrEmpty(url)) return;
 
         window.location.href = url;
+        elemento.target.disabled = false;
     }
+
+    await numberCartShopping().update();
 }
 
 function FunctionEdit(): void {

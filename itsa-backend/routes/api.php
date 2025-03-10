@@ -10,12 +10,20 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::post('products/stripe/checkout/success', [CStripe::class, 'fn_stripe_success'])->withoutMiddleware([VerifyCsrfToken::class]);;
+
+    Route::get('prueba', function () {
+        return config('services.stripe.webhook_secret');
+    });
+
+    Route::post('products/stripe/checkout/success', [CStripe::class, 'fn_stripe_success'])
+        ->withoutMiddleware([VerifyCsrfToken::class]);;
 
     Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
 
     Route::prefix('products')->group(function () {
         Route::post('/list', [CProductos::class, 'fn_l_productos']);
+        Route::get('/private/download/{fileName}', [CProductos::class, 'downloadPrivateFile'])
+            ->name('private.download');
     });
 
     Route::prefix('auth')->group(function () {
@@ -45,7 +53,7 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('products')->group(function () {
-            Route::get('/download/file', [CProductos::class, 'fn_get_downloads_productos']);
+            Route::get('/download/file/{id_usuario}', [CProductos::class, 'fn_get_downloads_productos']);
             Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar']);
         });
 

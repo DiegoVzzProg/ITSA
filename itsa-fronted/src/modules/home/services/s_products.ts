@@ -20,12 +20,12 @@ export const s_products = {
     return response;
   },
 
-  async downloadFile(): Promise<any> {
+  async downloadFile(id_usuario: string): Promise<any> {
     dgav.dataBase.message = "";
 
     const response: any = await dgav.apiRequest(
-      `${productosUrl}/download/file`,
-      dgav.httpMethod.DOWNLOAD
+      `${productosUrl}/download/file/${id_usuario}`,
+      dgav.httpMethod.GET
     );
 
     const message: string = dgav.dataBase.message;

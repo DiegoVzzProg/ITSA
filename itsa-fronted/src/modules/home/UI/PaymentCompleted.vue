@@ -1,21 +1,22 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { s_products } from '../services/s_products';
+import { site } from '../../../utils/site';
 
 const downloadProduct = async () => {
-    // const response: any = await c_productos.downloadFile();
+    const response: any = await s_products.downloadFile(btoa(site.userData().id_usuario));
+    
+    response.urls.forEach((element: any) => {
+        const url = element.url;
 
-    // console.log(response);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'basics_set_icons_itsastudio.zip';
+        document.body.appendChild(a);
+        a.click();
 
-
-    // const blob = await response.blob();
-    // const blobUrl = window.URL.createObjectURL(blob);
-    // const link = document.createElement('a');
-    // link.href = blobUrl;
-    // link.setAttribute('download', 'archivo_itsa_studio.zip');
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
-    // window.URL.revokeObjectURL(blobUrl); // Limpieza
+        document.body.removeChild(a);
+    });
 }
 
 onMounted(() => {

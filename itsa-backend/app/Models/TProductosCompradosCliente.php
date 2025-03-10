@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class TProductosCompradosCliente extends Model
 {
     use HasFactory;
+    public $timestamps = true;
 
     protected $table = 't_productos_comprados_cliente';
+
+    protected $primaryKey = 'id_producto_comprado';
 
     protected $fillable = [
         'id_cliente',
@@ -17,4 +20,14 @@ class TProductosCompradosCliente extends Model
         'pago_confirmado',
         'descargado'
     ];
+
+    protected $casts = [
+        'pago_confirmado' => 'boolean',
+        'descargado' => 'boolean'
+    ];
+
+    public function producto()
+    {
+        return $this->belongsTo(TProducto::class, 'id_producto', 'id_producto');
+    }
 }

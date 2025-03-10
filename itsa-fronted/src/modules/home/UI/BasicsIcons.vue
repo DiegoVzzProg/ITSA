@@ -129,7 +129,7 @@ const contenedor_gallery_basics = ref<HTMLElement | null>(null);
 
 onMounted(() => {
     headerComponent.value = document.getElementById("header") as HTMLElement;
-    $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
+    $v2("header").addStyle("background-color: transparent;");
     padre_contenedor_scroll.value = document.getElementById(
         "padre_contenedor_scroll"
     ) as HTMLElement;
@@ -154,7 +154,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
+    $v2("header").addStyle("background-color: white;");
     window.removeEventListener("scroll", handleScroll);
 })
 

@@ -28,6 +28,20 @@ class CProductos extends Controller
         }, $request);
     }
 
+    public function downloadPrivateFile($fileName)
+    {
+        if (Storage::disk('private')->exists($fileName)) {
+            $file = Storage::disk('private')->get($fileName);
+            $mimeType = Storage::disk('private')->mimeType($fileName);
+
+            return response($file, 200)
+                ->header('Content-Type', $mimeType)
+                ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
+        }
+
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
     // public static function fn_descargar_archivo($id_producto)
     // {
     //     $producto = TProducto::find($id_producto);
@@ -70,6 +84,8 @@ class CProductos extends Controller
                                 'id_producto' => $item->id_producto,
                                 'pago_confirmado' => true,
                                 'descargado' => false,
+                                'created_at' => now(),
+                                'updated_at' => now(),
                             ];
                         }
                     )->toArray();
@@ -86,34 +102,31 @@ class CProductos extends Controller
             ]);
         }, $request);
     }
-
-    public static function fn_get_downloads_productos($request)
+    public static function fn_get_downloads_productos($id_usuario)
     {
-        return CGeneral::invokeFunctionAPI(function () use ($request) {
-            $user = $request->user();
+        return CGeneral::invokeFunctionAPI(function () use ($id_usuario) {
 
-            $cliente = TClientes::where('id_usuario', $user->id_usuario)
+            $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
                 ->firstOrFail();
 
-            $compras = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
+            $compras = TProductosCompradosCliente::with('producto')
+                ->where('id_cliente', $cliente->id_cliente)
                 ->where('descargado', false)
                 ->get();
 
-            $producto = TProducto::whereIn('id_producto', $compras->pluck('id_producto'))->get();
-
             $descargas = collect();
+            $errores = collect();
 
-            DB::transaction(function () use ($producto, &$descargas) {
-                foreach ($producto as $compra) {
+            DB::transaction(function () use ($compras, &$descargas, &$errores) {
+                foreach ($compras as $compra) {
                     try {
-                        $rutaArchivo = $compra->carpeta_recursos . '/' . $compra->archivo;
-
+                        $rutaArchivo = $compra->producto->archivo;
                         if (!Storage::disk('private')->exists($rutaArchivo)) {
-                            throw new \Exception("File Not Found" . $compra->archivo);
+                            $errores->push("Archivo no encontrado: " . $rutaArchivo);
+                            continue;
                         }
 
-                        // Para storage local usar URL firmada
-                        $url = "prueba";
+                        $url = route('private.download', ['fileName' => $rutaArchivo]);
 
                         $descargas->push([
                             'url' => $url
@@ -129,6 +142,6 @@ class CProductos extends Controller
             return CGeneral::CreateMessage('', 200, [
                 'urls' => $descargas
             ]);
-        }, $request);
+        }, null);
     }
 }

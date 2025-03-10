@@ -3,16 +3,57 @@
         class="flex fixed bottom-[10px] hover:text-white transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(0,0,0)] hover:border-[rgb(0,0,0)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
+    <div class="bg-[rgba(116,171,253,0.66)] absolute w-full top-0 left-0 z-0">
+        <div class="min-h-screen"></div>
+        <div class="min-h-screen"></div>
+    </div>
     <div class="flex flex-col w-full">
         <div class="min-h-screen"></div>
         <div class="min-h-screen"></div>
+    </div>
+    <div  data-after-opacity="0"
+        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full after:content-[' '] after:absolute after:w-full after:h-full after:bg-[rgba(0,0,0)] after:transition-all after:duration-500 after:opacity-0 grow shrink-0 top-0 left-0 transition-all duration-500">
+        <div class="w-full h-screen flex justify-center items-center z-20">
+            <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
+                <p
+                    class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
+                    universal <br> icon pack
+                </p>
+                <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
+                    a sleek & minimalist collection solid <br> of minimalist style icons.
+                </p>
+            </div>
+        </div>
+        <div class="w-full h-screen flex justify-center items-center z-20">
+            <div id="children_elemento2_scroll" class="flex flex-col w-full justify-center items-center">
+                <p
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
+                    +500 elements
+                </p>
+                <p
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                    fully editable
+                </p>
+                <p
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                    personal & comercial use
+                </p>
+            </div>
+        </div>
+        <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 opacity-40 sticky-section"
+            id="contenedor_children_scroll">
+            <div
+                class="flex flex-row w-full justify-center max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
+                <File file="universalicon_cover.png" type="img" class="max-[680px]:hidden" />
+                <File file="universalicon_cover_1_icon.png" type="img" class="max-[680px]:block hidden" />
+            </div>
+        </div>
     </div>
     <!-- <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(116,171,253,0.66)] after:content-[' '] after:absolute after:w-full after:h-full after:bg-[rgba(0,0,0)] after:transition-all after:duration-500 after:opacity-0 grow shrink-0 top-0 left-0 transition-all duration-500"
         id="padre_contenedor_scroll">
         <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
             <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
-                <div id="children_elemento1_scroll"
-                    class="flex animate-fade-in flex-col w-full justify-center items-center">
+                <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
                     <p
                         class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
                         universal <br> icon pack
@@ -21,8 +62,7 @@
                         a sleek & minimalist collection solid <br> of minimalist style icons.
                     </p>
                 </div>
-                <div id="children_elemento2_scroll"
-                    class="flex animate-fade-in flex-col w-full justify-center items-center">
+                <div id="children_elemento2_scroll" class="hidden flex-col w-full justify-center items-center">
                     <p
                         class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
                         +500 elements
@@ -42,10 +82,8 @@
             id="contenedor_children_scroll">
             <div
                 class="flex opacity-50 flex-row w-full justify-center max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
-                <File folder="../../../assets/img/gallery/universalicons" file="universalicon_cover.png" type="img"
-                    :encrypted="false" class="max-[680px]:hidden" />
-                <File folder="../../../assets/img/gallery/universalicons" file="universalicon_cover_1_icon.png"
-                    type="img" :encrypted="false" class="max-[680px]:block hidden" />
+                <File file="universalicon_cover.png" type="img" class="max-[680px]:hidden" />
+                <File file="universalicon_cover_1_icon.png" type="img" class="max-[680px]:block hidden" />
             </div>
         </div>
     </div> -->
@@ -78,21 +116,18 @@
                     <p>aviable as:illustrator, svg & pdf</p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
-                    <File folder="../../../assets/img/gallery/basicsIcons" file="Ai.png" class="w-full max-w-[44px]"
-                        type="img" :encrypted="false">
+                    <File file="Ai.png" class="w-full max-w-[44px]" type="img">
                     </File>
-                    <File folder="../../../assets/img/gallery/basicsIcons" file="SVG.png" class="w-full max-w-[34px]"
-                        type="img" :encrypted="false">
+                    <File file="SVG.png" class="w-full max-w-[34px]" type="img">
                     </File>
-                    <File folder="../../../assets/img/gallery/basicsIcons" file="PDF.png" class="w-full max-w-[34px]"
-                        type="img" :encrypted="false">
+                    <File file="PDF.png" class="w-full max-w-[34px]" type="img">
                     </File>
                 </div>
             </div>
             <div class="flex flex-col h-full w-full items-center justify-center">
                 <div class="flex items-center justify-center rounded-[1em] w-full max-w-[532px] h-full max-h-[532px]">
-                    <File folder="../../../assets/img/gallery/universalicons" file="universalicon_03.png" type="img"
-                        :encrypted="false"></File>
+                    <File file="universalicon_03.png" type="img">
+                    </File>
                 </div>
             </div>
         </div>
@@ -103,8 +138,8 @@
                 social media, weather, store and much more.
             </p>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video1-universal icon.gif" folder="../../../assets/img/gallery/universalicons" type="img"
-                    :encrypted="false"></File>
+                <File file="video1-universal icon.gif" type="img">
+                </File>
             </div>
         </div>
         <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
@@ -119,8 +154,8 @@
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video2-universalicon.gif" folder="../../../assets/img/gallery/universalicons" type="img"
-                    :encrypted="false"></File>
+                <File file="video2-universalicon.gif" type="img">
+                </File>
             </div>
         </div>
         <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
@@ -135,8 +170,8 @@
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video3-universalicon.gif" folder="../../../assets/img/gallery/universalicons" type="img"
-                    :encrypted="false"></File>
+                <File file="video3-universalicon.gif" type="img">
+                </File>
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
@@ -156,52 +191,44 @@ import CardProduct from "../components/CardProduct.vue";
 import { site } from "../../../utils/site";
 import { s_products } from "../services/s_products";
 import { $v2 } from "../../../utils/JQueryV2";
-
-const headerComponent = ref<HTMLElement | null>(null);
-const padre_contenedor_scroll = ref<HTMLElement | null>(null);
-const contenedor_scroll = ref<HTMLElement | null>(null);
-const contenedor_children_scroll = ref<HTMLElement | null>(null);
-const children_elemento1_scroll = ref<HTMLElement | null>(null);
-const children_elemento2_scroll = ref<HTMLElement | null>(null);
-const contenedor_gallery_basics = ref<HTMLElement | null>(null);
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 const products: any = ref<any>(null);
 
 onMounted(async () => {
-    headerComponent.value = document.getElementById("header") as HTMLElement;
+    gsap.registerPlugin(ScrollTrigger);
+
+    ScrollTrigger.create({
+        trigger: ".sticky-section",
+        start: "center center",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: false,
+        markers: false
+    });
+
     $v2("header").addStyle("background-color: transparent;");
-
-    padre_contenedor_scroll.value = document.getElementById(
-        "padre_contenedor_scroll"
-    ) as HTMLElement;
-    contenedor_scroll.value = document.getElementById(
-        "contenedor_scroll"
-    ) as HTMLElement;
-    contenedor_children_scroll.value = document.getElementById(
-        "contenedor_children_scroll"
-    ) as HTMLElement;
-    children_elemento1_scroll.value = document.getElementById(
-        "children_elemento1_scroll"
-    ) as HTMLElement;
-    children_elemento2_scroll.value = document.getElementById(
-        "children_elemento2_scroll"
-    ) as HTMLElement;
-    contenedor_gallery_basics.value = document.getElementById(
-        "contenedor_gallery_basics"
-    ) as HTMLElement;
-
-    window.addEventListener("scroll", handleScroll);
 
     products.value = await s_products.listProducts({
         id_producto: 2,
     });
+
+    //window.addEventListener("scroll", HandleScroll);
 });
 
 onUnmounted(() => {
     $v2("header").addStyle("background-color: white;");
-    window.removeEventListener("scroll", handleScroll);
+    //window.removeEventListener("scroll", HandleScroll);
 });
 
-function handleScroll() {
+function HandleScroll() {
+
+    // const rect: any = contenedor_scroll.value?.getBoundingClientRect();
+    // const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    // const topAbsoluto = rect.top + scrollTop;
+
+    // console.log(topAbsoluto);
+
     // if (
     //     contenedor_scroll.value &&
     //     contenedor_children_scroll.value &&
