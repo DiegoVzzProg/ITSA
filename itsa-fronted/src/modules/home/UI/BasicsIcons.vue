@@ -3,11 +3,51 @@
         class="flex fixed bottom-[10px] transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
-    <div class="min-h-screen grow shrink-0 flex flex-col">
+    <div id="overflow"
+        class="after:content-[' '] after:bg-black after:opacity-0 after:z-10 after:absolute after:w-full after:h-full after:top-0 after:left-0 after:transition-all after:duration-500 bg-[rgba(183,164,237,0.45)] transition-all duration-500 absolute w-full top-0 left-0 z-0">
         <div class="min-h-screen"></div>
         <div class="min-h-screen"></div>
     </div>
-    <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(183,164,237,0.45)] grow shrink-0 top-0 left-0 transition-all duration-500"
+    <div class="flex flex-col w-full">
+        <div class="min-h-screen"></div>
+        <div class="min-h-screen"></div>
+    </div>
+    <div
+        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full grow shrink-0 top-0 left-0 transition-all duration-500">
+        <div class="w-full h-screen flex justify-center items-center z-20">
+            <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
+                <p
+                    class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
+                    basics icon set
+                </p>
+                <p class="text-[clamp(1em,3vw,2em)] text-center text-white times-new-roman-font">
+                    a sleek & minimalist collection <br> of geometric-style icons.
+                </p>
+            </div>
+        </div>
+        <div class="w-full h-screen flex justify-center items-center z-20">
+            <div id="children_elemento2_scroll" class="flex flex-col w-full justify-center items-center">
+                <p
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
+                    +50 elements
+                </p>
+                <p
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                    personal & comercial use
+                </p>
+            </div>
+        </div>
+        <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 sticky-section">
+            <div class="flex flex-row w-full justify-center max-[1090px]:justify-center items-center">
+                <div class="flex flex-row justify-between w-full max-w-screen-xl items-center">
+                    <File file="icon1 color 3.png" class="w-full max-w-[250px] imagen-icon-1" type="img" />
+                    <File file="icon2 color 3.png" class="w-full max-w-[500px] imagen-icon-1" type="img" />
+                    <File file="icon3 color 3.png" class="w-full max-w-[220px] imagen-icon-1" type="img" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(183,164,237,0.45)] grow shrink-0 top-0 left-0 transition-all duration-500"
         id="padre_contenedor_scroll">
         <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
             <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
@@ -45,7 +85,7 @@
                     class="w-full flex max-w-[clamp(130px,18vw,215px)] max-[1090px]:hidden"></File>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]"
         id="contenedor_gallery_basics">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
@@ -94,14 +134,9 @@
                 a large library of basic elements including <br>
                 social media, weather, store and much more.
             </p>
-            <div class="w-[90%] flex items-center h-screen wrapper max-h-[200px] max-w-[1536px] relative overflow-hidden"
-                style="margin-inline: auto; content-visibility: auto;">
-                <div v-for="i in 57" :key="i"
-                    class="flex p-[40px] app-item-scroll-infinite-basic-icons absolute rounded bg-[rgb(213,169,239)] left-[max(calc(200px*8),100%)]"
-                    :style="{ animationDelay: `calc(7s / 8 * (8 - ${i}) * -1)` }">
-                    <File :file="`basic set-${i}.png`" folder="../../../assets/img/gallery/basicsIcons/icons" type="img"
-                        :encrypted="false" class="w-full h-full max-w-[60px] min-w-[60px] max-h-[60px]"></File>
-                </div>
+            <div
+                class="flex items-center justify-center h-screen max-h-[530px] max-w-[1536px] relative overflow-hidden">
+                <File file="video2-basicicon.gif" type="img" class="translate-x-[10px]" />
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
@@ -118,105 +153,68 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import File from '../components/File.vue';
 import CardProduct from '../components/CardProduct.vue';
 import { $v2 } from '../../../utils/JQueryV2';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 const headerComponent = ref<HTMLElement | null>(null);
-const padre_contenedor_scroll = ref<HTMLElement | null>(null);
-const contenedor_scroll = ref<HTMLElement | null>(null);
-const contenedor_children_scroll = ref<HTMLElement | null>(null);
-const children_elemento1_scroll = ref<HTMLElement | null>(null);
-const children_elemento2_scroll = ref<HTMLElement | null>(null);
-const contenedor_gallery_basics = ref<HTMLElement | null>(null);
 
 onMounted(() => {
     headerComponent.value = document.getElementById("header") as HTMLElement;
     $v2("header").addStyle("background-color: transparent;");
-    padre_contenedor_scroll.value = document.getElementById(
-        "padre_contenedor_scroll"
-    ) as HTMLElement;
-    contenedor_scroll.value = document.getElementById(
-        "contenedor_scroll"
-    ) as HTMLElement;
-    contenedor_children_scroll.value = document.getElementById(
-        "contenedor_children_scroll"
-    ) as HTMLElement;
-    children_elemento1_scroll.value = document.getElementById(
-        "children_elemento1_scroll"
-    ) as HTMLElement;
-    children_elemento2_scroll.value = document.getElementById(
-        "children_elemento2_scroll"
-    ) as HTMLElement;
-    contenedor_gallery_basics.value = document.getElementById(
-        "contenedor_gallery_basics"
-    ) as HTMLElement;
 
-    window.addEventListener("scroll", handleScroll);
+    gsap.registerPlugin(ScrollTrigger);
 
+    ScrollTrigger.create({
+        trigger: ".sticky-section",
+        start: "center center",
+        end: "bottom top",
+        pin: true,
+        pinSpacing: false,
+        snap: {
+            snapTo: 1,
+            delay: 0,
+            duration: 1
+        }
+    });
+
+    ScrollTrigger.create({
+        trigger: ".scroll-section",
+        start: "center center",
+        end: "bottom top",
+        pinSpacing: false,
+        onToggle: (self) => {
+            const overflow: any = document.querySelector("#overflow");
+            if (self.isActive) {
+                $v2(overflow).replaceClass("after:opacity-0", "after:opacity-30");
+            } else {
+                $v2(overflow).replaceClass("after:opacity-30", "after:opacity-0");
+            }
+        }
+    });
+
+
+    ScrollTrigger.create({
+        trigger: ".scroll-section",
+        start: "top center",
+        end: "bottom top",
+        pinSpacing: false,
+        onToggle: (self) => {
+            const header: any = document.querySelector("#header");
+            if (self.isActive) {
+                $v2(header).addStyle("background-color: transparent;");
+            } else {
+                $v2(header).addStyle("background-color: white;");
+            }
+        }
+    });
 })
 
 onUnmounted(() => {
+    const triggers = ScrollTrigger.getAll();
+    triggers.forEach(trigger => trigger.kill());
     $v2("header").addStyle("background-color: white;");
-    window.removeEventListener("scroll", handleScroll);
 })
 
-function handleScroll() {
-    if (
-        contenedor_scroll.value &&
-        contenedor_children_scroll.value &&
-        padre_contenedor_scroll.value &&
-        contenedor_gallery_basics.value
-    ) {
-        const rect = contenedor_scroll.value.getBoundingClientRect();
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const topAbsoluto = rect.top + scrollTop;
-
-        const vpadre_contenedor_scroll: any = padre_contenedor_scroll.value;
-        const IsMiddle =
-            vpadre_contenedor_scroll.getBoundingClientRect().height / 2 <=
-            topAbsoluto;
-        const vchildren_elemento1_scroll: any = children_elemento1_scroll.value;
-        const vchildren_elemento2_scroll: any = children_elemento2_scroll.value;
-
-        if (IsMiddle) {
-            $v2(vchildren_elemento1_scroll).replaceClass("flex", "hidden");
-            $v2(vchildren_elemento2_scroll).replaceClass("hidden", "flex");
-            $v2(vpadre_contenedor_scroll).replaceClass("bg-[rgba(183,164,237,0.45)]", "bg-[rgba(25,18,44,0.7)]");
-        } else {
-            $v2(vchildren_elemento1_scroll).replaceClass("hidden", "flex");
-            $v2(vchildren_elemento2_scroll).replaceClass("flex", "hidden");
-            $v2(vpadre_contenedor_scroll).replaceClass("bg-[rgba(25,18,44,0.7)]", "bg-[rgba(183,164,237,0.45)]");
-        }
-
-        const headerRect = headerComponent.value?.getBoundingClientRect();
-        const galleryRect =
-            contenedor_gallery_basics.value?.getBoundingClientRect();
-
-        if (headerRect && galleryRect) {
-            const headerBottom = headerRect.bottom;
-            const galleryTop = galleryRect.top;
-            const distance = galleryTop - headerBottom;
-
-            if (distance <= 0) {
-                $v2(headerComponent.value!).replaceClass("bg-transparent", "bg-white");
-            } else {
-                $v2(headerComponent.value!).replaceClass("bg-white", "bg-transparent");
-            }
-        }
-
-        const card_section: HTMLElement = document.getElementById(
-            "card_section"
-        ) as HTMLElement;
-
-        const a_card_section: HTMLElement = document.getElementById(
-            "a_card_section"
-        ) as HTMLElement;
-
-        if (card_section.getBoundingClientRect().top <= 0) {
-            $v2(a_card_section).addClass("hidden");
-        } else {
-            $v2(a_card_section).removeClass("hidden");
-        }
-    }
-}
 </script>
 
 

@@ -3,7 +3,8 @@
         class="flex fixed bottom-[10px] hover:text-white transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(0,0,0)] hover:border-[rgb(0,0,0)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
-    <div class="bg-[rgba(116,171,253,0.66)] absolute w-full top-0 left-0 z-0">
+    <div id="overflow"
+        class="after:content-[' '] after:bg-black after:opacity-0 after:z-10 after:absolute after:w-full after:h-full after:top-0 after:left-0 after:transition-all after:duration-500 bg-[rgba(116,179,253,0.66)] abtransition-all duration-500 absolute w-full top-0 left-0 z-0">
         <div class="min-h-screen"></div>
         <div class="min-h-screen"></div>
     </div>
@@ -11,82 +12,48 @@
         <div class="min-h-screen"></div>
         <div class="min-h-screen"></div>
     </div>
-    <div  data-after-opacity="0"
-        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full after:content-[' '] after:absolute after:w-full after:h-full after:bg-[rgba(0,0,0)] after:transition-all after:duration-500 after:opacity-0 grow shrink-0 top-0 left-0 transition-all duration-500">
+    <div
+        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full grow shrink-0 top-0 left-0 transition-all duration-500">
         <div class="w-full h-screen flex justify-center items-center z-20">
             <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
                 <p
                     class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
                     universal <br> icon pack
                 </p>
-                <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
-                    a sleek & minimalist collection solid <br> of minimalist style icons.
+                <p class="text-[clamp(1em,3vw,2em)] text-center text-white times-new-roman-font">
+                    a essential collection solid <br /> & minimalist style icons
                 </p>
             </div>
         </div>
         <div class="w-full h-screen flex justify-center items-center z-20">
             <div id="children_elemento2_scroll" class="flex flex-col w-full justify-center items-center">
                 <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] font-bold flex text-white z-10">
                     +500 elements
                 </p>
                 <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] text-center font-bold flex text-white z-10">
                     fully editable
                 </p>
                 <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
+                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] text-center font-bold flex text-white z-10">
                     personal & comercial use
                 </p>
             </div>
         </div>
-        <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 opacity-40 sticky-section"
-            id="contenedor_children_scroll">
-            <div
-                class="flex flex-row w-full justify-center max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
-                <File file="universalicon_cover.png" type="img" class="max-[680px]:hidden" />
-                <File file="universalicon_cover_1_icon.png" type="img" class="max-[680px]:block hidden" />
+        <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 sticky-section">
+            <div class="flex flex-row w-full justify-center  items-center">
+                <div
+                    class="flex flex-row justify-between px-[min(10px,50%)] w-full md:max-w-screen-xl max-[1090px]:justify-center items-center">
+                    <File file="icon 1 color 2.png" class="w-full max-w-[300px] imagen-icon-1 max-[1090px]:hidden"
+                        type="img" />
+                    <File file="icon 2 color 2.png" class="w-full max-w-[500px] imagen-icon-1" type="img" />
+                    <File file="icon 3 color 2.png" class="w-full max-w-[250px] imagen-icon-1 max-[1090px]:hidden"
+                        type="img" />
+                </div>
             </div>
         </div>
     </div>
-    <!-- <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(116,171,253,0.66)] after:content-[' '] after:absolute after:w-full after:h-full after:bg-[rgba(0,0,0)] after:transition-all after:duration-500 after:opacity-0 grow shrink-0 top-0 left-0 transition-all duration-500"
-        id="padre_contenedor_scroll">
-        <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
-            <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
-                <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
-                    <p
-                        class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
-                        universal <br> icon pack
-                    </p>
-                    <p class="text-[clamp(1em,3vw,2em)] text-center text-white">
-                        a sleek & minimalist collection solid <br> of minimalist style icons.
-                    </p>
-                </div>
-                <div id="children_elemento2_scroll" class="hidden flex-col w-full justify-center items-center">
-                    <p
-                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
-                        +500 elements
-                    </p>
-                    <p
-                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
-                        fully editable
-                    </p>
-                    <p
-                        class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
-                        personal & comercial use
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="w-full flex min-h-screen justify-center items-center sticky bottom-0 z-0 opacity-40"
-            id="contenedor_children_scroll">
-            <div
-                class="flex opacity-50 flex-row w-full justify-center max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
-                <File file="universalicon_cover.png" type="img" class="max-[680px]:hidden" />
-                <File file="universalicon_cover_1_icon.png" type="img" class="max-[680px]:block hidden" />
-            </div>
-        </div>
-    </div> -->
     <div id="contenedor_gallery_basics"
         class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
@@ -204,7 +171,42 @@ onMounted(async () => {
         end: "bottom top",
         pin: true,
         pinSpacing: false,
-        markers: false
+        snap: {
+            snapTo: 1,
+            delay: 0,
+            duration: 1
+        }
+    });
+
+    ScrollTrigger.create({
+        trigger: ".scroll-section",
+        start: "center center",
+        end: "bottom top",
+        pinSpacing: false,
+        onToggle: (self) => {
+            const overflow: any = document.querySelector("#overflow");
+            if (self.isActive) {
+                $v2(overflow).replaceClass("after:opacity-0", "after:opacity-30");
+            } else {
+                $v2(overflow).replaceClass("after:opacity-30", "after:opacity-0");
+            }
+        }
+    });
+
+
+    ScrollTrigger.create({
+        trigger: ".scroll-section",
+        start: "top center",
+        end: "bottom top",
+        pinSpacing: false,
+        onToggle: (self) => {
+            const header: any = document.querySelector("#header");
+            if (self.isActive) {
+                $v2(header).addStyle("background-color: transparent;");
+            } else {
+                $v2(header).addStyle("background-color: white;");
+            }
+        }
     });
 
     $v2("header").addStyle("background-color: transparent;");
@@ -212,75 +214,14 @@ onMounted(async () => {
     products.value = await s_products.listProducts({
         id_producto: 2,
     });
-
-    //window.addEventListener("scroll", HandleScroll);
 });
 
 onUnmounted(() => {
+    const triggers = ScrollTrigger.getAll();
+    triggers.forEach(trigger => trigger.kill());
     $v2("header").addStyle("background-color: white;");
-    //window.removeEventListener("scroll", HandleScroll);
 });
 
-function HandleScroll() {
-
-    // const rect: any = contenedor_scroll.value?.getBoundingClientRect();
-    // const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    // const topAbsoluto = rect.top + scrollTop;
-
-    // console.log(topAbsoluto);
-
-    // if (
-    //     contenedor_scroll.value &&
-    //     contenedor_children_scroll.value &&
-    //     padre_contenedor_scroll.value &&
-    //     contenedor_gallery_basics.value
-    // ) {
-    //     const rect = contenedor_scroll.value.getBoundingClientRect();
-    //     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    //     const topAbsoluto = rect.top + scrollTop;
-    //     const vpadre_contenedor_scroll: any = padre_contenedor_scroll.value;
-    //     const IsMiddle =
-    //         vpadre_contenedor_scroll.getBoundingClientRect().height / 2 <=
-    //         topAbsoluto;
-    //     const vchildren_elemento1_scroll: any = children_elemento1_scroll.value;
-    //     const vchildren_elemento2_scroll: any = children_elemento2_scroll.value;
-    //     if (IsMiddle) {
-    //         // $v2(vchildren_elemento1_scroll).replaceClass("flex", "hidden");
-    //         // $v2(vchildren_elemento2_scroll).replaceClass("hidden", "flex");
-    //         $v2(vpadre_contenedor_scroll).replaceClass("after:opacity-0", "after:opacity-30");
-    //     } else {
-    //         // $v2(vchildren_elemento1_scroll).replaceClass("hidden", "flex");
-    //         // $v2(vchildren_elemento2_scroll).replaceClass("flex", "hidden");
-    //         $v2(vpadre_contenedor_scroll).replaceClass("after:opacity-30", "after:opacity-0");
-    //     }
-    //     const headerRect = headerComponent.value?.getBoundingClientRect();
-    //     const galleryRect =
-    //         contenedor_gallery_basics.value?.getBoundingClientRect();
-    //     if (headerRect && galleryRect) {
-    //         const headerBottom = headerRect.bottom;
-    //         const galleryTop = galleryRect.top;
-    //         const distance = galleryTop - headerBottom;
-    //         if (distance <= 0) {
-    //             $v2("header").addStyle("background-color: white;");
-    //         } else {
-    //             $v2("header").addStyle("background-color: transparent;");
-    //         }
-    //     }
-    //     const card_section: HTMLElement = document.getElementById(
-    //         "card_section"
-    //     ) as HTMLElement;
-    //     const a_card_section: HTMLElement = document.getElementById(
-    //         "a_card_section"
-    //     ) as HTMLElement;
-    //     if (card_section && a_card_section) {
-    //         if (card_section.getBoundingClientRect().top <= 0) {
-    //             $v2(a_card_section).addClass("hidden");
-    //         } else {
-    //             $v2(a_card_section).removeClass("hidden");
-    //         }
-    //     }
-    // }
-}
 </script>
 
 <style scoped></style>
