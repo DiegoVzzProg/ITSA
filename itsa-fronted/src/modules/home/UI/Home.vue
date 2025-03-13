@@ -66,6 +66,7 @@ import { site } from "../../../utils/site";
 import File from "../components/File.vue";
 import Loading from "../../components/Loading.vue";
 import { s_products } from "../services/s_products";
+import { numberCartShopping } from "../stores/CustomerStore";
 
 const productos = ref<any>([]);
 const section1 = ref<HTMLElement | null>(null);
@@ -97,6 +98,7 @@ const texts = ref<any>([
 ]);
 
 onMounted(async () => {
+  numberCartShopping().init();
   await Productos();
 
   let sessionExpire: boolean =

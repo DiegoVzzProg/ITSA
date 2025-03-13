@@ -11,10 +11,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-    Route::get('prueba', function () {
-        return config('services.stripe.webhook_secret');
-    });
-
     Route::post('products/stripe/checkout/success', [CStripe::class, 'fn_stripe_success'])
         ->withoutMiddleware([VerifyCsrfToken::class]);;
 

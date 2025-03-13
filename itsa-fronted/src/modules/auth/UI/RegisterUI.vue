@@ -296,17 +296,17 @@ function ValidateRegistrationForm(item: any) {
 }
 
 function ValidatePassword(value: string) {
-    if (value.length < 8) {
-        FormRegister.User.password.error =
-            "Password must be at least 8 characters long";
-    } else if (value.length > FormRegister.User.password.maxLength) {
-        FormRegister.User.password.error =
-            "Password must not exceed " +
-            FormRegister.User.password.maxLength +
-            " characters";
-    } else {
-        FormRegister.User.password.error = "";
+    const password = FormRegister.User.password;
+    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(value)) {
+        password.error = `8 or more characters, At least one uppercase letter, At least one number, At least one special character`;
+        return;
     }
+    if (value.length > 20) {
+        password.error = "Password should not exceed 20 characters";
+        return;
+    }
+
+    password.error = "";
 }
 
 function ValidatePasswordConfirm(value: string) {

@@ -1,6 +1,6 @@
 <template>
     <a href="#card_section" id="a_card_section"
-        class="flex fixed bottom-[10px] transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(244,242,239)] hover:border-[rgb(244,242,239)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
+        class="flex fixed bottom-[10px] hover:text-white transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(0,0,0)] hover:border-[rgb(0,0,0)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
     <div id="overflow"
@@ -47,45 +47,6 @@
             </div>
         </div>
     </div>
-    <!-- <div class="flex flex-col min-h-screen absolute w-full bg-[rgba(183,164,237,0.45)] grow shrink-0 top-0 left-0 transition-all duration-500"
-        id="padre_contenedor_scroll">
-        <div class="w-full min-h-screen flex justify-center items-center sticky top-0 z-20">
-            <div id="contenedor_scroll" class="flex flex-col w-full justify-start items-center">
-                <div id="children_elemento1_scroll"
-                    class="flex animate-fade-in flex-col w-full justify-center items-center">
-                    <p
-                        class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[78px] flex text-black z-10 select-none">
-                        basics icon set
-                    </p>
-                    <p class="text-[clamp(1em,3vw,4em)] text-center text-black select-none">
-                        a sleek & minimalist collection <br> of geometric-style icons.
-                    </p>
-                </div>
-                <div id="children_elemento2_scroll"
-                    class="hidden animate-fade-in flex-col w-full justify-center items-center">
-                    <p
-                        class="font-itsa-bold text-[clamp(35px,10vw,208px)] leading-[78px] font-bold flex text-white z-10 select-none">
-                        +50 elements
-                    </p>
-                    <p
-                        class="font-itsa-bold text-[clamp(20px,7vw,108px)] max-[480px]:translate-y-[-20px] text-center font-bold flex text-white z-10 select-none">
-                        personal & comercial use
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="w-full flex min-h-screen justify-center items-center sticky bottom-0 z-0 opacity-40"
-            id="contenedor_children_scroll">
-            <div
-                class="flex opacity-50 flex-row w-full justify-between max-[1090px]:justify-center items-center gap-[clamp(8px,1.5vw,16px)]">
-                <File file="icon_morado_1.png" type="img"
-                    class="flex w-full max-w-[clamp(130px,18vw,280px)] max-[1090px]:hidden"></File>
-                <File file="icon_morado_2.png" type="img" class="w-full flex max-w-[560px]"></File>
-                <File file="icon_morado_3.png" type="img"
-                    class="w-full flex max-w-[clamp(130px,18vw,215px)] max-[1090px]:hidden"></File>
-            </div>
-        </div>
-    </div> -->
     <div class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]"
         id="contenedor_gallery_basics">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
@@ -185,8 +146,13 @@ onMounted(() => {
         onToggle: (self) => {
             const overflow: any = document.querySelector("#overflow");
             if (self.isActive) {
+                $v2("header").find("#headerSection").replaceClass("border-black", "border-white");
+                $v2("header").find("#logoBlack").replaceClass("block", "hidden");
+                $v2("header").find("#logoWhite").replaceClass("hidden", "block");
+                $v2("header").addStyle("color: white;");
                 $v2(overflow).replaceClass("after:opacity-0", "after:opacity-30");
             } else {
+                headerDefault();
                 $v2(overflow).replaceClass("after:opacity-30", "after:opacity-0");
             }
         }
@@ -215,6 +181,13 @@ onUnmounted(() => {
     $v2("header").addStyle("background-color: white;");
 })
 
+const headerDefault = (): void => {
+
+    $v2("header").find("#headerSection").replaceClass("border-white", "border-black");
+    $v2("header").find("#logoBlack").replaceClass("hidden", "block");
+    $v2("header").find("#logoWhite").replaceClass("block", "hidden");
+    $v2("header").addStyle("color: black;");
+}
 </script>
 
 

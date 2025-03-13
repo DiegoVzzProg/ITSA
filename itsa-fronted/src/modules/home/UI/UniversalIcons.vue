@@ -55,7 +55,7 @@
         </div>
     </div>
     <div id="contenedor_gallery_basics"
-        class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)]">
+        class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)] contenedor_gallery_basics">
         <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">universal icon</p>
             <p
@@ -68,7 +68,7 @@
                 <File file="universalicon_02.png" type="img"></File>
             </div>
         </div>
-        <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0">
+        <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0 items-center max-[680px]:justify-center">
             <div
                 class="flex flex-col h-full w-full items-start max-[680px]:justify-start max-[680px]:items-center max-[680px]:text-center justify-center">
                 <p class="font-itsa-bold text-[clamp(40px,8vw,108px)] leading-[100px]">
@@ -163,6 +163,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 const products: any = ref<any>(null);
 
 onMounted(async () => {
+    $v2("header").addStyle("background-color: transparent;");
+
     gsap.registerPlugin(ScrollTrigger);
 
     ScrollTrigger.create({
@@ -174,7 +176,7 @@ onMounted(async () => {
         snap: {
             snapTo: 1,
             delay: 0,
-            duration: 1
+            duration: .5
         }
     });
 
@@ -185,9 +187,15 @@ onMounted(async () => {
         pinSpacing: false,
         onToggle: (self) => {
             const overflow: any = document.querySelector("#overflow");
+
             if (self.isActive) {
+                $v2("header").find("#headerSection").replaceClass("border-black", "border-white");
+                $v2("header").find("#logoBlack").replaceClass("block", "hidden");
+                $v2("header").find("#logoWhite").replaceClass("hidden", "block");
+                $v2("header").addStyle("color: white;");
                 $v2(overflow).replaceClass("after:opacity-0", "after:opacity-30");
             } else {
+                headerDefault();
                 $v2(overflow).replaceClass("after:opacity-30", "after:opacity-0");
             }
         }
@@ -209,8 +217,6 @@ onMounted(async () => {
         }
     });
 
-    $v2("header").addStyle("background-color: transparent;");
-
     products.value = await s_products.listProducts({
         id_producto: 2,
     });
@@ -222,6 +228,14 @@ onUnmounted(() => {
     $v2("header").addStyle("background-color: white;");
 });
 
+
+const headerDefault = (): void => {
+
+    $v2("header").find("#headerSection").replaceClass("border-white", "border-black");
+    $v2("header").find("#logoBlack").replaceClass("hidden", "block");
+    $v2("header").find("#logoWhite").replaceClass("block", "hidden");
+    $v2("header").addStyle("color: black;");
+}
 </script>
 
 <style scoped></style>

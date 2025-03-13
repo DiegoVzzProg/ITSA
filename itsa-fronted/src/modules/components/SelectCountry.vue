@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
-import { GeneralStores } from '../stores/GeneralStores';
 import { s_general } from '../services/s_general';
 
 interface Country {

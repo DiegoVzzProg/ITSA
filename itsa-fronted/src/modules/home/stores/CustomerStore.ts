@@ -9,6 +9,11 @@ export const numberCartShopping = defineStore("numberCartShopping", {
   }),
   persist: true,
   actions: {
+    init() {
+      if (!site.userData() || site.userData() == undefined) {
+        this.default();
+      }
+    },
     async update() {
       this.loading = true;
 

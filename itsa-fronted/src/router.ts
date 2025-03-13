@@ -66,36 +66,36 @@ const router = createRouter({
   routes,
 });
 
-// router.beforeEach((to, _from, next) => {
-//   const redirectToHome = {
-//     name: "home",
-//   };
+router.beforeEach((to, _from, next) => {
+  const redirectToHome = {
+    name: "home",
+  };
 
-//   if (
-//     String(to.meta.layout).toLowerCase() === "auth" ||
-//     String(to.name).toLowerCase() === "home"
-//   ) {
-//     return next();
-//   }
+  if (
+    String(to.meta.layout).toLowerCase() === "auth" ||
+    String(to.name).toLowerCase() === "home"
+  ) {
+    return next();
+  }
 
-//   if (!site.IsNullOrEmpty(to.query.key)) {
-//     if (GeneralStores().data.guid !== to.query.key) {
-//       return next(redirectToHome);
-//     }
+  if (!site.IsNullOrEmpty(to.query.key)) {
+    if (GeneralStores().data.guid !== to.query.key) {
+      return next(redirectToHome);
+    }
 
-//     const token: string = site.getCookie("e.t", false) ?? null;
-//     if (
-//       !site.IsNullOrEmpty(token) &&
-//       (String(to.name).toLowerCase() == "paymentcompleted" ||
-//         String(to.name).toLowerCase() == "checkout")
-//     ) {
-//       numberCartShopping().update();
-//     }
-//   } else {
-//     return next(redirectToHome);
-//   }
+    const token: string = site.getCookie("e.t", false) ?? null;
+    if (
+      !site.IsNullOrEmpty(token) &&
+      (String(to.name).toLowerCase() == "paymentcompleted" ||
+        String(to.name).toLowerCase() == "checkout")
+    ) {
+      numberCartShopping().update();
+    }
+  } else {
+    return next(redirectToHome);
+  }
 
-//   next();
-// });
+  next();
+});
 
 export default router;

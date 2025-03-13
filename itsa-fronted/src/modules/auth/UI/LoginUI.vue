@@ -131,13 +131,18 @@ function ValidateEmail(value: string): void {
 
 function ValidatePassword(value: string): void {
     const password = FormLogin.User.password;
+
     if (value.length < 8) {
         password.error = "Password must be at least 8 characters long";
-    } else if (value.length > 20) {
-        password.error = "Password should not exceed 20 characters";
-    } else {
-        password.error = "";
+        return;
     }
+
+    if (value.length > 20) {
+        password.error = "Password should not exceed 20 characters";
+        return;
+    }
+    password.error = "";
+
 }
 
 async function btnLogin_OnClick(): Promise<void> {

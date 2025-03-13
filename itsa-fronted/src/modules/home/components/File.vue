@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onBeforeMount, onMounted, ref } from 'vue';
-import Loading from '../../components/Loading.vue';
 import { site } from '../../../utils/site';
 const props = defineProps<{
     file: string;

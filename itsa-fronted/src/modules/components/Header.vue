@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import logo from '../../assets/svg/logo.svg'
+import logoWhite from '../../assets/svg/logo_white.svg'
 import { useRoute } from 'vue-router';
 import { site } from '../../utils/site';
 import { numberCartShopping } from '../home/stores/CustomerStore';
@@ -45,9 +46,10 @@ onMounted(() => {
     <header id="header" ref="headerComponent"
         class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center sticky top-0 left-0 bg-white z-[9999]">
         <div class="flex flex-row items-center justify-between w-full h-full border-b border-black gap-5"
-            id="header_div">
+            id="headerSection">
             <button @click="site.RedirectPage('home')" class="flex w-full h-full items-center max-w-[165px]">
-                <img :src="logo" alt="" srcset="" class="select-none">
+                <img id="logoBlack" :src="logo" alt="" srcset="" class="select-none block">
+                <img id="logoWhite" :src="logoWhite" alt="" srcset="" class="select-none hidden">
             </button>
             <nav class="flex flex-row justify-between h-full gap-3 w-[min(300px,100%)]">
                 <button @click="site.RedirectPage('login')"

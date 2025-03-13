@@ -38,6 +38,16 @@ class JQueryV2 {
     });
     return this;
   }
+
+  find(selector: string): JQueryV2 {
+    const foundElements: Element[] = [];
+    this.elements.forEach((element) => {
+      // querySelectorAll busca dentro de cada elemento del conjunto actual
+      const children = element.querySelectorAll(selector);
+      foundElements.push(...Array.from(children));
+    });
+    return new JQueryV2(foundElements);
+  }
 }
 
 export function $v2(selector: string | HTMLElement): JQueryV2 {
