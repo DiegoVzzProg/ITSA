@@ -5,7 +5,7 @@ import { Notyf } from "notyf";
 import "notyf/notyf.min.css";
 import CryptoJS from "crypto-js";
 import { RouteLocationRaw, RouteRecordName } from "vue-router";
-import { GeneralStores } from "../modules/stores/GeneralStores";
+import stores from "../modules/stores/GeneralStores";
 
 //#region  dgavClass
 
@@ -192,6 +192,29 @@ export class site {
     });
   }
 
+  public static LocalStorage(type: "set", values: Record<string, any>): void;
+
+  public static LocalStorage(
+    type: "get",
+    keys: string[]
+  ): Record<string, string | null>;
+
+  public static LocalStorage(
+    type: "get" | "set",
+    data: Record<string, any> | string[]
+  ): Record<string, string | null> | void {
+    if (type === "set") {
+      Object.entries(data as Record<string, any>).forEach(([key, value]) => {
+        localStorage.setItem(key, String(value));
+      });
+    } else {
+      return (data as string[]).reduce((result, key) => {
+        result[key] = localStorage.getItem(key);
+        return result;
+      }, {} as Record<string, string | null>);
+    }
+  }
+
   public static getCookie(key: string, encrypted: boolean = true) {
     const encryptionKey = Cookies.get("e.k") || "";
 
@@ -213,7 +236,7 @@ export class site {
     parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
-    GeneralStores().updateGuid();
+    stores.guid().updateGuid();
 
     const dataRoute: RouteLocationRaw = {
       name: routeName,
@@ -227,7 +250,7 @@ export class site {
 
     // Añadir query.key solo si el layout es Main y no es la ruta home
     if (layout === "main" && routeName?.toString().toLowerCase() !== "home") {
-      dataRoute.query = { key: GeneralStores().data.guid };
+      dataRoute.query = { key: stores.guid().value };
     }
 
     router
@@ -259,8 +282,6 @@ export class site {
     return value == null || value == undefined || value == "";
   };
 }
-
-export const isNotified = Cookies.get("logged_in_successfully");
 
 export const notify = new Notyf({
   duration: 5000,

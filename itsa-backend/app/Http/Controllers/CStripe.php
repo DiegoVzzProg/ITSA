@@ -9,6 +9,7 @@ use App\Models\TProducto;
 use App\Models\TProductosCompradosCliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Pusher\Pusher;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -109,15 +110,14 @@ class CStripe extends Controller
                 }
 
                 $carrito = TCarritoCliente::where('id_usuario', $userId)
-                    ->where('borrado', false)
-                    ->select('id_producto')
-                    ->get();
+                    ->where('borrado', false);
 
                 $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
 
                 if ($carrito->isNotEmpty()) {
 
-                    $datosCompra = $carrito
+                    $datosCompra = $carrito->select('id_producto')
+                        ->get()
                         ->map(
                             function ($item) use ($cliente) {
                                 return [
@@ -133,6 +133,7 @@ class CStripe extends Controller
                     DB::transaction(function () use ($datosCompra, $carrito) {
                         TProductosCompradosCliente::insert($datosCompra);
                         $carrito->update(['borrado' => true]);
+                        CGeneral::EventCartCustomer($carrito->get());
                     });
                 }
             }

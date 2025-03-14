@@ -38,11 +38,14 @@
             </div>
         </div>
         <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 sticky-section">
-            <div class="flex flex-row w-full justify-center max-[1090px]:justify-center items-center">
-                <div class="flex flex-row justify-between w-full max-w-screen-xl items-center">
-                    <File file="icon1 color 3.png" class="w-full max-w-[250px] imagen-icon-1" type="img" />
+            <div class="flex flex-row w-full justify-center  items-center">
+                <div
+                    class="flex flex-row justify-between px-[min(10px,50%)] w-full md:max-w-screen-xl max-[1090px]:justify-center items-center">
+                    <File file="icon1 color 3.png" class="w-full max-w-[250px] imagen-icon-1 max-[1090px]:hidden"
+                        type="img" />
                     <File file="icon2 color 3.png" class="w-full max-w-[500px] imagen-icon-1" type="img" />
-                    <File file="icon3 color 3.png" class="w-full max-w-[220px] imagen-icon-1" type="img" />
+                    <File file="icon3 color 3.png" class="w-full max-w-[220px] imagen-icon-1 max-[1090px]:hidden"
+                        type="img" />
                 </div>
             </div>
         </div>

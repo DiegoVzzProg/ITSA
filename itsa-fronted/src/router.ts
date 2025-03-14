@@ -8,9 +8,9 @@ import CheckOut from "./modules/home/UI/CheckOut.vue";
 import Register from "./modules/auth/UI/RegisterUI.vue";
 //import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
 import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
-import { numberCartShopping } from "./modules/home/stores/CustomerStore";
+//import { numberCartShopping } from "./modules/home/stores/CustomerStore";
 import { site } from "./utils/site";
-import { GeneralStores } from "./modules/stores/GeneralStores";
+import stores from "./modules/stores/GeneralStores";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
@@ -75,21 +75,13 @@ router.beforeEach((to, _from, next) => {
     String(to.meta.layout).toLowerCase() === "auth" ||
     String(to.name).toLowerCase() === "home"
   ) {
+    stores.useCartStore().setupCartListener();
     return next();
   }
 
   if (!site.IsNullOrEmpty(to.query.key)) {
-    if (GeneralStores().data.guid !== to.query.key) {
+    if (stores.guid().value !== to.query.key) {
       return next(redirectToHome);
-    }
-
-    const token: string = site.getCookie("e.t", false) ?? null;
-    if (
-      !site.IsNullOrEmpty(token) &&
-      (String(to.name).toLowerCase() == "paymentcompleted" ||
-        String(to.name).toLowerCase() == "checkout")
-    ) {
-      numberCartShopping().update();
     }
   } else {
     return next(redirectToHome);

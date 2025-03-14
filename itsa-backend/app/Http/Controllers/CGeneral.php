@@ -8,6 +8,7 @@ use App\Models\TUsuarios;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Pusher\Pusher;
 
 class CGeneral extends Controller
 {
@@ -88,5 +89,39 @@ class CGeneral extends Controller
                 'data' => null
             ], status: 599);
         }
+    }
+
+    public static function EventCartCustomer($carrito)
+    {
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ]
+        );
+
+        $pusher->trigger(
+            'cart-channel',
+            'cart.updated',
+            [
+                'carrito' => $carrito,
+                'totales' => self::calcularTotal($carrito),
+                'total_productos' => $carrito->count()
+            ]
+        );
+    }
+
+    private static function calcularTotal($carritoItems)
+    {
+        $precioSinImpuesto = $carritoItems->sum('precio');
+        $montoImpuesto = round(($precioSinImpuesto * 0.16), 2);
+        return [
+            'subtotal' => number_format($precioSinImpuesto, 2, '.', ','),
+            'impuesto' => number_format($montoImpuesto, 2, '.', ','),
+            'total' => number_format($precioSinImpuesto + $montoImpuesto, 2, '.', ',')
+        ];
     }
 }

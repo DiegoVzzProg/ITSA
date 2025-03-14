@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-import Cookies from "js-cookie";
 import { Notyf } from 'notyf';
-import { isNotified, site } from '../../utils/site';
+import { site } from '../../utils/site';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 
 onMounted(() => {
-    const userData = site.getCookie('e.u.d');
-    if (userData) {
-        if (!isNotified) {
+    const logged_in_successfully: boolean = JSON.parse(site.LocalStorage("get", ["logged_in_successfully"])?.["logged_in_successfully"] || "false");
+
+    if (site.userData()) {
+        if (!logged_in_successfully) {
             const notyf = new Notyf({
                 duration: 5000,
                 position: {
@@ -18,10 +18,9 @@ onMounted(() => {
                 }
             });
             notyf.success("Logged in successfully");
-            Cookies.set('logged_in_successfully', 'true', {
-                secure: true,
-                sameSite: 'Strict',
-                path: '/',
+
+            site.LocalStorage("set", {
+                logged_in_successfully: true
             });
         }
     }

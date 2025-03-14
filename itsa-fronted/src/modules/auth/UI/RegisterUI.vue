@@ -521,10 +521,13 @@ async function btnRegisterUser_OnClick() {
         site.setCookies(
             {
                 "e.k": response.secretKey,
-                logged_in_successfully: "false",
             },
             false
         );
+
+        site.LocalStorage("set", {
+            logged_in_successfully: false
+        });
 
         site.setCookies({
             "e.u.d": JSON.stringify(responseRegister.value.user_data),

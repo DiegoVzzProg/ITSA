@@ -50,11 +50,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref } from 'vue';
 import { site } from '../../../utils/site';
-import { numberCartShopping } from '../../home/stores/CustomerStore';
 import Loading from '../../components/Loading.vue';
 import { s_auth } from '../services/s_auth';
+
+import { s_costumers } from '../../home/services/s_costumers';
 const ForgotPassword = ref<boolean>(false)
 const responseLogin = ref<any>(null);
 
@@ -190,23 +191,22 @@ async function btnLogin_OnClick(): Promise<void> {
             "e.c.d": JSON.stringify(responseLogin.value.client_data),
         });
 
-        site.setCookies(
-            {
-                logged_in_successfully: "false",
-            },
-            false
-        );
+        site.LocalStorage("set", {
+            logged_in_successfully: false
+        });
 
         const userData = site.getCookie("e.u.d");
 
         if (userData) {
-            numberCartShopping().update();
+            await s_costumers.shoppingCartClient();
             site.RedirectPage("home");
         }
     }
 
 }
 
+onUnmounted(() => {
+});
 </script>
 
 <style scoped></style>

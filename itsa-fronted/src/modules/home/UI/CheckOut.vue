@@ -120,8 +120,8 @@
                         total
                     </p>
                 </div>
-                <div v-if="!site.IsNullOrEmpty(cartClient)" class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
-                    <div class="flex relative flex-row items-center gap-2" v-for="item in ProductData"
+                <div class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
+                    <div class="flex relative flex-row items-center gap-2" v-for="item in stores.useCartStore().carrito"
                         :key="item.id_producto">
                         <div class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded">
                             <File v-if="item.foto_producto" :file="item.foto_producto" type="img" />
@@ -145,13 +145,12 @@
                         </button>
                     </div>
                 </div>
-                <Loading v-else />
                 <div class="flex flex-row justify-between items-center gap-2 border-y border-y-black py-2">
                     <p class="font-itsa-bold text-[clamp(1.2rem,3vw,2rem)]">
                         tax(16%)
                     </p>
                     <p class="text-[1rem]">
-                        ${{ Impuesto }}
+                        ${{ stores.useCartStore().totales.impuesto }}
                     </p>
                 </div>
                 <div class="flex flex-row justify-between gap-2 py-2 items-center">
@@ -159,7 +158,7 @@
                         total
                     </p>
                     <p class="text-[1rem]">
-                        ${{ ProductPrecio }}
+                        ${{ stores.useCartStore().totales.total }}
                     </p>
                 </div>
             </div>
@@ -171,15 +170,22 @@
 import SelectCountry from "../../components/SelectCountry.vue";
 import File from '../components/File.vue';
 import Loading from '../../components/Loading.vue';
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 import { notify, site } from "../../../utils/site";
-import { numberCartShopping } from "../stores/CustomerStore";
 import { s_costumers } from "../services/s_costumers";
 import { s_products } from "../services/s_products";
+import stores from "../../stores/GeneralStores";
 
 onMounted(() => {
+    if (!verificarCarrito()) {
+        return;
+    }
     ClientData.value = JSON.parse(site.getCookie("e.c.d"));
     Productos();
+});
+
+onUnmounted(() => {
+
 });
 
 const ProductData = ref<any>({});
@@ -189,7 +195,6 @@ const ClientData = ref<any>(null);
 const Finish = ref<boolean>(false);
 const Editar = ref<boolean>(false);
 const deleteProduct = ref<boolean>(true);
-const cartClient = ref<any>(null);
 const FormCostumer = reactive({
     Customer: {
         Form1: {
@@ -257,15 +262,22 @@ const FormCostumer = reactive({
     },
 });
 
-async function Productos(): Promise<any> {
-    const response: any = await s_costumers.shoppingCartClient();
-
-    if (response) {
-        cartClient.value = response;
-        ProductData.value = response.carrito_cliente;
-        ProductPrecio.value = response.precio;
-        Impuesto.value = response.impuesto;
+function verificarCarrito(): boolean {
+    if (stores.useCartStore().carrito.length == 0) {
+        site.RedirectPage("home");
+        return false;
     }
+    return true;
+}
+
+async function Productos(): Promise<any> {
+    //const response: any = await s_costumers.shoppingCartClient();
+
+    //if (response) {
+    ProductData.value = stores.useCartStore().carrito;
+    ProductPrecio.value = stores.useCartStore().totales.total;
+    Impuesto.value = stores.useCartStore().totales.impuesto;
+    //}
 }
 
 function ValidateRegistrationForm(item: any) {
@@ -424,9 +436,12 @@ function ValidatePhone(value: string): void {
 async function CheckoutSession(elemento: any): Promise<any> {
     elemento.target.disabled = true;
 
-    if (Number(ProductPrecio.value) == 0) {
+    if (!verificarCarrito()) {
+        return;
+    }
+
+    if (parseFloat(stores.useCartStore().totales.total) == 0) {
         const response: any = await s_products.addProductDownloadList();
-        console.log(response);
 
         if (!response)
             return;
@@ -441,12 +456,9 @@ async function CheckoutSession(elemento: any): Promise<any> {
         const url: any = response.redirectStripePayment;
 
         if (site.IsNullOrEmpty(url)) return;
-
-        window.location.href = url;
         elemento.target.disabled = false;
+        window.location.href = url;
     }
-
-    await numberCartShopping().update();
 }
 
 function FunctionEdit(): void {
@@ -522,15 +534,13 @@ async function DeleteProduct(id_producto: string) {
     });
 
     if (response) {
-        await numberCartShopping().update();
+
         notify.success("Product deleted");
 
-        if (response.productos.length == 0) {
-            site.RedirectPage("home");
+        if (!verificarCarrito()) {
             return;
         }
 
-        await Productos();
         deleteProduct.value = true;
     }
 }

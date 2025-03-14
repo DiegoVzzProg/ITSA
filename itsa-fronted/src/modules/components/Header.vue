@@ -4,18 +4,18 @@ import logo from '../../assets/svg/logo.svg'
 import logoWhite from '../../assets/svg/logo_white.svg'
 import { useRoute } from 'vue-router';
 import { site } from '../../utils/site';
-import { numberCartShopping } from '../home/stores/CustomerStore';
 import { s_auth } from '../auth/services/s_auth';
+import stores from '../stores/GeneralStores';
 
 const id_usuario = ref<number>(0);
 const router = useRoute();
 
 const LogOut = async () => {
-    ;
     const response: any = s_auth.logoutUser();
     if (response) {
         site.allDeleteCookies();
-        numberCartShopping().default();
+        stores.useCartStore().leaveCartListener();
+        localStorage.clear();
 
         if (router.name == 'home') {
             window.location.reload();
@@ -27,7 +27,7 @@ const LogOut = async () => {
 }
 
 function GoCheckOut() {
-    if (site.userData() && numberCartShopping().count > 0) {
+    if (site.userData() && stores.useCartStore().total_productos > 0) {
         site.RedirectPage('checkout');
     }
 }
@@ -66,7 +66,7 @@ onMounted(() => {
                 <button @click="GoCheckOut()" class="flex flex-row items-center justify-center text-center h-full">
                     cart(
                     <span class="text-[.7rem] font-semibold translate-y-[1px]"
-                        v-text="numberCartShopping().count"></span>
+                        v-text="stores.useCartStore().total_productos"></span>
                     )
                 </button>
             </nav>

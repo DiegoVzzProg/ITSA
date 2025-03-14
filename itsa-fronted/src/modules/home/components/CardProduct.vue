@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { site } from '../../../utils/site';
-import { numberCartShopping } from '../stores/CustomerStore';
 import { s_costumers } from '../services/s_costumers';
+import stores from '../../stores/GeneralStores';
 const props = defineProps<{
     id_producto: number;
     titulo: string;
@@ -20,7 +20,6 @@ const AddCartCostumer = async () => {
         });
 
         if (response) {
-            numberCartShopping().update();
             site.RedirectPage("home");
         }
 
@@ -55,6 +54,10 @@ const habilitarBotonGoToCart = async () => {
 }
 onMounted(() => {
     habilitarBotonGoToCart();
+});
+
+onUnmounted(() => {
+
 });
 </script>
 

@@ -68,7 +68,8 @@
                 <File file="universalicon_02.png" type="img"></File>
             </div>
         </div>
-        <div class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0 items-center max-[680px]:justify-center">
+        <div
+            class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0 items-center max-[680px]:justify-center">
             <div
                 class="flex flex-col h-full w-full items-start max-[680px]:justify-start max-[680px]:items-center max-[680px]:text-center justify-center">
                 <p class="font-itsa-bold text-[clamp(40px,8vw,108px)] leading-[100px]">
@@ -167,6 +168,8 @@ onMounted(async () => {
 
     gsap.registerPlugin(ScrollTrigger);
 
+    const $header = $v2("header");
+    const $overflow = $v2("#overflow");
     ScrollTrigger.create({
         trigger: ".sticky-section",
         start: "center center",
@@ -186,17 +189,15 @@ onMounted(async () => {
         end: "bottom top",
         pinSpacing: false,
         onToggle: (self) => {
-            const overflow: any = document.querySelector("#overflow");
-
             if (self.isActive) {
-                $v2("header").find("#headerSection").replaceClass("border-black", "border-white");
-                $v2("header").find("#logoBlack").replaceClass("block", "hidden");
-                $v2("header").find("#logoWhite").replaceClass("hidden", "block");
-                $v2("header").addStyle("color: white;");
-                $v2(overflow).replaceClass("after:opacity-0", "after:opacity-30");
+                $header.find("#headerSection").replaceClass("border-black", "border-white");
+                $header.find("#logoBlack").replaceClass("block", "hidden");
+                $header.find("#logoWhite").replaceClass("hidden", "block");
+                $header.addStyle("color: white;");
+                $overflow.replaceClass("after:opacity-0", "after:opacity-30");
             } else {
                 headerDefault();
-                $v2(overflow).replaceClass("after:opacity-30", "after:opacity-0");
+                $overflow.replaceClass("after:opacity-30", "after:opacity-0");
             }
         }
     });
@@ -208,11 +209,10 @@ onMounted(async () => {
         end: "bottom top",
         pinSpacing: false,
         onToggle: (self) => {
-            const header: any = document.querySelector("#header");
             if (self.isActive) {
-                $v2(header).addStyle("background-color: transparent;");
+                $header.addStyle("background-color: transparent;");
             } else {
-                $v2(header).addStyle("background-color: white;");
+                $header.addStyle("background-color: white;");
             }
         }
     });

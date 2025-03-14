@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CartUpdated;
 use App\Models\TCarritoCliente;
 use App\Models\TProducto;
 use App\Models\TUsuarios;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Pusher\Pusher;
 
 class CCarritoCliente extends Controller
 {
@@ -20,22 +23,42 @@ class CCarritoCliente extends Controller
 
             $carritoItems = $carritoQuery->get();
 
-
-            $precioFormateado = 0;
-            $impuestoFormateado = 0;
-
+            $totales = [
+                'total' => 0,
+                'impuesto' => 0
+            ];
             if (!$carritoItems->isEmpty()) {
-                $precioSinImpuesto = $carritoQuery->sum('precio');
-                $montoImpuesto = round(($precioSinImpuesto * 0.16), 2);
-                $precioTotal = round($precioSinImpuesto + $montoImpuesto, 2);
-                $precioFormateado = number_format($precioTotal, 2, '.', ',');
-                $impuestoFormateado = number_format($montoImpuesto, 2, '.', ',');
+                $totales = self::calcularTotal($carritoItems);
             }
+
+
+            $total_productos = $carritoQuery->count();
+
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'useTLS' => true,
+                ]
+            );
+
+            $pusher->trigger(
+                'cart-channel',
+                'cart.updated',
+                [
+                    'carrito' => $carritoItems,
+                    'totales' => $totales,
+                    'total_productos' => $carritoItems->count()
+                ]
+            );
 
             return CGeneral::CreateMessage('', 200, [
                 "carrito_cliente" => $carritoItems,
-                "precio" => $precioFormateado,
-                "impuesto" => $impuestoFormateado
+                "total_productos" => $total_productos,
+                "precio" => $totales['total'],
+                "impuesto" => $totales['impuesto']
             ]);
         }, $request);
     }
@@ -46,6 +69,7 @@ class CCarritoCliente extends Controller
             $user = $request->user();
             $producto = TProducto::where('id_producto', $request->id_producto)->first();
 
+            // Crear el item en el carrito
             TCarritoCliente::create([
                 'id_usuario' => $user->id_usuario,
                 'id_producto' => $request->id_producto,
@@ -54,6 +78,31 @@ class CCarritoCliente extends Controller
                 'precio' => $producto->precio,
                 'foto_producto' => $producto->foto_miniatura
             ]);
+
+            // Obtener el carrito actualizado
+            $carritoActualizado = TCarritoCliente::where('id_usuario', $user->id_usuario)
+                ->where('borrado', false)
+                ->get();
+
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                [
+                    'cluster' => env('PUSHER_APP_CLUSTER'),
+                    'useTLS' => true,
+                ]
+            );
+
+            $pusher->trigger(
+                'cart-channel',
+                'cart.updated',
+                [
+                    'carrito' => $carritoActualizado,
+                    'totales' => self::calcularTotal($carritoActualizado),
+                    'total_productos' => $carritoActualizado->count()
+                ]
+            );
 
             return CGeneral::CreateMessage('', 200, $producto);
         }, $request);
@@ -80,6 +129,7 @@ class CCarritoCliente extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $user = $request->user();
 
+            // Eliminar el producto
             $producto = TCarritoCliente::where('id_usuario', $user->id_usuario)
                 ->where('id_producto', $request->id_producto)
                 ->where('borrado', false)->first();
@@ -90,11 +140,13 @@ class CCarritoCliente extends Controller
 
             $producto->update(['borrado' => true]);
 
-            $productos = TCarritoCliente::where('id_usuario', $user->id_usuario)
+            $carritoActualizado = TCarritoCliente::where('id_usuario', $user->id_usuario)
                 ->where('borrado', false)->get();
 
+            CGeneral::EventCartCustomer($carritoActualizado);
+
             return CGeneral::CreateMessage('', 200, [
-                "productos" => $productos
+                "productos" => $carritoActualizado
             ]);
         }, $request);
     }
@@ -111,5 +163,16 @@ class CCarritoCliente extends Controller
                 "cantidad" => $cantidad
             ]);
         }, $request);
+    }
+
+    private static function calcularTotal($carritoItems)
+    {
+        $precioSinImpuesto = $carritoItems->sum('precio');
+        $montoImpuesto = round(($precioSinImpuesto * 0.16), 2);
+        return [
+            'subtotal' => number_format($precioSinImpuesto, 2, '.', ','),
+            'impuesto' => number_format($montoImpuesto, 2, '.', ','),
+            'total' => number_format($precioSinImpuesto + $montoImpuesto, 2, '.', ',')
+        ];
     }
 }
