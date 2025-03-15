@@ -70,17 +70,20 @@ router.beforeEach((to, _from, next) => {
   const redirectToHome = {
     name: "home",
   };
+  stores.useCartStore().setupCartListener();
 
   if (
     String(to.meta.layout).toLowerCase() === "auth" ||
     String(to.name).toLowerCase() === "home"
   ) {
-    stores.useCartStore().setupCartListener();
     return next();
   }
 
   if (!site.IsNullOrEmpty(to.query.key)) {
-    if (stores.guid().value !== to.query.key) {
+    const key: string = stores.guid().value;
+    localStorage.setItem("guid", key);
+
+    if (key !== to.query.key) {
       return next(redirectToHome);
     }
   } else {

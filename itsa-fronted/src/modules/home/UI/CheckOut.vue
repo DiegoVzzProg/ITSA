@@ -188,9 +188,6 @@ onUnmounted(() => {
 
 });
 
-const ProductData = ref<any>({});
-const ProductPrecio = ref<string>("");
-const Impuesto = ref<string>("");
 const ClientData = ref<any>(null);
 const Finish = ref<boolean>(false);
 const Editar = ref<boolean>(false);
@@ -271,13 +268,10 @@ function verificarCarrito(): boolean {
 }
 
 async function Productos(): Promise<any> {
-    //const response: any = await s_costumers.shoppingCartClient();
-
-    //if (response) {
-    ProductData.value = stores.useCartStore().carrito;
-    ProductPrecio.value = stores.useCartStore().totales.total;
-    Impuesto.value = stores.useCartStore().totales.impuesto;
-    //}
+    await s_costumers.shoppingCartClient();
+    if (!verificarCarrito()) {
+        return;
+    }
 }
 
 function ValidateRegistrationForm(item: any) {
@@ -434,7 +428,7 @@ function ValidatePhone(value: string): void {
 }
 
 async function CheckoutSession(elemento: any): Promise<any> {
-    elemento.target.disabled = true;
+    elemento.target.disabled = false;
 
     if (!verificarCarrito()) {
         return;
@@ -448,7 +442,7 @@ async function CheckoutSession(elemento: any): Promise<any> {
 
         site.RedirectPage(response.redirectToDownload);
     } else {
-        const response: any = await s_costumers.proceedToCheckout();
+        const response: any = await s_costumers.proceedToCheckout(stores.guid().value);
 
         if (!response)
             return;
@@ -456,9 +450,10 @@ async function CheckoutSession(elemento: any): Promise<any> {
         const url: any = response.redirectStripePayment;
 
         if (site.IsNullOrEmpty(url)) return;
-        elemento.target.disabled = false;
         window.location.href = url;
     }
+
+    elemento.target.disabled = true;
 }
 
 function FunctionEdit(): void {

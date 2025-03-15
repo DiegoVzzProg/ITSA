@@ -5,13 +5,14 @@ import { site } from '../../../utils/site';
 
 const downloadProduct = async () => {
     const response: any = await s_products.downloadFile(btoa(site.userData().id_usuario));
+    console.log(response);
     
     response.urls.forEach((element: any) => {
         const url = element.url;
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'basics_set_icons_itsastudio.zip';
+        a.download = 'prueba.zip';
         document.body.appendChild(a);
         a.click();
 

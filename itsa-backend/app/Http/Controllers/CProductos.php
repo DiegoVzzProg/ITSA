@@ -8,8 +8,11 @@ use App\Models\TProducto;
 use App\Models\TProductosCompradosCliente;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use ZipStream\ZipStream;
 
 class CProductos extends Controller
 {
@@ -28,39 +31,77 @@ class CProductos extends Controller
         }, $request);
     }
 
-    public function downloadPrivateFile($fileName)
+    public function downloadPrivateFile(Request $request)
     {
-        if (Storage::disk('private')->exists($fileName)) {
-            $file = Storage::disk('private')->get($fileName);
-            $mimeType = Storage::disk('private')->mimeType($fileName);
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $token = $request->query('token');
 
-            return response($file, 200)
-                ->header('Content-Type', $mimeType)
-                ->header('Content-Disposition', 'attachment; filename="' . $fileName . '"');
-        }
+            if (!$token || !Cache::has("download_token_$token")) {
+                throw new \Exception('Enlace inválido o expirado');
+            }
 
-        return response()->json(['error' => 'File not found'], 404);
+            // 2. Obtener datos de la compra desde el token
+            $cache = Cache::get("download_token_$token");
+
+            $cliente = TClientes::where('id_usuario', Crypt::decrypt($cache['user_id']))->get()->first();
+
+            $compra = TProductosCompradosCliente::with('producto')
+                ->findOrFail(Crypt::decrypt($cache['id_producto_comprado']));
+
+            // 5. Opcional: Validar permisos de usuario (si usas autenticación)
+            if ($compra->id_cliente != $cliente->id_cliente) {
+                throw new \Exception('No autorizado');
+            }
+
+            $compra->update(['descargado' => true]);
+
+            if ($request->has('single')) {
+                Cache::forget("download_token_$token");
+
+                return Storage::disk('private')->download($compra->producto->archivo);
+            } else {
+                // Descarga múltiple (ZIP)
+                $productos = Crypt::decrypt($cache['productos']);
+                $zipName = 'productos_' . now()->format('YYYY-MM-DD_H-i-s') . '.zip';
+
+                // Crear ZIP dinámico
+                return response()->streamDownload(function () use ($productos) {
+                    $zip = new ZipStream(outputName: 'productos.zip', sendHttpHeaders: false);
+
+                    foreach ($productos as $producto) {
+                        $contenido = Storage::disk('private')->get($producto['archivo']);
+                        $zip->addFile(
+                            fileName: $producto['archivo'],
+                            data: $contenido
+                        );
+                    }
+
+                    $zip->finish();
+                }, $zipName, [
+                    'Content-Type' => 'application/zip'
+                ]);
+            }
+
+            // // 3. Eliminar token inmediatamente (una sola descarga)
+            // Cache::forget("download_token_$token");
+
+            // // 4. Validar existencia de archivo
+            // $fileName = $compra->producto->archivo;
+
+            // $cliente = TClientes::where('id_usuario', Crypt::decrypt($cache['user_id']))->get()->first();
+
+            // // 5. Opcional: Validar permisos de usuario (si usas autenticación)
+            // if ($compra->id_cliente != $cliente->id_cliente) {
+            //     throw new \Exception('No autorizado');
+            // }
+
+            // // 6. Opcional: Marcar como descargado (si es necesario)
+            // $compra->update(['descargado' => true]);
+
+            // // 7. Descargar archivo (versión optimizada)
+            // return Storage::disk('private')->download($fileName);
+        }, $request);
     }
-
-    // public static function fn_descargar_archivo($id_producto)
-    // {
-    //     $producto = TProducto::find($id_producto);
-
-    //     if (!$producto) {
-    //         return CGeneral::CreateMessage('Product not found', 599, null);
-    //     }
-
-    //     $filePath = $producto->archivo;
-    //     return CGeneral::CreateMessage('File not found', 200, $filePath);
-
-
-    //     if (!Storage::disk('local')->exists($filePath)) {
-    //         return CGeneral::CreateMessage('File not found', 599, null);
-    //     }
-
-    //     $path = Storage::disk('local')->path($filePath);
-    //     return response()->download($path);
-    // }
 
     public static function fn_a_producto_para_descargar(Request $request)
     {
@@ -69,32 +110,35 @@ class CProductos extends Controller
             $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
 
             $carrito = TCarritoCliente::where('id_usuario', $user->id_usuario)
-                ->where('borrado', false)
+                ->where('borrado', false);
+
+
+
+            $datosCompra = $carrito
                 ->select('id_producto')
                 ->get();
 
-
-            if ($carrito->isNotEmpty()) {
-
-                $datosCompra = $carrito
-                    ->map(
-                        function ($item) use ($cliente) {
-                            return [
-                                'id_cliente' => $cliente->id_cliente,
-                                'id_producto' => $item->id_producto,
-                                'pago_confirmado' => true,
-                                'descargado' => false,
-                                'created_at' => now(),
-                                'updated_at' => now(),
-                            ];
-                        }
-                    )->toArray();
+            if ($datosCompra->isNotEmpty()) {
+                $datosCompra = $datosCompra->map(
+                    function ($item) use ($cliente) {
+                        return [
+                            'id_cliente' => $cliente->id_cliente,
+                            'id_producto' => $item->id_producto,
+                            'pago_confirmado' => true,
+                            'descargado' => false,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                )->toArray();
 
                 $id_usuario = $user->id_usuario;
                 DB::transaction(function () use ($datosCompra, $id_usuario) {
                     TProductosCompradosCliente::insert($datosCompra);
                     TCarritoCliente::where('id_usuario', $id_usuario)->update(['borrado' => true]);
                 });
+
+                CGeneral::EventCartCustomer($carrito->get());
             }
 
             return CGeneral::CreateMessage('', 200, [
@@ -105,6 +149,10 @@ class CProductos extends Controller
     public static function fn_get_downloads_productos($id_usuario)
     {
         return CGeneral::invokeFunctionAPI(function () use ($id_usuario) {
+
+            if (!base64_decode($id_usuario, true)) {
+                throw new \Exception("ID de usuario inválido");
+            }
 
             $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
                 ->firstOrFail();
@@ -117,21 +165,50 @@ class CProductos extends Controller
             $descargas = collect();
             $errores = collect();
 
-            DB::transaction(function () use ($compras, &$descargas, &$errores) {
+            DB::transaction(function () use ($compras, &$descargas, &$errores, $cliente, $id_usuario) {
+                $generarZIP = $compras->count() > 1;
+                $token = \Illuminate\Support\Str::random(40);
+                $productosParaZIP = [];
+
                 foreach ($compras as $compra) {
                     try {
-                        $rutaArchivo = $compra->producto->archivo;
-                        if (!Storage::disk('private')->exists($rutaArchivo)) {
-                            $errores->push("Archivo no encontrado: " . $rutaArchivo);
+                        if ($compra->id_cliente != $cliente->id_cliente) {
+                            $errores->push("Acceso denegado para el producto: " . $compra->id_producto);
                             continue;
                         }
 
-                        $url = route('private.download', ['fileName' => $rutaArchivo]);
+                        $archivo = $compra->producto->archivo;
+                        if (!Storage::disk('private')->exists($archivo)) {
+                            $errores->push("Archivo no encontrado: " . $archivo);
+                            continue;
+                        }
 
-                        $descargas->push([
-                            'url' => $url
-                        ]);
+                        $productosParaZIP[] = [
+                            'archivo' => $archivo
+                        ];
 
+                        // Si es un solo archivo, generar URL normal
+                        Cache::put("download_token_$token", [
+                            'type' => 'zip',
+                            'id_producto_comprado' => Crypt::encrypt($compra->id_producto_comprado),
+                            'productos' => Crypt::encrypt($productosParaZIP),
+                            'user_id' => Crypt::encrypt(base64_decode($id_usuario))
+                        ], now()->addMinutes(30));
+
+
+                        if (!$generarZIP) {
+                            $url = route('private.download', [
+                                'token' => $token,
+                                'single' => true
+                            ]);
+                        } else {
+                            $url = route('private.download', [
+                                'token' => $token,
+                                'single' => false
+                            ]);
+                        }
+
+                        $descargas->push(['url' => $url]);
                         $compra->update(['descargado' => true]);
                     } catch (\Exception $e) {
                         throw new \Exception($e->getMessage());
@@ -140,7 +217,8 @@ class CProductos extends Controller
             });
 
             return CGeneral::CreateMessage('', 200, [
-                'urls' => $descargas
+                'urls' => $descargas,
+                'errores' => $errores->all()
             ]);
         }, null);
     }

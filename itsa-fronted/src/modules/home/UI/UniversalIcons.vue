@@ -1,6 +1,6 @@
 <template>
     <a href="#card_section" id="a_card_section"
-        class="flex fixed bottom-[10px] hover:text-white transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(0,0,0)] hover:border-[rgb(0,0,0)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
+        class="flex fixed bottom-[10px] w-full max-w-[160px] hover:text-white transition-all bg-[rgba(255,255,255,0.26)] hover:bg-[rgb(0,0,0)] hover:border-[rgb(0,0,0)] right-[10px] max-[768px]:left-1/2 max-[768px]:-translate-x-1/2 rounded-full border border-black px-6 py-4 z-[9999]">
         get this pack!
     </a>
     <div id="overflow"

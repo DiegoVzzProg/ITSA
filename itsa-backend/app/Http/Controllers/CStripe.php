@@ -4,21 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\TCarritoCliente;
 use App\Models\TClientes;
-use App\Models\TErroresInternos;
-use App\Models\TProducto;
 use App\Models\TProductosCompradosCliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Pusher\Pusher;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
 
 class CStripe extends Controller
 {
-    public static function fn_stripe(Request $request)
+    public static function fn_stripe(Request $request, $guid)
     {
-        return CGeneral::invokeFunctionAPI(function () use ($request) {
+        return CGeneral::invokeFunctionAPI(function () use ($request, $guid) {
             $user = $request->user();
 
             $carritoItems = TCarritoCliente::with('producto')
@@ -78,8 +75,8 @@ class CStripe extends Controller
                 'metadata' => [
                     'user_id' => $user->id_usuario,
                 ],
-                'success_url' => config('services.stripe.checkout_success_url'),
-                'cancel_url'  => config('services.stripe.checkout_cancel_url'),
+                'success_url' => config('services.stripe.checkout_success_url') . '?key=' . $guid,
+                'cancel_url'  => config('services.stripe.checkout_cancel_url') . '?key=' . $guid,
             ]);
 
             return CGeneral::CreateMessage('', 200, [
@@ -91,52 +88,46 @@ class CStripe extends Controller
     public static function fn_stripe_success(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
-
-            $payload = $request->getContent();
-            $sigHeader = $request->header('Stripe-Signature');
-            $webhookSecret = config('services.stripe.webhook_secret');
-
             $event = Webhook::constructEvent(
-                $payload,
-                $sigHeader,
-                $webhookSecret
+                $request->getContent(),
+                $request->header('Stripe-Signature'),
+                config('services.stripe.webhook_secret')
             );
 
-            if ($event->type == 'checkout.session.completed') {
-                $session = $event->data->object;
-                $userId = $session->metadata->user_id ?? null;
-                if ($userId == null) {
-                    throw new \Exception("No existe el usuario");
-                }
-
-                $carrito = TCarritoCliente::where('id_usuario', $userId)
-                    ->where('borrado', false);
-
-                $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
-
-                if ($carrito->isNotEmpty()) {
-
-                    $datosCompra = $carrito->select('id_producto')
-                        ->get()
-                        ->map(
-                            function ($item) use ($cliente) {
-                                return [
-                                    'id_cliente' => $cliente->id_cliente,
-                                    'id_producto' => $item->id_producto,
-                                    'fecha' => date('Y-m-d'),
-                                    'pago_confirmado' => true,
-                                    'descargado' => false,
-                                ];
-                            }
-                        )->toArray();
-
-                    DB::transaction(function () use ($datosCompra, $carrito) {
-                        TProductosCompradosCliente::insert($datosCompra);
-                        $carrito->update(['borrado' => true]);
-                        CGeneral::EventCartCustomer($carrito->get());
-                    });
-                }
+            if ($event->type !== 'checkout.session.completed') {
+                return;
             }
-        });
+
+            $session = $event->data->object;
+            $userId = $session->metadata->user_id ?? null;
+
+            if (!$userId) {
+                throw new \Exception("Usuario no encontrado en metadata");
+            }
+
+            $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
+            $carritos = TCarritoCliente::with('producto')
+                ->where('id_usuario', $userId)
+                ->where('borrado', false)
+                ->get();
+
+            if ($carritos->isEmpty()) {
+                return;
+            }
+
+            $datosCompra = $carritos->map(fn($item) => [
+                'id_cliente' => $cliente->id_cliente,
+                'id_producto' => $item->id_producto,
+                'pago_confirmado' => true,
+                'descargado' => false,
+            ])->toArray();
+
+            DB::transaction(function () use ($carritos, $datosCompra) {
+                TProductosCompradosCliente::insert($datosCompra);
+                TCarritoCliente::whereIn('id_carrito_cliente', $carritos->pluck('id_carrito_cliente'))->update(['borrado' => true]);
+            });
+
+            CGeneral::EventCartCustomer($carritos);
+        }, $request);
     }
 }

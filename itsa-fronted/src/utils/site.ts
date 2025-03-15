@@ -236,13 +236,11 @@ export class site {
     parameters: Record<string, string | number> = {},
     functionOn?: () => void
   ): void {
-    stores.guid().updateGuid();
-
     const dataRoute: RouteLocationRaw = {
       name: routeName,
       params: parameters,
     };
-
+    stores.guid().updateGuid();
     const routeActual = router
       .getRoutes()
       .find((route) => route.name === routeName);

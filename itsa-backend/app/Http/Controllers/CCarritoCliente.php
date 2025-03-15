@@ -34,25 +34,7 @@ class CCarritoCliente extends Controller
 
             $total_productos = $carritoQuery->count();
 
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                [
-                    'cluster' => env('PUSHER_APP_CLUSTER'),
-                    'useTLS' => true,
-                ]
-            );
-
-            $pusher->trigger(
-                'cart-channel',
-                'cart.updated',
-                [
-                    'carrito' => $carritoItems,
-                    'totales' => $totales,
-                    'total_productos' => $carritoItems->count()
-                ]
-            );
+            CGeneral::EventCartCustomer($carritoItems);
 
             return CGeneral::CreateMessage('', 200, [
                 "carrito_cliente" => $carritoItems,
@@ -84,25 +66,7 @@ class CCarritoCliente extends Controller
                 ->where('borrado', false)
                 ->get();
 
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                [
-                    'cluster' => env('PUSHER_APP_CLUSTER'),
-                    'useTLS' => true,
-                ]
-            );
-
-            $pusher->trigger(
-                'cart-channel',
-                'cart.updated',
-                [
-                    'carrito' => $carritoActualizado,
-                    'totales' => self::calcularTotal($carritoActualizado),
-                    'total_productos' => $carritoActualizado->count()
-                ]
-            );
+            CGeneral::EventCartCustomer($carritoActualizado);
 
             return CGeneral::CreateMessage('', 200, $producto);
         }, $request);

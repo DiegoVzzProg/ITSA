@@ -6,7 +6,7 @@ import { reactive } from "vue";
 const stores = reactive({
   guid: defineStore("GeneralStores", {
     state: () => ({
-      value: uuidv4().toUpperCase(),
+      value: localStorage.getItem("guid") || uuidv4().toUpperCase(),
     }),
     actions: {
       updateGuid() {

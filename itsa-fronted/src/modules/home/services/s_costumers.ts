@@ -62,11 +62,11 @@ export const s_costumers = {
     return response;
   },
 
-  async proceedToCheckout(): Promise<any> {
+  async proceedToCheckout(key: string): Promise<any> {
     dgav.dataBase.message = "";
 
     const response: any = await dgav.apiRequest(
-      `${shoppingCartUrl}/proceed/to/checkout`,
+      `${shoppingCartUrl}/proceed/to/checkout/${key}`,
       dgav.httpMethod.GET
     );
 

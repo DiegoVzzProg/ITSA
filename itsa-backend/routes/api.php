@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
 
     Route::post('products/stripe/checkout/success', [CStripe::class, 'fn_stripe_success'])
-        ->withoutMiddleware([VerifyCsrfToken::class]);;
+        ->withoutMiddleware([VerifyCsrfToken::class]);
 
     Route::get('/countries', [CGeneral::class, 'fn_l_paises']);
 
     Route::prefix('products')->group(function () {
         Route::post('/list', [CProductos::class, 'fn_l_productos']);
-        Route::get('/private/download/{fileName}', [CProductos::class, 'downloadPrivateFile'])
+        Route::get('/private/download', [CProductos::class, 'downloadPrivateFile'])
             ->name('private.download');
     });
 
@@ -33,7 +33,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('shopping-cart')->group(function () {
             Route::get('/client', [CCarritoCliente::class, 'fn_l_carrito_cliente']);
             Route::post('/add/product', [CCarritoCliente::class, 'fn_a_carrito_cliente']);
-            Route::get('/proceed/to/checkout', [CStripe::class, 'fn_stripe']);
+            Route::get('/proceed/to/checkout/{guid}', [CStripe::class, 'fn_stripe']);
             Route::post('/delete/product/from', [CCarritoCliente::class, 'fn_b_producto_carrito_cliente']);
             Route::post('/check/product/from', [CCarritoCliente::class, 'fn_existe_producto_carrito_cliente']);
             Route::get('/check/number', [CCarritoCliente::class, 'fn_cantidad_carrito']);
