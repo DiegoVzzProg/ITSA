@@ -2,7 +2,10 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 import { site } from '../../../utils/site';
 import { s_costumers } from '../services/s_costumers';
+import { s_products } from '../services/s_products';
 import stores from '../../stores/GeneralStores';
+const productoComprado = ref<boolean>(false);
+
 const props = defineProps<{
     id_producto: number;
     titulo: string;
@@ -20,18 +23,18 @@ const AddCartCostumer = async () => {
         });
 
         if (response) {
-            site.RedirectPage("home");
+            site.RedirectPage({ name: 'home' });
         }
 
     } else {
-        site.RedirectPage("login");
+        site.RedirectPage({ name: 'login' });
     }
 }
 
 function GoCheckOut() {
     const userData = site.getCookie('e.u.d');
     if (userData) {
-        site.RedirectPage('checkout');
+        site.RedirectPage({ name: 'checkout' });
     }
 }
 
@@ -52,10 +55,24 @@ const habilitarBotonGoToCart = async () => {
         existeArticuloEnCarrito.value = response.existe;
     }
 }
-onMounted(() => {
-    habilitarBotonGoToCart();
+onMounted(async () => {
+    await habilitarBotonGoToCart();
+
+    await checkProduct();
 });
 
+const checkProduct = async () => {
+    const response = await s_products.checkProduct(props.id_producto);
+
+    if (!response)
+        return;
+
+    productoComprado.value = stores.echoStore().producto_comprado;
+}
+
+const downloadProduct = async () => {
+    site.RedirectPage({ name: 'paymentcompleted', query: { idprod: btoa(props.id_producto.toString()) } });
+}
 onUnmounted(() => {
 
 });
@@ -76,13 +93,17 @@ onUnmounted(() => {
         <p class="w-full whitespace-pre-line" v-html="descripcion">
         </p>
         <div class="flex">
-            <button v-if="existeArticuloEnCarrito" v-on:click="GoCheckOut()"
+            <button v-if="existeArticuloEnCarrito && !productoComprado" v-on:click="GoCheckOut()"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
                 Go to cart
             </button>
+            <button v-if="!existeArticuloEnCarrito && productoComprado" v-on:click="downloadProduct()"
+                class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
+                Download
+            </button>
             <button @click="AddCartCostumer"
                 class=" border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
-                v-else>
+                v-else-if="!existeArticuloEnCarrito">
                 {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
             </button>
         </div>

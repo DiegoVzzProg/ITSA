@@ -119,10 +119,11 @@ import CardProduct from '../components/CardProduct.vue';
 import { $v2 } from '../../../utils/JQueryV2';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { s_products } from '../services/s_products';
 
 const headerComponent = ref<HTMLElement | null>(null);
 
-onMounted(() => {
+onMounted(async () => {
     headerComponent.value = document.getElementById("header") as HTMLElement;
     $v2("header").addStyle("background-color: transparent;");
 
@@ -191,6 +192,7 @@ const headerDefault = (): void => {
     $v2("header").find("#logoWhite").replaceClass("block", "hidden");
     $v2("header").addStyle("color: black;");
 }
+
 </script>
 
 

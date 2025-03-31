@@ -146,6 +146,7 @@ class CProductos extends Controller
             ]);
         }, $request);
     }
+
     public static function fn_get_downloads_productos($id_usuario)
     {
         return CGeneral::invokeFunctionAPI(function () use ($id_usuario) {
@@ -173,7 +174,7 @@ class CProductos extends Controller
                 foreach ($compras as $compra) {
                     try {
                         if ($compra->id_cliente != $cliente->id_cliente) {
-                            $errores->push("Acceso denegado para el producto: " . $compra->id_producto);
+                            $errores->push("Acceso denegado para el producto.");
                             continue;
                         }
 
@@ -221,5 +222,112 @@ class CProductos extends Controller
                 'errores' => $errores->all()
             ]);
         }, null);
+    }
+
+    private static function generarNombrePersonalizado($archivo)
+    {
+        $fecha = now()->format('Ymd-His');
+        $extension = pathinfo($archivo, PATHINFO_EXTENSION);
+        return "ITSA-{$fecha}.{$extension}";
+    }
+
+    public static function fn_get_download_producto($id_usuario, $id_producto)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($id_usuario, $id_producto) {
+
+            if (!base64_decode($id_usuario, true)) {
+                throw new \Exception("ID de usuario inválido");
+            }
+
+            if (!$id_producto || !is_numeric(base64_decode($id_producto))) {
+                throw new \Exception("ID de producto inválido");
+            }
+
+            $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
+                ->firstOrFail();
+
+            $compras = TProductosCompradosCliente::with('producto')
+                ->where('id_cliente', $cliente->id_cliente)
+                ->where('id_producto', base64_decode($id_producto))
+                ->where('descargado', true)
+                ->firstOrFail();
+
+            $descargas = collect();
+            $errores = collect();
+
+            DB::transaction(function () use ($compras, &$descargas, &$errores, $cliente, $id_usuario) {
+                $generarZIP = $compras->count() > 1;
+                $token = \Illuminate\Support\Str::random(40);
+                $productosParaZIP = [];
+
+                try {
+                    if ($compras->id_cliente != $cliente->id_cliente) {
+                        $errores->push("Acceso denegado para el producto.");
+                        return;
+                    }
+
+                    $archivo = $compras->producto->archivo;
+                    if (!Storage::disk('private')->exists($archivo)) {
+                        $errores->push("Archivo no encontrado: " . $archivo);
+                        return;
+                    }
+
+                    $productosParaZIP[] = [
+                        'archivo' => $archivo
+                    ];
+
+                    // Si es un solo archivo, generar URL normal
+                    Cache::put("download_token_$token", [
+                        'type' => 'zip',
+                        'id_producto_comprado' => Crypt::encrypt($compras->id_producto_comprado),
+                        'productos' => Crypt::encrypt($productosParaZIP),
+                        'user_id' => Crypt::encrypt(base64_decode($id_usuario))
+                    ], now()->addMinutes(30));
+
+
+                    if (!$generarZIP) {
+                        $url = route('private.download', [
+                            'token' => $token,
+                            'single' => true
+                        ]);
+                    } else {
+                        $url = route('private.download', [
+                            'token' => $token,
+                            'single' => false
+                        ]);
+                    }
+
+                    $descargas->push(['url' => $url]);
+                    $compras->update(['descargado' => true]);
+                } catch (\Exception $e) {
+                    throw new \Exception($e->getMessage());
+                }
+            });
+
+            return CGeneral::CreateMessage('', 200, [
+                'urls' => $descargas,
+                'errores' => $errores->all()
+            ]);
+        }, null);
+    }
+
+    public static function fn_tiene_producto(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+
+            $usuario = $request->user();
+            $cliente = TClientes::where('id_usuario', $usuario->id_usuario)->firstOrFail();
+
+            $compra = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
+                ->where('id_producto', $request->id_producto)
+                ->where('pago_confirmado', true)
+                ->exists();
+
+            CGeneral::EventCheckProduct($compra);
+
+            return CGeneral::CreateMessage('', 200, [
+                "producto_comprado" => $compra
+            ]);
+        }, $request);
     }
 }

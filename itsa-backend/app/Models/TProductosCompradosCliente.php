@@ -30,4 +30,9 @@ class TProductosCompradosCliente extends Model
     {
         return $this->belongsTo(TProducto::class, 'id_producto', 'id_producto');
     }
+
+    public function cliente()
+    {
+        return $this->belongsTo(TClientes::class, 'id_cliente', 'id_cliente');
+    }
 }

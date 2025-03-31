@@ -114,6 +114,27 @@ class CGeneral extends Controller
         );
     }
 
+    public static function EventCheckProduct($existe)
+    {
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            [
+                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true,
+            ]
+        );
+
+        $pusher->trigger(
+            'check-product-channel',
+            'check.product',
+            [
+                'producto_comprado' => $existe
+            ]
+        );
+    }
+
     private static function calcularTotal($carritoItems)
     {
         $precioSinImpuesto = $carritoItems->sum('precio');

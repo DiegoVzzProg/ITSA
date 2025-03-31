@@ -15,6 +15,13 @@ interface DatabaseState {
   isLoading: boolean;
 }
 
+interface RouterParams {
+  name: RouteRecordName;
+  params?: Record<string, string>;
+  functionOn?: () => void;
+  query?: Record<string, string>;
+}
+
 const httpMethods = {
   GET: "GET",
   POST: "POST",
@@ -231,31 +238,34 @@ export class site {
     });
   }
 
-  public static RedirectPage(
-    routeName: RouteRecordName,
-    parameters: Record<string, string | number> = {},
-    functionOn?: () => void
-  ): void {
+  public static RedirectPage(routerParams: RouterParams): void {
     const dataRoute: RouteLocationRaw = {
-      name: routeName,
-      params: parameters,
+      name: routerParams.name,
+      params: routerParams.params,
+      query: routerParams.query,
     };
+
     stores.guid().updateGuid();
     const routeActual = router
       .getRoutes()
-      .find((route) => route.name === routeName);
+      .find((route) => route.name === routerParams.name);
     const layout = routeActual?.meta?.layout?.toString().toLowerCase();
 
-    // Añadir query.key solo si el layout es Main y no es la ruta home
-    if (layout === "main" && routeName?.toString().toLowerCase() !== "home") {
-      dataRoute.query = { key: stores.guid().value };
+    if (
+      layout === "main" &&
+      routerParams.name?.toString().toLowerCase() !== "home"
+    ) {
+      dataRoute.query = {
+        ...(dataRoute.query || {}),
+        key: stores.guid().value,
+      };
     }
 
     router
       .push(dataRoute)
       .then(() => {
         window.scrollTo({ top: 0 });
-        functionOn?.();
+        routerParams.functionOn?.();
       })
       .catch((error) => {
         if (error.name !== "NavigationDuplicated") {

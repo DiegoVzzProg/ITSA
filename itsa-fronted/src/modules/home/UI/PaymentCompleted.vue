@@ -2,17 +2,25 @@
 import { onMounted } from 'vue';
 import { s_products } from '../services/s_products';
 import { site } from '../../../utils/site';
+import { useRoute } from 'vue-router';
+
+
+const route = useRoute();
 
 const downloadProduct = async () => {
-    const response: any = await s_products.downloadFile(btoa(site.userData().id_usuario));
-    console.log(response);
-    
+    let response;
+    if (site.IsNullOrEmpty(route.query.idprod)) {
+        response = await s_products.downloadFiles(btoa(site.userData().id_usuario));
+    } else {
+        response = await s_products.downloadFile(btoa(site.userData().id_usuario), String(route.query.idprod));
+    }
+
     response.urls.forEach((element: any) => {
         const url = element.url;
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'prueba.zip';
+        a.download = '';
         document.body.appendChild(a);
         a.click();
 

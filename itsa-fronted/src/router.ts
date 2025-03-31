@@ -58,6 +58,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "paymentcompleted",
     component: PaymentCompleted,
     meta: { layout: "Main" },
+    props: true,
   },
 ];
 
@@ -66,31 +67,11 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, _from, next) => {
-  const redirectToHome = {
-    name: "home",
-  };
-  stores.useCartStore().setupCartListener();
+router.beforeEach((_to, _from, next) => {
+  stores.echoStore().setupCartListener();
+  stores.echoStore().checkProduct();
 
-  if (
-    String(to.meta.layout).toLowerCase() === "auth" ||
-    String(to.name).toLowerCase() === "home"
-  ) {
-    return next();
-  }
-
-  if (!site.IsNullOrEmpty(to.query.key)) {
-    const key: string = stores.guid().value;
-    localStorage.setItem("guid", key);
-
-    if (key !== to.query.key) {
-      return next(redirectToHome);
-    }
-  } else {
-    return next(redirectToHome);
-  }
-
-  next();
+  return next();
 });
 
 export default router;

@@ -18,7 +18,7 @@ const setAuthTokens = (access: string, refresh: string) => {
 const handleLogout = (): void => {
   site.allDeleteCookies();
   notify.error("Session expired. Redirecting...");
-  setTimeout(() => site.RedirectPage("login"), 2000);
+  setTimeout(() => site.RedirectPage({ name: "login" }), 2000);
 };
 
 const api: AxiosInstance = axios.create({

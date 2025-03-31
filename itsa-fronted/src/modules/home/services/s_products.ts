@@ -20,11 +20,28 @@ export const s_products = {
     return response;
   },
 
-  async downloadFile(id_usuario: string): Promise<any> {
+  async downloadFiles(id_usuario: string): Promise<any> {
     dgav.dataBase.message = "";
 
     const response: any = await dgav.apiRequest(
-      `${productosUrl}/download/file/${id_usuario}`,
+      `${productosUrl}/download/files/${id_usuario}`,
+      dgav.httpMethod.GET
+    );
+
+    const message: string = dgav.dataBase.message;
+    if (!site.IsNullOrEmpty(message)) {
+      notify.error(message);
+      return null;
+    }
+
+    return response;
+  },
+
+  async downloadFile(id_usuario: string, id_producto: string): Promise<any> {
+    dgav.dataBase.message = "";
+
+    const response: any = await dgav.apiRequest(
+      `${productosUrl}/download/file/${id_usuario}/${id_producto}`,
       dgav.httpMethod.GET
     );
 
@@ -44,6 +61,24 @@ export const s_products = {
       `${productosUrl}/add/product/download/list`,
       dgav.httpMethod.POST,
       {}
+    );
+
+    const message: string = dgav.dataBase.message;
+    if (!site.IsNullOrEmpty(message)) {
+      notify.error(message);
+      return null;
+    }
+
+    return response;
+  },
+
+  async checkProduct(id_producto: number): Promise<any> {
+    dgav.dataBase.message = "";
+
+    const response: any = await dgav.apiRequest(
+      `${productosUrl}/check`,
+      dgav.httpMethod.POST,
+      { id_producto }
     );
 
     const message: string = dgav.dataBase.message;

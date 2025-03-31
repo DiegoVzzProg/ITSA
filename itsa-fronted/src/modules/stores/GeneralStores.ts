@@ -14,11 +14,12 @@ const stores = reactive({
       },
     },
   }),
-  useCartStore: defineStore("cart ", {
+  echoStore: defineStore("cart ", {
     state: () => ({
       carrito: [] as any[],
       totales: { subtotal: "0.00", impuesto: "0.00", total: "0.00" },
       total_productos: 0,
+      producto_comprado: false,
     }),
     persist: true,
     actions: {
@@ -31,6 +32,16 @@ const stores = reactive({
       },
       leaveCartListener() {
         echo.leave("cart-channel");
+      },
+      checkProduct() {
+        echo
+          .channel("check-product-channel")
+          .listen(".check.product", (data: any) => {
+            this.producto_comprado = data.producto_comprado;
+          });
+      },
+      leaveCheckProductListener() {
+        echo.leave("check-product-channel");
       },
     },
   }),

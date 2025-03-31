@@ -30,19 +30,19 @@ onMounted(() => {
                     information
                 </p>
                 <div class="flex flex-col items-start gap-[5px]">
-                    <button @click="site.RedirectPage('info', { select: 'license' })"
+                    <button @click="site.RedirectPage({ name: 'info', params: { select: 'license' } })"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         license
                     </button>
-                    <button @click="site.RedirectPage('info', { select: 'payments' })"
+                    <button @click="site.RedirectPage({ name: 'info', params: { select: 'payments' } })"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         payments & refunds
                     </button>
-                    <button @click="site.RedirectPage('info', { select: 'terms' })"
+                    <button @click="site.RedirectPage({ name: 'info', params: { select: 'terms' } })"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         terms & conditions
                     </button>
-                    <button @click="site.RedirectPage('info', { select: 'privacity' })"
+                    <button @click="site.RedirectPage({ name: 'info', params: { select: 'privacity' } })"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all text-nowrap">
                         privacity policy
                     </button>
@@ -76,7 +76,7 @@ onMounted(() => {
                     support
                 </p>
                 <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">
-                    <button @click="site.RedirectPage('info', { select: 'contact' })"
+                    <button @click="site.RedirectPage({ name: 'info', params: { select: 'contact' } })"
                         class="hover:bg-[rgb(244, 242, 239)] transition-all">
                         contact
                     </button>

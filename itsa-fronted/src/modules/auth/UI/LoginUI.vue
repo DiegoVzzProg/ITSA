@@ -1,7 +1,7 @@
 <template>
     <div class="flex w-full max-w-md h-full flex-col justify-center gap-3">
         <div class="flex flex-col gap-3 pb-6">
-            <button @click="site.RedirectPage('home')" class="w-full flex flex-row justify-end">
+            <button @click="site.RedirectPage({ name: 'home' })" class="w-full flex flex-row justify-end">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
                     class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left">
@@ -41,7 +41,7 @@
             <p class="px-[clamp(18px,3vw,28px)]">
                 need an account
             </p>
-            <button type="button" v-on:click="site.RedirectPage('register')"
+            <button type="button" v-on:click="site.RedirectPage({ name: 'register' })"
                 class="bg-white border border-black py-5 px-3 rounded-full text-center">
                 create account
             </button>
@@ -199,7 +199,7 @@ async function btnLogin_OnClick(): Promise<void> {
 
         if (userData) {
             await s_costumers.shoppingCartClient();
-            site.RedirectPage("home");
+            site.RedirectPage({ name: 'home' });
         }
     }
 

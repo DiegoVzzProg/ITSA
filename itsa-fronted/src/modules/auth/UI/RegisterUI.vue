@@ -39,7 +39,7 @@
                         </label>
                         <p>
                             i agree to the
-                            <button @click="site.RedirectPage('info', { select: 'terms' })"
+                            <button @click="site.RedirectPage({ name: 'info', params: { select: 'terms' } })"
                                 class="underline underline-offset-1">terms</button>
                         </p>
                     </div>
@@ -245,7 +245,7 @@ function btnContinueForm() {
 function btnToBack() {
     if (ContinueRegistration.value == 0) {
         FormRegister.Reset();
-        site.RedirectPage("home");
+        site.RedirectPage({ name: 'home' });
         return;
     }
 
@@ -533,7 +533,7 @@ async function btnRegisterUser_OnClick() {
             "e.u.d": JSON.stringify(responseRegister.value.user_data),
             "e.c.d": JSON.stringify(responseRegister.value.client_data),
         });
-        site.RedirectPage("home");
+        site.RedirectPage({ name: 'home' });
     }
 
 }

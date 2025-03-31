@@ -28,7 +28,7 @@
               <p class="font-itsa-bold text-[clamp(2rem,2.3vw,2.4rem)] leading-7 w-full">
                 {{ producto.titulo }}
               </p>
-              <button @click="site.RedirectPage(String(producto.url))"
+              <button @click="site.RedirectPage({ name: String(producto.url) })"
                 :class="`text-white bg-black py-2 text-nowrap rounded-full px-[clamp(15px,3vw,28px)] text-[1.2rem] md:text-[1.4rem] lg:text-[1.2rem] xl:text-[1.8rem] tracking-wide`">
                 <p class="translate-y-[3px] font-itsa-bold">
                   {{

@@ -121,7 +121,7 @@
                     </p>
                 </div>
                 <div class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
-                    <div class="flex relative flex-row items-center gap-2" v-for="item in stores.useCartStore().carrito"
+                    <div class="flex relative flex-row items-center gap-2" v-for="item in stores.echoStore().carrito"
                         :key="item.id_producto">
                         <div class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded">
                             <File v-if="item.foto_producto" :file="item.foto_producto" type="img" />
@@ -150,7 +150,7 @@
                         tax(16%)
                     </p>
                     <p class="text-[1rem]">
-                        ${{ stores.useCartStore().totales.impuesto }}
+                        ${{ stores.echoStore().totales.impuesto }}
                     </p>
                 </div>
                 <div class="flex flex-row justify-between gap-2 py-2 items-center">
@@ -158,7 +158,7 @@
                         total
                     </p>
                     <p class="text-[1rem]">
-                        ${{ stores.useCartStore().totales.total }}
+                        ${{ stores.echoStore().totales.total }}
                     </p>
                 </div>
             </div>
@@ -260,8 +260,8 @@ const FormCostumer = reactive({
 });
 
 function verificarCarrito(): boolean {
-    if (stores.useCartStore().carrito.length == 0) {
-        site.RedirectPage("home");
+    if (stores.echoStore().carrito.length == 0) {
+        site.RedirectPage({ name: "home" });
         return false;
     }
     return true;
@@ -434,7 +434,7 @@ async function CheckoutSession(elemento: any): Promise<any> {
         return;
     }
 
-    if (parseFloat(stores.useCartStore().totales.total) == 0) {
+    if (parseFloat(stores.echoStore().totales.total) == 0) {
         const response: any = await s_products.addProductDownloadList();
 
         if (!response)

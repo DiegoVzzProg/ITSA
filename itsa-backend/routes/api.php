@@ -49,8 +49,10 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('products')->group(function () {
-            Route::get('/download/file/{id_usuario}', [CProductos::class, 'fn_get_downloads_productos']);
+            Route::get('/download/files/{id_usuario}', [CProductos::class, 'fn_get_downloads_productos']);
+            Route::get('/download/file/{id_usuario}/{id_producto}', [CProductos::class, 'fn_get_download_producto']);
             Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar']);
+            Route::post('/check', [CProductos::class, 'fn_tiene_producto']);
         });
 
         Route::get('/secret-key', [CGeneral::class, 'generarSecretKey']);
