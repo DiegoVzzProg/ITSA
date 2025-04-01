@@ -15,6 +15,8 @@ const downloadProduct = async () => {
         response = await s_products.downloadFile(btoa(site.userData().id_usuario), String(route.query.idprod));
     }
 
+    console.log(response);
+
     response.urls.forEach((element: any) => {
         const url = element.url;
 

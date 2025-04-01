@@ -127,6 +127,11 @@ class CStripe extends Controller
                 TCarritoCliente::whereIn('id_carrito_cliente', $carritos->pluck('id_carrito_cliente'))->update(['borrado' => true]);
             });
 
+            $carritos = TCarritoCliente::with('producto')
+                ->where('id_usuario', $userId)
+                ->where('borrado', false)
+                ->get();
+
             CGeneral::EventCartCustomer($carritos);
         }, $request);
     }
