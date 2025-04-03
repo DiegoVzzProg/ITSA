@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 use ZipStream\ZipStream;
 
 class CProductos extends Controller
@@ -40,66 +41,36 @@ class CProductos extends Controller
                 throw new \Exception('Enlace inválido o expirado');
             }
 
-            // 2. Obtener datos de la compra desde el token
             $cache = Cache::get("download_token_$token");
+            $productos = Crypt::decrypt($cache['productos']); // Todos los archivos
+            $type = $cache['type'];
 
-            $cliente = TClientes::where('id_usuario', Crypt::decrypt($cache['user_id']))->get()->first();
+            // Eliminar token (una sola descarga)
+            Cache::forget("download_token_$token");
 
-            $compra = TProductosCompradosCliente::with('producto')
-                ->findOrFail(Crypt::decrypt($cache['id_producto_comprado']));
-
-            // 5. Opcional: Validar permisos de usuario (si usas autenticación)
-            if ($compra->id_cliente != $cliente->id_cliente) {
-                throw new \Exception('No autorizado');
+            // Descarga directa
+            if ($type === 'direct') {
+                return Storage::disk('private')->download($productos[0]['archivo']);
             }
 
-            $compra->update(['descargado' => true]);
+            // Generar ZIP
+            $zipName = 'ITSA - ' . now()->format('Y-m-d_H-i-s') . '.zip';
 
-            if ($request->has('single')) {
-                Cache::forget("download_token_$token");
+            return response()->streamDownload(function () use ($productos) {
+                $zip = new ZipStream(outputName: 'productos.zip', sendHttpHeaders: false);
 
-                return Storage::disk('private')->download($compra->producto->archivo);
-            } else {
-                // Descarga múltiple (ZIP)
-                $productos = Crypt::decrypt($cache['productos']);
-                $zipName = 'productos_' . now()->format('YYYY-MM-DD_H-i-s') . '.zip';
+                foreach ($productos as $producto) {
+                    $contenido = Storage::disk('private')->get($producto['archivo']);
+                    $zip->addFile(
+                        fileName: $producto['nombre_personalizado'] ?? basename($producto['archivo']),
+                        data: $contenido
+                    );
+                }
 
-                // Crear ZIP dinámico
-                return response()->streamDownload(function () use ($productos) {
-                    $zip = new ZipStream(outputName: 'productos.zip', sendHttpHeaders: false);
-
-                    foreach ($productos as $producto) {
-                        $contenido = Storage::disk('private')->get($producto['archivo']);
-                        $zip->addFile(
-                            fileName: $producto['archivo'],
-                            data: $contenido
-                        );
-                    }
-
-                    $zip->finish();
-                }, $zipName, [
-                    'Content-Type' => 'application/zip'
-                ]);
-            }
-
-            // // 3. Eliminar token inmediatamente (una sola descarga)
-            // Cache::forget("download_token_$token");
-
-            // // 4. Validar existencia de archivo
-            // $fileName = $compra->producto->archivo;
-
-            // $cliente = TClientes::where('id_usuario', Crypt::decrypt($cache['user_id']))->get()->first();
-
-            // // 5. Opcional: Validar permisos de usuario (si usas autenticación)
-            // if ($compra->id_cliente != $cliente->id_cliente) {
-            //     throw new \Exception('No autorizado');
-            // }
-
-            // // 6. Opcional: Marcar como descargado (si es necesario)
-            // $compra->update(['descargado' => true]);
-
-            // // 7. Descargar archivo (versión optimizada)
-            // return Storage::disk('private')->download($fileName);
+                $zip->finish();
+            }, $zipName, [
+                'Content-Type' => 'application/zip'
+            ]);
         }, $request);
     }
 
@@ -151,13 +122,16 @@ class CProductos extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($id_usuario) {
 
+            // Validación del ID de usuario
             if (!base64_decode($id_usuario, true)) {
                 throw new \Exception("ID de usuario inválido");
             }
 
+            // Obtener cliente asociado al usuario
             $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
                 ->firstOrFail();
 
+            // Obtener compras no descargadas
             $compras = TProductosCompradosCliente::with('producto')
                 ->where('id_cliente', $cliente->id_cliente)
                 ->where('descargado', false)
@@ -167,53 +141,56 @@ class CProductos extends Controller
             $errores = collect();
 
             DB::transaction(function () use ($compras, &$descargas, &$errores, $cliente, $id_usuario) {
-                $generarZIP = $compras->count() > 1;
-                $token = \Illuminate\Support\Str::random(40);
-                $productosParaZIP = [];
+                $productosParaZIP = []; // Almacena todos los archivos válidos
 
+                // Paso 1: Validar y recolectar archivos
                 foreach ($compras as $compra) {
                     try {
+                        // Validar acceso al producto
                         if ($compra->id_cliente != $cliente->id_cliente) {
                             $errores->push("Acceso denegado para el producto.");
                             continue;
                         }
 
+                        // Validar existencia del archivo
                         $archivo = $compra->producto->archivo;
                         if (!Storage::disk('private')->exists($archivo)) {
                             $errores->push("Archivo no encontrado: " . $archivo);
                             continue;
                         }
 
+                        // Agregar a la lista para ZIP/directo
                         $productosParaZIP[] = [
-                            'archivo' => $archivo
+                            'archivo' => $archivo,
+                            'nombre_personalizado' => self::generarNombrePersonalizado($archivo) // Ejemplo
                         ];
 
-                        // Si es un solo archivo, generar URL normal
-                        Cache::put("download_token_$token", [
-                            'type' => 'zip',
-                            'id_producto_comprado' => Crypt::encrypt($compra->id_producto_comprado),
-                            'productos' => Crypt::encrypt($productosParaZIP),
-                            'user_id' => Crypt::encrypt(base64_decode($id_usuario))
-                        ], now()->addMinutes(30));
-
-
-                        if (!$generarZIP) {
-                            $url = route('private.download', [
-                                'token' => $token,
-                                'single' => true
-                            ]);
-                        } else {
-                            $url = route('private.download', [
-                                'token' => $token,
-                                'single' => false
-                            ]);
-                        }
-
-                        $descargas->push(['url' => $url]);
+                        // Marcar como descargado
                         $compra->update(['descargado' => true]);
                     } catch (\Exception $e) {
                         throw new \Exception($e->getMessage());
                     }
+                }
+
+                // Paso 2: Generar URL única
+                if (!empty($productosParaZIP)) {
+                    $generarZIP = count($productosParaZIP) > 1;
+                    $token = \Illuminate\Support\Str::random(40);
+
+                    // Almacenar en caché
+                    Cache::put("download_token_$token", [
+                        'type' => $generarZIP ? 'zip' : 'direct',
+                        'productos' => Crypt::encrypt($productosParaZIP),
+                        'user_id' => Crypt::encrypt(base64_decode($id_usuario))
+                    ], now()->addMinutes(30));
+
+                    // Generar URL
+                    $url = route('private.download', [
+                        'token' => $token,
+                        'single' => !$generarZIP // Solo aplica si es un archivo único
+                    ]);
+
+                    $descargas->push(['url' => $url]);
                 }
             });
 
@@ -235,78 +212,49 @@ class CProductos extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($id_usuario, $id_producto) {
 
-            if (!base64_decode($id_usuario, true)) {
+            // 1. Validación mejorada de parámetros
+            $decodedUserId = base64_decode($id_usuario, true);
+            if (!$decodedUserId) {
                 throw new \Exception("ID de usuario inválido");
             }
 
-            if (!$id_producto || !is_numeric(base64_decode($id_producto))) {
+            $decodedProductId = base64_decode($id_producto, true);
+            if (!is_numeric($decodedProductId)) {
                 throw new \Exception("ID de producto inválido");
             }
 
-            $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
+            // 2. Obtener cliente y compra con relaciones necesarias
+            $cliente = TClientes::where('id_usuario', $decodedUserId)
                 ->firstOrFail();
 
             $compras = TProductosCompradosCliente::with('producto')
                 ->where('id_cliente', $cliente->id_cliente)
-                ->where('id_producto', base64_decode($id_producto))
+                ->where('id_producto', $decodedProductId)
                 ->where('descargado', true)
                 ->firstOrFail();
 
-            $descargas = collect();
-            $errores = collect();
+            if ($compras->id_cliente != $cliente->id_cliente) {
+                throw new \Exception("Acceso denegado para el producto.");
+            }
 
-            DB::transaction(function () use ($compras, &$descargas, &$errores, $cliente, $id_usuario) {
-                $generarZIP = $compras->count() > 1;
-                $token = \Illuminate\Support\Str::random(40);
-                $productosParaZIP = [];
+            $archivo = $compras->producto->archivo;
+            if (!Storage::disk('private')->exists($archivo)) {
+                throw new \Exception("Archivo no encontrado: $archivo");
+            }
 
-                try {
-                    if ($compras->id_cliente != $cliente->id_cliente) {
-                        $errores->push("Acceso denegado para el producto.");
-                        return;
-                    }
+            $token = \Illuminate\Support\Str::random(40);
+            Cache::put("download_token_$token", [
+                'type' => 'direct',
+                'productos' => Crypt::encrypt(["archivo" => $archivo]),
+                'user_id' => Crypt::encrypt(base64_decode($decodedUserId))
+            ], now()->addMinutes(30));
 
-                    $archivo = $compras->producto->archivo;
-                    if (!Storage::disk('private')->exists($archivo)) {
-                        $errores->push("Archivo no encontrado: " . $archivo);
-                        return;
-                    }
-
-                    $productosParaZIP[] = [
-                        'archivo' => $archivo
-                    ];
-
-                    // Si es un solo archivo, generar URL normal
-                    Cache::put("download_token_$token", [
-                        'type' => 'zip',
-                        'id_producto_comprado' => Crypt::encrypt($compras->id_producto_comprado),
-                        'productos' => Crypt::encrypt($productosParaZIP),
-                        'user_id' => Crypt::encrypt(base64_decode($id_usuario))
-                    ], now()->addMinutes(30));
-
-
-                    if (!$generarZIP) {
-                        $url = route('private.download', [
-                            'token' => $token,
-                            'single' => true
-                        ]);
-                    } else {
-                        $url = route('private.download', [
-                            'token' => $token,
-                            'single' => false
-                        ]);
-                    }
-
-                    $descargas->push(['url' => $url]);
-                    $compras->update(['descargado' => true]);
-                } catch (\Exception $e) {
-                    throw new \Exception($e->getMessage());
-                }
-            });
-
+            $compras->update(['descargado' => true]);
             return CGeneral::CreateMessage('', 200, [
-                'urls' => $descargas,
-                'errores' => $errores->all()
+                'urls' => [route('private.download', [
+                    'token' => $token,
+                    'single' => false
+                ])]
             ]);
         }, null);
     }

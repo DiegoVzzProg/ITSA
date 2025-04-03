@@ -440,7 +440,7 @@ async function CheckoutSession(elemento: any): Promise<any> {
         if (!response)
             return;
 
-        site.RedirectPage(response.redirectToDownload);
+        site.RedirectPage({ name: response.redirectToDownload });
     } else {
         const response: any = await s_costumers.proceedToCheckout(stores.guid().value);
 

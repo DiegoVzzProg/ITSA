@@ -68,8 +68,8 @@ const router = createRouter({
 });
 
 router.beforeEach((_to, _from, next) => {
-  stores.echoStore().setupCartListener();
-  stores.echoStore().checkProduct();
+  // stores.echoStore().setupCartListener();
+  // stores.echoStore().checkProduct();
 
   return next();
 });

@@ -3,6 +3,7 @@ import { onMounted } from 'vue';
 import { s_products } from '../services/s_products';
 import { site } from '../../../utils/site';
 import { useRoute } from 'vue-router';
+import stores from '../../stores/GeneralStores';
 
 
 const route = useRoute();
@@ -32,6 +33,7 @@ const downloadProduct = async () => {
 
 onMounted(() => {
     downloadProduct();
+    stores.echoStore().leaveCartListener();
 });
 
 </script>
