@@ -75,7 +75,7 @@ class CStripe extends Controller
                 'metadata' => [
                     'user_id' => $user->id_usuario,
                 ],
-                'success_url' => config('services.stripe.checkout_success_url') . '?key=' . $guid,
+                'success_url' => config('services.stripe.checkout_success_url') . '?session_id={CHECKOUT_SESSION_ID}&key=' . $guid,
                 'cancel_url'  => config('services.stripe.checkout_cancel_url') . '?key=' . $guid,
             ]);
 

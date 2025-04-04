@@ -118,30 +118,50 @@ class CProductos extends Controller
         }, $request);
     }
 
-    public static function fn_get_downloads_productos($id_usuario)
+    private static function generarNombrePersonalizado($archivo)
     {
-        return CGeneral::invokeFunctionAPI(function () use ($id_usuario) {
+        $fecha = now()->format('Ymd-His');
+        $extension = pathinfo($archivo, PATHINFO_EXTENSION);
+        return "ITSA-{$fecha}.{$extension}";
+    }
 
+    public static function fn_obtener_urls_descarga_producto(string $id_usuario_base64, string $id_producto_base64 = "")
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($id_usuario_base64, $id_producto_base64) {
             // Validación del ID de usuario
-            if (!base64_decode($id_usuario, true)) {
+            if (!base64_decode($id_usuario_base64, true)) {
                 throw new \Exception("ID de usuario inválido");
             }
 
+            // Validación del ID de producto
+            if ($id_producto_base64 != "" && !base64_decode($id_producto_base64, true)) {
+                throw new \Exception("ID de producto inválido");
+            }
+
+            $id_usuario = base64_decode($id_usuario_base64);
+            $id_producto = $id_producto_base64 != "" ? base64_decode($id_producto_base64) : 0;
+
             // Obtener cliente asociado al usuario
-            $cliente = TClientes::where('id_usuario', base64_decode($id_usuario))
+            $cliente = TClientes::where('id_usuario', $id_usuario)
                 ->firstOrFail();
 
             // Obtener compras no descargadas
             $compras = TProductosCompradosCliente::with('producto')
                 ->where('id_cliente', $cliente->id_cliente)
-                ->where('descargado', false)
-                ->get();
+                ->where('descargado', $id_producto > 0);
+
+            if ($id_producto > 0) {
+                $compras
+                    ->where('id_producto', $id_producto);
+            }
+
+            $compras = $compras->get();
 
             $descargas = collect();
             $errores = collect();
 
             DB::transaction(function () use ($compras, &$descargas, &$errores, $cliente, $id_usuario) {
-                $productosParaZIP = []; // Almacena todos los archivos válidos
+                $productosParaZIP = [];
 
                 // Paso 1: Validar y recolectar archivos
                 foreach ($compras as $compra) {
@@ -154,6 +174,7 @@ class CProductos extends Controller
 
                         // Validar existencia del archivo
                         $archivo = $compra->producto->archivo;
+
                         if (!Storage::disk('private')->exists($archivo)) {
                             $errores->push("Archivo no encontrado: " . $archivo);
                             continue;
@@ -171,6 +192,7 @@ class CProductos extends Controller
                         throw new \Exception($e->getMessage());
                     }
                 }
+
 
                 // Paso 2: Generar URL única
                 if (!empty($productosParaZIP)) {
@@ -195,66 +217,7 @@ class CProductos extends Controller
             });
 
             return CGeneral::CreateMessage('', 200, [
-                'urls' => $descargas,
-                'errores' => $errores->all()
-            ]);
-        }, null);
-    }
-
-    private static function generarNombrePersonalizado($archivo)
-    {
-        $fecha = now()->format('Ymd-His');
-        $extension = pathinfo($archivo, PATHINFO_EXTENSION);
-        return "ITSA-{$fecha}.{$extension}";
-    }
-
-    public static function fn_get_download_producto($id_usuario, $id_producto)
-    {
-        return CGeneral::invokeFunctionAPI(function () use ($id_usuario, $id_producto) {
-
-            // 1. Validación mejorada de parámetros
-            $decodedUserId = base64_decode($id_usuario, true);
-            if (!$decodedUserId) {
-                throw new \Exception("ID de usuario inválido");
-            }
-
-            $decodedProductId = base64_decode($id_producto, true);
-            if (!is_numeric($decodedProductId)) {
-                throw new \Exception("ID de producto inválido");
-            }
-
-            // 2. Obtener cliente y compra con relaciones necesarias
-            $cliente = TClientes::where('id_usuario', $decodedUserId)
-                ->firstOrFail();
-
-            $compras = TProductosCompradosCliente::with('producto')
-                ->where('id_cliente', $cliente->id_cliente)
-                ->where('id_producto', $decodedProductId)
-                ->where('descargado', true)
-                ->firstOrFail();
-
-            if ($compras->id_cliente != $cliente->id_cliente) {
-                throw new \Exception("Acceso denegado para el producto.");
-            }
-
-            $archivo = $compras->producto->archivo;
-            if (!Storage::disk('private')->exists($archivo)) {
-                throw new \Exception("Archivo no encontrado: $archivo");
-            }
-
-            $token = \Illuminate\Support\Str::random(40);
-            Cache::put("download_token_$token", [
-                'type' => 'direct',
-                'productos' => Crypt::encrypt(["archivo" => $archivo]),
-                'user_id' => Crypt::encrypt(base64_decode($decodedUserId))
-            ], now()->addMinutes(30));
-
-            $compras->update(['descargado' => true]);
-            return CGeneral::CreateMessage('', 200, [
-                'urls' => [route('private.download', [
-                    'token' => $token,
-                    'single' => false
-                ])]
+                'urls' => $descargas
             ]);
         }, null);
     }

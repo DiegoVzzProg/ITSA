@@ -259,8 +259,8 @@ const FormCostumer = reactive({
     },
 });
 
-function verificarCarrito(): boolean {
-    if (stores.echoStore().carrito.length == 0) {
+function verificarCarrito(carrito?: any): boolean {
+    if (stores.echoStore().carrito.length == 0 || carrito?.carrito_cliente.length == 0) {
         site.RedirectPage({ name: "home" });
         return false;
     }
@@ -268,8 +268,8 @@ function verificarCarrito(): boolean {
 }
 
 async function Productos(): Promise<any> {
-    await s_costumers.shoppingCartClient();
-    if (!verificarCarrito()) {
+    const response = await s_costumers.shoppingCartClient();
+     if (!verificarCarrito(response)) {
         return;
     }
 }

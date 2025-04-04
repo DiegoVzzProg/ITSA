@@ -14,7 +14,6 @@ app.use(router);
 app.use(pinia);
 pinia.use(piniaPluginPersistedstate);
 
-stores.echoStore().setupCartListener();
-stores.echoStore().checkProduct();
+stores.echoStore().initEcho();
 
 app.mount("#app");

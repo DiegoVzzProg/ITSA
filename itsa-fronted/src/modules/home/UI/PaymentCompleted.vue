@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { s_products } from '../services/s_products';
-import { site } from '../../../utils/site';
+import { dgav, notify, site } from '../../../utils/site';
 import { useRoute } from 'vue-router';
 import stores from '../../stores/GeneralStores';
 
@@ -9,6 +9,7 @@ import stores from '../../stores/GeneralStores';
 const route = useRoute();
 
 const downloadProduct = async () => {
+    dgav.dataBase.message = "";
     let response;
     if (site.IsNullOrEmpty(route.query.idprod)) {
         response = await s_products.downloadFiles(btoa(site.userData().id_usuario));
@@ -17,6 +18,13 @@ const downloadProduct = async () => {
     }
 
     console.log(response);
+
+    const message: string = dgav.dataBase.message;
+    if (!site.IsNullOrEmpty(message)) {
+        notify.error(message);
+        return;
+    }
+
 
     response.urls.forEach((element: any) => {
         const url = element.url;
@@ -31,8 +39,16 @@ const downloadProduct = async () => {
     });
 }
 
-onMounted(() => {
-    downloadProduct();
+onMounted(async () => {
+    console.log(route.query.session_id);
+    if (route.query.session_id) {
+        stores.echoStore().reconnect();
+    }
+
+    await downloadProduct();
+});
+
+onUnmounted(() => {
     stores.echoStore().leaveCartListener();
 });
 

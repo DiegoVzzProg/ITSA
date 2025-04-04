@@ -64,10 +64,8 @@ onMounted(() => {
                     </span>
                 </button>
                 <button @click="GoCheckOut()" class="flex flex-row items-center justify-center text-center h-full">
-                    cart(
-                    <span class="text-[.7rem] font-semibold translate-y-[1px]"
-                        v-text="stores.echoStore().total_productos"></span>
-                    )
+                    cart(<span class="text-[.7rem] font-semibold translate-y-[1px]"
+                        v-text="stores.echoStore().total_productos"></span>)
                 </button>
             </nav>
         </div>
