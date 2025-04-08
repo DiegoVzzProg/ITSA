@@ -95,10 +95,11 @@
                             class="bg-black py-5 px-3 rounded-full text-white">
                             finish
                         </button>
-                        <button v-if="Finish" v-on:click="CheckoutSession($event)"
+                        <button v-if="Finish" v-show="!ocultarBoton" v-on:click="CheckoutSession($event)"
                             class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
                             continue to download
                         </button>
+                        <Loading v-if="LoadingHabilitado" />
                     </div>
                 </div>
             </div>
@@ -175,6 +176,9 @@ import { notify, site } from "../../../utils/site";
 import { s_costumers } from "../services/s_costumers";
 import { s_products } from "../services/s_products";
 import stores from "../../stores/GeneralStores";
+
+const LoadingHabilitado = ref<boolean>(false);
+const ocultarBoton = ref<boolean>(false);
 
 onMounted(() => {
     if (!verificarCarrito()) {
@@ -269,7 +273,7 @@ function verificarCarrito(carrito?: any): boolean {
 
 async function Productos(): Promise<any> {
     const response = await s_costumers.shoppingCartClient();
-     if (!verificarCarrito(response)) {
+    if (!verificarCarrito(response)) {
         return;
     }
 }
@@ -428,8 +432,9 @@ function ValidatePhone(value: string): void {
 }
 
 async function CheckoutSession(elemento: any): Promise<any> {
-    elemento.target.disabled = false;
-
+    LoadingHabilitado.value = true;
+    ocultarBoton.value = true;
+    
     if (!verificarCarrito()) {
         return;
     }

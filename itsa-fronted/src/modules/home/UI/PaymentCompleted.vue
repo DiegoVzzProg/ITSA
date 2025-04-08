@@ -4,6 +4,7 @@ import { s_products } from '../services/s_products';
 import { dgav, notify, site } from '../../../utils/site';
 import { useRoute } from 'vue-router';
 import stores from '../../stores/GeneralStores';
+import { s_general } from '../../services/s_general';
 
 
 const route = useRoute();
@@ -17,14 +18,12 @@ const downloadProduct = async () => {
         response = await s_products.downloadFile(btoa(site.userData().id_usuario), String(route.query.idprod));
     }
 
-    console.log(response);
-
     const message: string = dgav.dataBase.message;
     if (!site.IsNullOrEmpty(message)) {
         notify.error(message);
+        site.RedirectPage({ name: 'home' });
         return;
     }
-
 
     response.urls.forEach((element: any) => {
         const url = element.url;
@@ -40,16 +39,21 @@ const downloadProduct = async () => {
 }
 
 onMounted(async () => {
-    console.log(route.query.session_id);
-    if (route.query.session_id) {
-        stores.echoStore().reconnect();
-    }
+    if (route.query.session) {
+        const response: any = await s_general.validateSessionStripe(
+            route.query.session?.toString() ?? ""
+        );
 
-    await downloadProduct();
+        if (response?.valid) {
+            stores.echoStore().reconnect();
+            stores.echoStore().init();
+        }
+    }
+    downloadProduct();
 });
 
 onUnmounted(() => {
-    stores.echoStore().leaveCartListener();
+
 });
 
 </script>

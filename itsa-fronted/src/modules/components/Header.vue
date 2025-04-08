@@ -14,9 +14,9 @@ const LogOut = async () => {
     const response: any = s_auth.logoutUser();
     if (response) {
         site.allDeleteCookies();
-        stores.echoStore().leaveCartListener();
+        stores.echoStore().leave();
         localStorage.clear();
-
+        sessionStorage.clear();
         if (router.name == 'home') {
             window.location.reload();
         } else {

@@ -69,18 +69,37 @@ class CStripe extends Controller
                 'quantity' => 1,
             ];
 
+            $checkoutSession = [];
+
+            $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
+
             $checkoutSession = Session::create([
                 'line_items' => $lineItems,
                 'mode' => 'payment',
                 'metadata' => [
                     'user_id' => $user->id_usuario,
                 ],
-                'success_url' => config('services.stripe.checkout_success_url') . '?session_id={CHECKOUT_SESSION_ID}&key=' . $guid,
-                'cancel_url'  => config('services.stripe.checkout_cancel_url') . '?key=' . $guid,
+                'success_url' => config('services.stripe.checkout_success_url') . '?session={CHECKOUT_SESSION_ID}',
+                'cancel_url'  => config('services.stripe.checkout_cancel_url') . '?session={CHECKOUT_SESSION_ID}',
             ]);
 
+            DB::transaction(function () use (&$carritoItems, $cliente) {
+
+                $datosCompra = $carritoItems->map(fn($item) => [
+                    'id_cliente' => $cliente->id_cliente,
+                    'id_producto' => $item->id_producto,
+                    'en_proceso_de_pago' => true,
+                    'pago_confirmado' => false,
+                    'descargado' => false,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])->toArray();
+
+                TProductosCompradosCliente::insert($datosCompra);
+            });
+
             return CGeneral::CreateMessage('', 200, [
-                "redirectStripePayment" => $checkoutSession->url
+                "redirectStripePayment" => $checkoutSession['url']
             ]);
         }, $request);
     }
@@ -88,51 +107,82 @@ class CStripe extends Controller
     public static function fn_stripe_success(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
-            $event = Webhook::constructEvent(
-                $request->getContent(),
-                $request->header('Stripe-Signature'),
-                config('services.stripe.webhook_secret')
-            );
+            // Construir y verificar el evento de Stripe
+            $payload = $request->getContent();
+            $signature = $request->header('Stripe-Signature');
+            $webhookSecret = config('services.stripe.webhook_secret');
+            $event = Webhook::constructEvent($payload, $signature, $webhookSecret);
 
             if ($event->type !== 'checkout.session.completed') {
-                return;
+                throw new \Exception("Tipo de evento no válido: {$event->type}");
             }
 
+            // Extraer el usuario del objeto de sesión
             $session = $event->data->object;
             $userId = $session->metadata->user_id ?? null;
-
             if (!$userId) {
                 throw new \Exception("Usuario no encontrado en metadata");
             }
 
-            $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
-            $carritos = TCarritoCliente::with('producto')
-                ->where('id_usuario', $userId)
-                ->where('borrado', false)
-                ->get();
+            // Iniciar la transacción
+            DB::beginTransaction();
+            try {
+                // Buscar el cliente basado en el usuario
+                $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
 
-            if ($carritos->isEmpty()) {
-                return;
+                // Construir la consulta de productos comprados en proceso de pago
+                $productosQuery = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
+                    ->where('en_proceso_de_pago', true)
+                    ->update(['pago_confirmado' => true]);
+
+                // Actualizar el carrito relacionado, marcándolo como borrado
+                TCarritoCliente::where('id_usuario', $userId)
+                    ->where('borrado', false)
+                    ->update(['borrado' => true]);
+                    
+                if ($productosQuery === 0) {
+                    throw new \Exception("No se encontraron registros para confirmar");
+                }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                throw new \Exception($e->getMessage(), $e->getCode());
             }
 
-            $datosCompra = $carritos->map(fn($item) => [
-                'id_cliente' => $cliente->id_cliente,
-                'id_producto' => $item->id_producto,
-                'pago_confirmado' => true,
-                'descargado' => false,
-            ])->toArray();
-
-            DB::transaction(function () use ($carritos, $datosCompra) {
-                TProductosCompradosCliente::insert($datosCompra);
-                TCarritoCliente::whereIn('id_carrito_cliente', $carritos->pluck('id_carrito_cliente'))->update(['borrado' => true]);
-            });
-
-            $carritos = TCarritoCliente::with('producto')
+            // Notificar al sistema sobre el estado actualizado del carrito
+            $activeCartItems = TCarritoCliente::with('producto')
                 ->where('id_usuario', $userId)
                 ->where('borrado', false)
                 ->get();
 
-            CGeneral::EventCartCustomer($carritos);
+            CGeneral::EventCartCustomer($activeCartItems);
+        }, $request);
+    }
+
+    public function fn_validate_session_stripe(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $sessionId = $request->session;
+
+            if (!$sessionId) {
+                return CGeneral::CreateMessage('', 200, [
+                    "valid" => false
+                ]);
+            }
+
+            try {
+                \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+                $session = \Stripe\Checkout\Session::retrieve($sessionId);
+
+                return CGeneral::CreateMessage('', 200, [
+                    "valid" => $session->payment_status === 'paid' || $session->payment_status === 'unpaid'
+                ]);
+            } catch (\Stripe\Exception\InvalidRequestException $e) {
+                return CGeneral::CreateMessage('', 200, [
+                    "valid" => false
+                ]);
+            }
         }, $request);
     }
 }

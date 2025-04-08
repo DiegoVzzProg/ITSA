@@ -49,12 +49,14 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::prefix('products')->group(function () {
-            Route::get('/download/files/{id_usuario}', [CProductos::class, 'fn_obtener_urls_descarga_producto']);
-            Route::get('/download/file/{id_usuario}/{id_producto}', [CProductos::class, 'fn_obtener_urls_descarga_producto']);
-            Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar']);
+            Route::get('/download/files/{id_usuario}', [CProductos::class, 'fn_obtener_urls_descarga_producto'])->middleware('throttle:10,1');
+            Route::get('/download/file/{id_usuario}/{id_producto}', [CProductos::class, 'fn_obtener_urls_descarga_producto'])->middleware('throttle:10,1');
+            Route::post('/add/product/download/list', [CProductos::class, 'fn_a_producto_para_descargar'])->middleware('throttle:10,1');
             Route::post('/check', [CProductos::class, 'fn_tiene_producto']);
         });
 
         Route::get('/secret-key', [CGeneral::class, 'generarSecretKey']);
+
+        Route::post('/stripe/validate-session', [CStripe::class, 'fn_validate_session_stripe'])->middleware('throttle:10,1');
     });
 });

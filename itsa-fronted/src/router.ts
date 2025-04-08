@@ -11,6 +11,7 @@ import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
 //import { numberCartShopping } from "./modules/home/stores/CustomerStore";
 import { site } from "./utils/site";
 import stores from "./modules/stores/GeneralStores";
+import { s_general } from "./modules/services/s_general";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },
@@ -67,9 +68,46 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((_to, _from, next) => {
-  // stores.echoStore().setupCartListener();
-  // stores.echoStore().checkProduct();
+router.beforeEach(async (to, _from, next) => {
+  if (
+    to.query.session &&
+    (String(to.name).toLowerCase() == "checkout" ||
+      String(to.name).toLowerCase() == "paymentcompleted")
+  ) {
+    
+    const response: any = await s_general.validateSessionStripe(
+      to.query.session?.toString() ?? ""
+    );
+    
+    if (!response) {
+      return next({
+        name: "home",
+      });
+    }
+    
+    if (response.valid) {
+      return next();
+    } else {
+      return next({
+        name: "home",
+      });
+    }
+  }
+
+  if (
+    !site.IsNullOrEmpty(to.query.key) &&
+    (String(to.name).toLowerCase() == "checkout" ||
+      String(to.name).toLowerCase() == "paymentcompleted")
+  ) {
+    const key: string = stores.guid().value;
+    localStorage.setItem("guid", key);
+
+    if (key !== to.query.key) {
+      return next({
+        name: "home",
+      });
+    }
+  }
 
   return next();
 });

@@ -62,7 +62,7 @@ class CProductos extends Controller
                 foreach ($productos as $producto) {
                     $contenido = Storage::disk('private')->get($producto['archivo']);
                     $zip->addFile(
-                        fileName: $producto['nombre_personalizado'] ?? basename($producto['archivo']),
+                        fileName: basename($producto['archivo']),
                         data: $contenido
                     );
                 }
@@ -148,7 +148,7 @@ class CProductos extends Controller
             // Obtener compras no descargadas
             $compras = TProductosCompradosCliente::with('producto')
                 ->where('id_cliente', $cliente->id_cliente)
-                ->where('descargado', $id_producto > 0);
+                ->where('pago_confirmado', true);
 
             if ($id_producto > 0) {
                 $compras

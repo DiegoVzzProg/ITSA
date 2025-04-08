@@ -18,12 +18,16 @@ class TProductosCompradosCliente extends Model
         'id_cliente',
         'id_producto',
         'pago_confirmado',
-        'descargado'
+        'descargado',
+        'created_at',
+        'updated_at',
+        'en_proceso_de_pago'
     ];
 
     protected $casts = [
         'pago_confirmado' => 'boolean',
-        'descargado' => 'boolean'
+        'descargado' => 'boolean',
+        'en_proceso_de_pago' => 'boolean'
     ];
 
     public function producto()

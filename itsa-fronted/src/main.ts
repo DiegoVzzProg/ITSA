@@ -14,6 +14,6 @@ app.use(router);
 app.use(pinia);
 pinia.use(piniaPluginPersistedstate);
 
-stores.echoStore().initEcho();
+stores.echoStore().init();
 
 app.mount("#app");

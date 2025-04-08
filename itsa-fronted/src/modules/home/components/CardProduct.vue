@@ -4,7 +4,9 @@ import { site } from '../../../utils/site';
 import { s_costumers } from '../services/s_costumers';
 import { s_products } from '../services/s_products';
 import stores from '../../stores/GeneralStores';
+import Loading from '../../components/Loading.vue';
 const productoComprado = ref<boolean>(false);
+const loadingHabilitado = ref<boolean>(true);
 
 const props = defineProps<{
     id_producto: number;
@@ -55,13 +57,17 @@ const habilitarBotonGoToCart = async () => {
         existeArticuloEnCarrito.value = response.existe;
     }
 }
+
 onMounted(async () => {
     await habilitarBotonGoToCart();
-
     await checkProduct();
+    loadingHabilitado.value = false;
 });
 
 const checkProduct = async () => {
+    if (!site.userData())
+        return;
+
     const response = await s_products.checkProduct(props.id_producto);
 
     if (!response)
@@ -92,7 +98,7 @@ onUnmounted(() => {
         </p>
         <p class="w-full whitespace-pre-line" v-html="descripcion">
         </p>
-        <div class="flex">
+        <div class="flex" v-if="!loadingHabilitado">
             <button v-if="existeArticuloEnCarrito && !productoComprado" v-on:click="GoCheckOut()"
                 class="border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5">
                 Go to cart
@@ -107,6 +113,7 @@ onUnmounted(() => {
                 {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
             </button>
         </div>
+        <Loading v-else />
     </div>
 </template>
 

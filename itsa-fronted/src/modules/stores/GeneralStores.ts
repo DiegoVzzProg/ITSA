@@ -15,7 +15,7 @@ const stores = reactive({
       },
     },
   }),
-  echoStore: defineStore("cart ", {
+  echoStore: defineStore("cart", {
     state: () => ({
       carrito: [] as any[],
       totales: { subtotal: "0.00", impuesto: "0.00", total: "0.00" },
@@ -23,44 +23,47 @@ const stores = reactive({
       producto_comprado: false,
       isConnected: false,
     }),
-    persist: true,
+    persist: {
+      omit: ["isConnected", "producto_comprado"],
+      storage: localStorage,
+      key: "cart",
+    },
     actions: {
-      // Inicializa Echo y maneja reconexión
-      initEcho() {
+      init() {
         if (this.isConnected) return;
 
         echo.connector.pusher.connection.bind("connected", () => {
           this.isConnected = true;
           this.setupCartListener();
           this.checkProduct();
+          console.log("Conectado a Echo");
         });
 
         echo.connector.pusher.connection.bind("disconnected", () => {
           this.isConnected = false;
+          console.log("Desconectado de Echo");
         });
       },
 
-      // Reconexión manual
       reconnect() {
         if (!this.isConnected && echo) {
+          console.log("Intentando reconectar...");
           echo.disconnect();
           echo.connect();
         }
       },
+
       setupCartListener() {
         echo.channel("cart-channel").listen(".cart.updated", (data: any) => {
           this.carrito = data.carrito;
           this.totales = data.totales;
           this.total_productos = data.total_productos;
-          console.log("entro");
 
           if (data.carrito.length == 0) {
+            console.log("Carrito vacío, redirigiendo a home...");
             site.RedirectPage({ name: "home" });
           }
         });
-      },
-      leaveCartListener() {
-        echo.leave("cart-channel");
       },
       checkProduct() {
         echo
@@ -69,8 +72,9 @@ const stores = reactive({
             this.producto_comprado = data.producto_comprado;
           });
       },
-      leaveCheckProductListener() {
+      leave() {
         echo.leave("check-product-channel");
+        echo.leave("cart-channel");
       },
     },
   }),

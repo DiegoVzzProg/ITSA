@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import File from '../components/File.vue';
+
 </script>
 
 <template>

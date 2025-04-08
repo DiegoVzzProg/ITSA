@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import File from '../components/File.vue';
+
 
 </script>
 
@@ -67,8 +69,7 @@
         </div>
         <div
             class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]">
-            <File file="terms_and_conditions.png" type="img" class="w-full max-w-[210px] h-full max-h-[200px]">
-            </File>
+            <File file="terms_and_conditions.png" type="img" class="w-full max-w-[210px] h-full max-h-[200px]" />
         </div>
     </div>
 </template>
