@@ -248,7 +248,7 @@ class CUsuarios extends Controller
             ]);
 
             if ($validator->fails()) {
-                return CGeneral::CreateMessage('There were validation errors', 599, $validator->errors());
+                return CGeneral::CreateMessage('There were validation errors', 599, ["exito" => false, "errors" => $validator->errors()]);
             }
 
             $credentials = $request->only('email');
@@ -257,13 +257,13 @@ class CUsuarios extends Controller
 
             if (!$usuario) {
                 Log::info('Intento de recuperación de contraseña para email inexistente o inactivo: ' . $credentials['email']);
-                return CGeneral::CreateMessage('A message will be sent to reset the password', 599, null);
+                return CGeneral::CreateMessage('A message will be sent to reset the password', 599, ["exito" => false]);
             }
 
             $token = Password::CreateToken($usuario);
 
             $usuario->notify(new \App\Notifications\NotForgotPassword($token));
-            return CGeneral::CreateMessage('A message will be sent to reset the password', 200, null);
+            return CGeneral::CreateMessage('A message will be sent to reset the password', 200, ["exito" => true]);
         }, $request);
     }
 }

@@ -41,5 +41,7 @@ return [
         'checkout_success_url' => env('STRIPE_CHECKOUT_SUCCESS_URL'),
         'checkout_cancel_url' => env('STRIPE_CHECKOUT_CANCEL_URL'),
     ],
-
+    'frontend' => [
+        'url' => env('FRONTEND_URL'),
+    ]
 ];

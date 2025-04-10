@@ -12,7 +12,7 @@ class NotForgotPassword extends Notification
     use Queueable;
 
     public $token;
-
+    private $urlHostFrontend = "http://localhost:5173";
     /**
      * Create a new notification instance.
      */
@@ -40,13 +40,13 @@ class NotForgotPassword extends Notification
             'token' => $this->token,
             'email' => $notifiable->email,
         ]);
-        $url = env('FRONTEND_URL') . "/forgot/password?" . $queryParams;
+        $url = $this->urlHostFrontend . "/forgot/password?" . $queryParams;
 
         return (new MailMessage)
-            ->subject('Recupera tu contraseña')
-            ->line('Hemos recibido una solicitud para restablecer tu contraseña.')
-            ->action('Restablecer Contraseña', $url)
-            ->line('Si no solicitaste esto, ignora este mensaje.');
+            ->subject('Recover your password')
+            ->line('We have received a request to reset your password.')
+            ->action('Reset Password', $url)
+            ->line('If you did not request this, ignore this message.');
     }
 
     /**

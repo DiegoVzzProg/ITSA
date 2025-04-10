@@ -82,18 +82,15 @@ export const s_auth = {
   async restorePassword(data: Record<string, any>) {
     dgav.dataBase.message = "";
 
-    const response: any = await dgav.apiRequest(
+    await dgav.apiRequest(
       `${urlAuth}/password/forgot`,
       dgav.httpMethod.POST,
       data
     );
-    const message: string = dgav.dataBase.message;
-    if (!site.IsNullOrEmpty(message)) {
-      notify.error(message);
-      return null;
-    }
 
-    return response;
+    const message: string = dgav.dataBase.message;
+    notify.success(message);
+    return null;
   },
 
   async secretKey() {

@@ -48,12 +48,12 @@ const routes: Array<RouteRecordRaw> = [
     component: Register,
     meta: { layout: "Auth" },
   },
-  // {
-  //   path: "/forgot/password",
-  //   name: "forgotpassword",
-  //   component: ForgotPassword,
-  //   meta: { layout: "Auth" },
-  // },
+  {
+    path: "/forgot/password",
+    name: "forgotpassword",
+    component: ForgotPassword,
+    meta: { layout: "Auth" },
+  },
   {
     path: "/payment/completed",
     name: "paymentcompleted",
@@ -74,17 +74,16 @@ router.beforeEach(async (to, _from, next) => {
     (String(to.name).toLowerCase() == "checkout" ||
       String(to.name).toLowerCase() == "paymentcompleted")
   ) {
-    
     const response: any = await s_general.validateSessionStripe(
       to.query.session?.toString() ?? ""
     );
-    
+
     if (!response) {
       return next({
         name: "home",
       });
     }
-    
+
     if (response.valid) {
       return next();
     } else {

@@ -28,8 +28,9 @@
                 </div>
             </div>
             <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]" v-if="ForgotPassword">
-                <button class="underline underline-offset-2" v-on:click="RetrievePassword()">forgot
-                    password?</button>
+                <button class="underline underline-offset-2" v-on:click="RetrievePassword()"
+                    v-if="DeshabilitarBotonPass">forgot password?</button>
+                <Loading v-else />
             </div>
             <Loading v-if="responseLogin" />
             <button id="btnLogin" @click="btnLogin_OnClick()" v-else type="submit"
@@ -58,6 +59,7 @@ import { s_auth } from '../services/s_auth';
 import { s_costumers } from '../../home/services/s_costumers';
 const ForgotPassword = ref<boolean>(false)
 const responseLogin = ref<any>(null);
+const DeshabilitarBotonPass = ref<boolean>(true);
 
 const FormLogin = reactive({
     User: {
@@ -93,9 +95,12 @@ onMounted(() => {
 
 
 async function RetrievePassword(): Promise<any> {
+    DeshabilitarBotonPass.value = false;
     await s_auth.restorePassword({
         email: FormLogin.User.email.value
     });
+
+    DeshabilitarBotonPass.value = true;
 }
 
 
