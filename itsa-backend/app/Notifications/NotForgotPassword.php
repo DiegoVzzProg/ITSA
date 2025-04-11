@@ -37,8 +37,7 @@ class NotForgotPassword extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         $queryParams = http_build_query([
-            'token' => $this->token,
-            'email' => $notifiable->email,
+            'token' => $this->token
         ]);
         $url = $this->urlHostFrontend . "/forgot/password?" . $queryParams;
 

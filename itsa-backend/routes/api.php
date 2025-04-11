@@ -25,8 +25,9 @@ Route::prefix('v1')->group(function () {
     Route::prefix('auth')->group(function () {
         Route::post('/login', [CUsuarios::class, 'fn_login'])->middleware('throttle:5,1');
         Route::post('/register', [CUsuarios::class, 'fn_register'])->middleware('throttle:5,1');
-        Route::post('/password/forgot', [CUsuarios::class, 'fn_forgot_password_restore'])->middleware('throttle:3,1');;
+        Route::post('/password/forgot', [CUsuarios::class, 'fn_forgot_password_restore'])->middleware('throttle:10,1');
         Route::post('/token/refresh', [CUsuarios::class, 'fn_refresh_token'])->middleware('throttle:2,1');
+        Route::post('/password/forgot/confirm', [CUsuarios::class, 'fn_forgot_password_confirm'])->middleware('throttle:2,1');
     });
 
     Route::middleware('auth:sanctum')->group(function () { //, 'session.expire'

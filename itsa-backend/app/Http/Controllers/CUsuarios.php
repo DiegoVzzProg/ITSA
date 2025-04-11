@@ -266,4 +266,32 @@ class CUsuarios extends Controller
             return CGeneral::CreateMessage('A message will be sent to reset the password', 200, ["exito" => true]);
         }, $request);
     }
+
+    public static function fn_forgot_password_confirm(Request $request)
+    {
+        return CGeneral::invokeFunctionAPI(function () use ($request) {
+
+            $credentials = $request->only('email', 'password', 'token');
+
+            $usuario = TUsuarios::where('email', $credentials['email'])
+                ->where('activo', true)
+                ->first();
+
+            if (!$usuario) {
+                throw new \Exception('User not found', 1);
+            }
+
+            if (!Password::tokenExists($usuario, $credentials['token'])) {
+                throw new \Exception('Invalid token', 1);
+            }
+
+            $usuario->update([
+                'password' => Hash::make($credentials['password'])
+            ]);
+
+            Password::deleteToken($usuario);
+
+            return CGeneral::CreateMessage('', 200, ["redirect" => 'login']);
+        }, $request);
+    }
 }

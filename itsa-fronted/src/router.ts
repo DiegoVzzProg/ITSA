@@ -12,6 +12,7 @@ import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
 import { site } from "./utils/site";
 import stores from "./modules/stores/GeneralStores";
 import { s_general } from "./modules/services/s_general";
+import ForgotPassword from "./modules/auth/UI/ForgotPassword.vue";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", redirect: "/home" },

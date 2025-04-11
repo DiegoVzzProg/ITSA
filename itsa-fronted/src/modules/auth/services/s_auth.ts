@@ -1,5 +1,11 @@
 import { dgav, notify, site } from "../../../utils/site";
 
+interface IconfirmRestorePassword {
+  email: string;
+  password: string;
+  token: string;
+}
+
 const urlAuth = "/auth";
 
 const auth = async (
@@ -100,6 +106,24 @@ export const s_auth = {
       dgav.httpMethod.GET
     );
     const message: string = dgav.dataBase.message;
+    if (!site.IsNullOrEmpty(message)) {
+      notify.error(message);
+      return null;
+    }
+
+    return response;
+  },
+
+  async confirmRestorePassword(data: IconfirmRestorePassword) {
+    dgav.dataBase.message = "";
+    const response: any = await dgav.apiRequest(
+      `${urlAuth}/password/forgot/confirm`,
+      dgav.httpMethod.POST,
+      data
+    );
+
+    const message: string = dgav.dataBase.message;
+
     if (!site.IsNullOrEmpty(message)) {
       notify.error(message);
       return null;
