@@ -32,7 +32,7 @@
                     v-if="DeshabilitarBotonPass">forgot password?</button>
                 <Loading v-else />
             </div>
-            <Loading v-if="responseLogin" />
+            <Loading v-if="loading" />
             <button id="btnLogin" @click="btnLogin_OnClick()" v-else type="submit"
                 class="bg-black py-5 px-3 rounded-full text-white">
                 login
@@ -60,7 +60,7 @@ import { s_costumers } from '../../home/services/s_costumers';
 const ForgotPassword = ref<boolean>(false)
 const responseLogin = ref<any>(null);
 const DeshabilitarBotonPass = ref<boolean>(true);
-
+const loading = ref<boolean>(false);
 const FormLogin = reactive({
     User: {
         email: {
@@ -152,6 +152,7 @@ function ValidatePassword(value: string): void {
 }
 
 async function btnLogin_OnClick(): Promise<void> {
+    loading.value = true;
     const UserForm1: any = FormLogin.User;
     Object.keys(UserForm1).forEach((key) => {
         ValidateForm(UserForm1[key]);
@@ -204,6 +205,7 @@ async function btnLogin_OnClick(): Promise<void> {
 
         if (userData) {
             await s_costumers.shoppingCartClient();
+            loading.value = false;
             site.RedirectPage({ name: 'home' });
         }
     }
