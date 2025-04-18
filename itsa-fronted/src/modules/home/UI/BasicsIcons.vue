@@ -119,7 +119,6 @@ import CardProduct from '../components/CardProduct.vue';
 import { $v2 } from '../../../utils/JQueryV2';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { s_products } from '../services/s_products';
 
 const headerComponent = ref<HTMLElement | null>(null);
 

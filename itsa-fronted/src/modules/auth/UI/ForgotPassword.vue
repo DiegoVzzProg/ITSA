@@ -21,7 +21,7 @@
 
         <div class="flex w-full max-w-md flex-col gap-3 h-[min(500px,100%)]">
             <p class="px-[clamp(18px,3vw,28px)]">
-                create a new user
+                Update your password
             </p>
             <div class="flex flex-col gap-1" v-for="(item, index) in FormRegister.User" :key="index">
                 <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
@@ -32,7 +32,8 @@
                 </span>
             </div>
             <div class="flex flex-col w-full max-w-screen-lg max-[1020px]:max-w-md">
-                <button v-on:click="btnConfirmForm()" id="btnConfirmForm" type="button"
+                <Loading v-if="loading" />
+                <button v-on:click="btnConfirmForm()" v-else id="btnConfirmForm" type="button"
                     class="bg-black py-5 px-3 rounded-full text-white">
                     confirm
                 </button>
@@ -43,11 +44,13 @@
 
 <script setup lang="ts">
 //Password reset successfully
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { notify, site } from '../../../utils/site';
 import { s_auth } from '../services/s_auth';
 import { useRoute } from 'vue-router';
+import Loading from '../../components/Loading.vue';
 
+const loading = ref<boolean>(false);
 const route = useRoute();
 
 const FormRegister = reactive({
@@ -101,8 +104,8 @@ function ValidateRegistrationForm(item: any) {
 
 function ValidatePassword(value: string) {
     const password = FormRegister.User.password;
-    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(value)) {
-        password.error = `8 or more characters, At least one uppercase letter, At least one number, At least one special character`;
+    if (value.length < 8) {
+        password.error = "Password must be at least 8 characters long";
         return;
     }
     if (value.length > 20) {
@@ -138,6 +141,7 @@ function ValidateEmail(value: string) {
 }
 
 async function btnConfirmForm() {
+    loading.value = true;
     const UserForm1: any = FormRegister.User;
     Object.keys(UserForm1).forEach((key) => {
         ValidateRegistrationForm(UserForm1[key]);
@@ -162,7 +166,8 @@ async function btnConfirmForm() {
 
     FormRegister.Reset();
     notify.success("Password reset successfully");
-    site.RedirectPage({ name: 'login' });
+    loading.value = false;
+    site.RedirectPage({ name: response.redirect });
 }
 
 </script>

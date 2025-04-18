@@ -5,17 +5,45 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Laravel</title>
+    <title>ITSA Studio</title>
 
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
 
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
-    <p>Gracias por unirte a nuestra plataforma.</p>
-    <p>Estamos encantados de tenerte con nosotros.</p>
+    <div class="container">
+        <h1>Recover your password</h1>
+        <p>We have received a request to reset your password.</p>
+        <p>
+            <a class="button" href="{{ $url }}">Reset password</a>
+        </p>
+        <p>If you did not request this change, ignore this message.</p>
+        <p>Best regards,<br>{{ config('app.name') }}</p>
+    </div>
 </body>
 
 </html>

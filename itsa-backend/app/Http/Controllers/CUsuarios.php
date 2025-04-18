@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ForgotPasswordMail;
 use App\Models\TClientes;
 use App\Models\TPaises;
 use App\Models\TUsuarios;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -261,8 +263,11 @@ class CUsuarios extends Controller
             }
 
             $token = Password::CreateToken($usuario);
+            $queryParams = http_build_query(['token' => $token]);
+            $url = env('FRONTEND_URL') . "/forgot/password?" . $queryParams;
 
-            $usuario->notify(new \App\Notifications\NotForgotPassword($token));
+            Mail::to($usuario->email)->send(new ForgotPasswordMail($url));
+
             return CGeneral::CreateMessage('A message will be sent to reset the password', 200, ["exito" => true]);
         }, $request);
     }

@@ -88,7 +88,7 @@
                     </div>
                 </div>
                 <div class="flex flex-col w-full max-w-screen-lg max-[1020px]:max-w-md">
-                    <Loading v-if="responseRegister" />
+                    <Loading v-if="loading" />
                     <button v-on:click="btnRegisterUser_OnClick()" v-else id="btnContinueForm" type="button"
                         class="bg-black py-5 px-3 rounded-full text-white">
                         register
@@ -297,8 +297,8 @@ function ValidateRegistrationForm(item: any) {
 
 function ValidatePassword(value: string) {
     const password = FormRegister.User.password;
-    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(value)) {
-        password.error = `8 or more characters, At least one uppercase letter, At least one number, At least one special character`;
+    if (value.length < 8) {
+        password.error = "Password must be at least 8 characters long.";
         return;
     }
     if (value.length > 20) {
@@ -459,6 +459,8 @@ function ValidatePhone(value: string) {
     phone.error = "";
 }
 
+const loading = ref<boolean>(false);
+
 async function btnRegisterUser_OnClick() {
     const CustomerForm1: any = FormRegister.Customer.Form1;
     Object.keys(CustomerForm1).forEach((key) => {
@@ -483,6 +485,7 @@ async function btnRegisterUser_OnClick() {
     )
         return;
 
+    loading.value = true;
     const UserForm1: any = FormRegister.User;
 
     const data = {
@@ -517,25 +520,26 @@ async function btnRegisterUser_OnClick() {
     );
 
     const response: any = await s_auth.secretKey();
-    if (response.secretKey) {
-        site.setCookies(
-            {
-                "e.k": response.secretKey,
-            },
-            false
-        );
-
-        site.LocalStorage("set", {
-            logged_in_successfully: false
-        });
-
-        site.setCookies({
-            "e.u.d": JSON.stringify(responseRegister.value.user_data),
-            "e.c.d": JSON.stringify(responseRegister.value.client_data),
-        });
-        site.RedirectPage({ name: 'home' });
+    if (!response.secretKey) {
+        return;
     }
+    site.setCookies(
+        {
+            "e.k": response.secretKey,
+        },
+        false
+    );
 
+    site.LocalStorage("set", {
+        logged_in_successfully: false
+    });
+
+    site.setCookies({
+        "e.u.d": JSON.stringify(responseRegister.value.user_data),
+        "e.c.d": JSON.stringify(responseRegister.value.client_data),
+    });
+    site.RedirectPage({ name: 'home' });
+    loading.value = false;
 }
 
 

@@ -34,7 +34,7 @@ class NotForgotPassword extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         $queryParams = http_build_query([
             'token' => $this->token
@@ -42,10 +42,8 @@ class NotForgotPassword extends Notification
         $url = $this->urlHostFrontend . "/forgot/password?" . $queryParams;
 
         return (new MailMessage)
-            ->subject('Recover your password')
-            ->line('We have received a request to reset your password.')
-            ->action('Reset Password', $url)
-            ->line('If you did not request this, ignore this message.');
+            ->subject('Recupera tu contraseña')
+            ->markdown('email', ['url' => $url]);
     }
 
     /**
