@@ -15,8 +15,7 @@ import { s_general } from "./modules/services/s_general";
 import ForgotPassword from "./modules/auth/UI/ForgotPassword.vue";
 
 const routes: Array<RouteRecordRaw> = [
-  { path: "/", redirect: "/home" },
-  { path: "/home", name: "home", component: Home, meta: { layout: "Main" } },
+  { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
   {
     path: "/gallery/basics-icons",
     name: "basicsicons",
@@ -96,8 +95,8 @@ router.beforeEach(async (to, _from, next) => {
 
   if (
     !site.IsNullOrEmpty(to.query.key) &&
-    (String(to.name).toLowerCase() == "checkout" ||
-      String(to.name).toLowerCase() == "paymentcompleted")
+    (String(to.name).toLowerCase() != "checkout" ||
+      String(to.name).toLowerCase() != "paymentcompleted")
   ) {
     const key: string = stores.guid().value;
     localStorage.setItem("guid", key);

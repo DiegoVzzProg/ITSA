@@ -36,18 +36,15 @@ const stores = reactive({
           this.isConnected = true;
           this.setupCartListener();
           this.checkProduct();
-          console.log("Conectado a Echo");
         });
 
         echo.connector.pusher.connection.bind("disconnected", () => {
           this.isConnected = false;
-          console.log("Desconectado de Echo");
         });
       },
 
       reconnect() {
         if (!this.isConnected && echo) {
-          console.log("Intentando reconectar...");
           echo.disconnect();
           echo.connect();
         }
@@ -60,8 +57,7 @@ const stores = reactive({
           this.total_productos = data.total_productos;
 
           if (data.carrito.length == 0) {
-            console.log("Carrito vacío, redirigiendo a home...");
-            site.RedirectPage({ name: "home" });
+             site.RedirectPage({ name: "home" });
           }
         });
       },

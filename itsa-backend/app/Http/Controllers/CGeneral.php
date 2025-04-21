@@ -91,19 +91,23 @@ class CGeneral extends Controller
         }
     }
 
-    public static function EventCartCustomer($carrito)
+    private static function ConfigPusher()
     {
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
+        $config = config('broadcasting.connections.pusher');
+        return new Pusher(
+            $config['key'],
+            $config['secret'],
+            $config['app_id'],
             [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
+                'cluster' => $config['options']['cluster'],
+                'useTLS'  => $config['options']['useTLS'],
             ]
         );
+    }
 
-        $pusher->trigger(
+    public static function EventCartCustomer($carrito)
+    {
+        self::ConfigPusher()->trigger(
             'cart-channel',
             'cart.updated',
             [
@@ -116,17 +120,7 @@ class CGeneral extends Controller
 
     public static function EventCheckProduct($existe)
     {
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true,
-            ]
-        );
-
-        $pusher->trigger(
+        self::ConfigPusher()->trigger(
             'check-product-channel',
             'check.product',
             [
