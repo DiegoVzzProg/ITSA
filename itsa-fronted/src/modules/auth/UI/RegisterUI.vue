@@ -104,9 +104,10 @@ import { onMounted, reactive, ref } from 'vue';
 import Loading from '../../components/Loading.vue';
 import { site } from '../../../utils/site';
 import SelectCountry from '../../components/SelectCountry.vue';
-import { s_auth } from '../services/s_auth';
+import { AuthClass, IRegister } from '../services/auth-service';
+import { ApiResponse } from '../../../utils/Api.interface';
 const ContinueRegistration = ref<number>(0);
-const responseRegister = ref<any>(null);
+
 const FormLeyoTerms = reactive({
     value: false,
     error: "",
@@ -485,7 +486,7 @@ async function btnRegisterUser_OnClick() {
     loading.value = true;
     const UserForm1: any = FormRegister.User;
 
-    const data = {
+    const data: IRegister = {
         user_name: UserForm1.user_name.value,
         email: UserForm1.email.value,
         password: UserForm1.password.value,
@@ -499,9 +500,9 @@ async function btnRegisterUser_OnClick() {
         telefono: CustomerForm1.phone.value,
     };
 
-    responseRegister.value = await s_auth.registerUser(data);
+    const responseRegister: ApiResponse = await new AuthClass().Register(data);
 
-    if (!responseRegister.value) {
+    if (!responseRegister.data) {
         ContinueRegistration.value = 0;
         FormRegister.Reset();
         loading.value = false;
@@ -510,21 +511,23 @@ async function btnRegisterUser_OnClick() {
 
     site.setCookies(
         {
-            "e.t": responseRegister.value.token,
-            "r.t": responseRegister.value.refresh_token,
-            "s.t": responseRegister.value.session_token,
+            "e.t": responseRegister.data.token,
+            "r.t": responseRegister.data.refresh_token,
+            "s.t": responseRegister.data.session_token,
         },
         false,
         1
     );
 
-    const response: any = await s_auth.secretKey();
-    if (!response.secretKey) {
+    const response: ApiResponse = await new AuthClass().secretKey();
+
+    if (!response.data) {
         return;
     }
+
     site.setCookies(
         {
-            "e.k": response.secretKey,
+            "e.k": response.data.secretKey,
         },
         false
     );
@@ -534,8 +537,8 @@ async function btnRegisterUser_OnClick() {
     });
 
     site.setCookies({
-        "e.u.d": JSON.stringify(responseRegister.value.user_data),
-        "e.c.d": JSON.stringify(responseRegister.value.client_data),
+        "e.u.d": JSON.stringify(responseRegister.data.user_data),
+        "e.c.d": JSON.stringify(responseRegister.data.client_data),
     });
     site.RedirectPage({ name: 'home' });
     loading.value = false;

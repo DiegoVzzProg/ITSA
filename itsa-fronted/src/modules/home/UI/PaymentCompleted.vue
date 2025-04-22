@@ -1,31 +1,35 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue';
-import { s_products } from '../services/s_products';
-import { dgav, notify, site } from '../../../utils/site';
+import { site } from '../../../utils/site';
 import { useRoute } from 'vue-router';
 import stores from '../../stores/GeneralStores';
-import { s_general } from '../../services/s_general';
+import { IDownloadFile, IDownloadFiles, ProductsClass } from '../services/products-service';
+import { ApiResponse } from '../../../utils/Api.interface';
+import { GeneralClass, IvalidateSessionStripe } from '../../services/general-service';
 
 
 const route = useRoute();
 
 const downloadProduct = async () => {
-    dgav.dataBase.message = "";
-    let response;
+    let response: ApiResponse;
+
     if (site.IsNullOrEmpty(route.query.idprod)) {
-        response = await s_products.downloadFiles(btoa(site.userData().id_usuario));
+        const data: IDownloadFiles = {
+            id_usuario: btoa(site.userData().id_usuario)
+        }
+        response = await new ProductsClass().downloadFiles(data);
     } else {
-        response = await s_products.downloadFile(btoa(site.userData().id_usuario), String(route.query.idprod));
+        const data: IDownloadFile = {
+            id_usuario: btoa(site.userData().id_usuario),
+            id_producto: String(route.query.idprod)
+        }
+        response = await new ProductsClass().downloadFile(data);
     }
 
-    const message: string = dgav.dataBase.message;
-    if (!site.IsNullOrEmpty(message)) {
-        notify.error(message);
-        site.RedirectPage({ name: 'home' });
+    if (!response.data)
         return;
-    }
 
-    response.urls.forEach((element: any) => {
+    response.data.urls.forEach((element: any) => {
         const url = element.url;
 
         const a = document.createElement('a');
@@ -40,11 +44,14 @@ const downloadProduct = async () => {
 
 onMounted(async () => {
     if (route.query.session) {
-        const response: any = await s_general.validateSessionStripe(
-            route.query.session?.toString() ?? ""
-        );
 
-        if (response?.valid) {
+        const params: IvalidateSessionStripe = {
+            session: route.query.session?.toString() ?? ""
+        };
+
+        const response: ApiResponse = await new GeneralClass().validateSessionStripe(params);
+
+        if (response.data?.valid) {
             stores.echoStore().reconnect();
             stores.echoStore().init();
         }

@@ -259,7 +259,7 @@ class CUsuarios extends Controller
 
             if (!$usuario) {
                 Log::info('Intento de recuperación de contraseña para email inexistente o inactivo: ' . $credentials['email']);
-                return CGeneral::CreateMessage('A message will be sent to reset the password', 599, ["exito" => false]);
+                return CGeneral::CreateMessage('non-existent or inactive email', 599, ["exito" => false]);
             }
 
             $token = Password::CreateToken($usuario);

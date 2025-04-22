@@ -65,7 +65,8 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import { site } from "../../../utils/site";
 import File from "../components/File.vue";
 import Loading from "../../components/Loading.vue";
-import { s_products } from "../services/s_products";
+import { ApiResponse } from "../../../utils/Api.interface";
+import { IListProducts, ProductsClass } from "../services/products-service";
 //import { numberCartShopping } from "../stores/CustomerStore";
 
 const productos = ref<any>([]);
@@ -121,15 +122,19 @@ onMounted(async () => {
 
 onBeforeUnmount(() => { });
 
-async function Productos() {
-  const response: any = await s_products.listProducts({
-    id_producto: 0,
-  });
-
-  if (response) {
-    productos.value = response;
+const Productos = async () => {
+  const parameters: IListProducts = {
+    id_producto: 0
   }
+
+  const response: ApiResponse = await new ProductsClass().listProducts(parameters);
+
+  if (!response.data) {
+    return;
+  }
+  productos.value = response.data;
 }
+
 </script>
 
 <style scoped>

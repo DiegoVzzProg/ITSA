@@ -157,10 +157,11 @@ import { onMounted, onUnmounted, ref } from "vue";
 import File from "../components/File.vue";
 import CardProduct from "../components/CardProduct.vue";
 import { site } from "../../../utils/site";
-import { s_products } from "../services/s_products";
 import { $v2 } from "../../../utils/JQueryV2";
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { IListProducts, ProductsClass } from "../services/products-service";
+import { ApiResponse } from "../../../utils/Api.interface";
 const products: any = ref<any>(null);
 
 onMounted(async () => {
@@ -217,9 +218,15 @@ onMounted(async () => {
         }
     });
 
-    products.value = await s_products.listProducts({
-        id_producto: 2,
-    });
+    const data: IListProducts = {
+        id_producto: 2
+    }
+    const response: ApiResponse = await new ProductsClass().listProducts(data);
+
+    if (!response.data) {
+        return;
+    }
+    products.value = response.data;
 });
 
 onUnmounted(() => {

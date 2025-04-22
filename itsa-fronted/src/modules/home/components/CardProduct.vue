@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import { site } from '../../../utils/site';
-import { s_costumers } from '../services/s_costumers';
-import { s_products } from '../services/s_products';
-import stores from '../../stores/GeneralStores';
 import Loading from '../../components/Loading.vue';
+import { ProductsClass } from '../services/products-service';
+import { ApiResponse } from '../../../utils/Api.interface';
+import { CostumersClass, IAddProduct, ICheckProductInShoppingCart } from '../services/costumers-service';
 const productoComprado = ref<boolean>(false);
 const loadingHabilitado = ref<boolean>(true);
 
@@ -19,12 +19,15 @@ const props = defineProps<{
 const AddCartCostumer = async () => {
     const userData = site.userData();
     if (userData) {
-        const response: any = await s_costumers.addProduct({
+
+        const params: IAddProduct = {
             id_producto: props.id_producto,
             descripcion: props.subtitulo
-        });
+        }
 
-        if (response) {
+        const response: ApiResponse = await new CostumersClass().addProduct(params);
+
+        if (response.data) {
             site.RedirectPage({ name: 'home' });
         }
 
@@ -49,13 +52,16 @@ const habilitarBotonGoToCart = async () => {
         return;
     }
 
-    const response: any = await s_costumers.checkProductInShoppingCart({
+    const params: ICheckProductInShoppingCart = {
         id_producto: props.id_producto
-    });
-
-    if (response) {
-        existeArticuloEnCarrito.value = response.existe;
     }
+    const response: ApiResponse = await new CostumersClass().checkProductInShoppingCart(params);
+
+    if (!response.data) {
+        return;
+    }
+
+    existeArticuloEnCarrito.value = response.data.existe;
 }
 
 onMounted(async () => {
@@ -68,12 +74,16 @@ const checkProduct = async () => {
     if (!site.userData())
         return;
 
-    const response = await s_products.checkProduct(props.id_producto);
+    const params: any = {
+        id_producto: props.id_producto
+    }
 
-    if (!response)
+    const response: ApiResponse = await new ProductsClass().checkProduct(params);
+
+    if (!response.data)
         return;
 
-    productoComprado.value = stores.echoStore().producto_comprado;
+    productoComprado.value = response.data.producto_comprado;
 }
 
 const downloadProduct = async () => {

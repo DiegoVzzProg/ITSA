@@ -46,9 +46,10 @@
 //Password reset successfully
 import { reactive, ref } from 'vue';
 import { notify, site } from '../../../utils/site';
-import { s_auth } from '../services/s_auth';
 import { useRoute } from 'vue-router';
 import Loading from '../../components/Loading.vue';
+import { AuthClass, IConfirmRestorePassword } from '../services/auth-service';
+import { ApiResponse } from '../../../utils/Api.interface';
 
 const loading = ref<boolean>(false);
 const route = useRoute();
@@ -154,20 +155,22 @@ async function btnConfirmForm() {
     )
         return;
 
-    const response: any = await s_auth.confirmRestorePassword({
+    const params: IConfirmRestorePassword = {
         email: FormRegister.User.email.value,
         password: FormRegister.User.password.value,
         token: String(route.query.token) ?? ""
-    });
+    }
 
-    if (!response) {
+    const response: ApiResponse = await new AuthClass().confirmRestorePassword(params);
+
+    if (!response.data) {
         return;
     }
 
     FormRegister.Reset();
     notify.success("Password reset successfully");
     loading.value = false;
-    site.RedirectPage({ name: response.redirect });
+    site.RedirectPage({ name: response.data.redirect });
 }
 
 </script>

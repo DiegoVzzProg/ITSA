@@ -52,13 +52,12 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive, ref } from 'vue';
-import { site } from '../../../utils/site';
+import { notify, site } from '../../../utils/site';
 import Loading from '../../components/Loading.vue';
-import { s_auth } from '../services/s_auth';
-
-import { s_costumers } from '../../home/services/s_costumers';
+import { CostumersClass } from '../../home/services/costumers-service';
+import { AuthClass, ILogin, IRestorePassword } from '../services/auth-service';
+import { ApiResponse } from '../../../utils/Api.interface';
 const ForgotPassword = ref<boolean>(false)
-const responseLogin = ref<any>(null);
 const DeshabilitarBotonPass = ref<boolean>(true);
 const loading = ref<boolean>(false);
 const FormLogin = reactive({
@@ -96,9 +95,16 @@ onMounted(() => {
 
 async function RetrievePassword(): Promise<any> {
     DeshabilitarBotonPass.value = false;
-    await s_auth.restorePassword({
+
+    const params: IRestorePassword = {
         email: FormLogin.User.email.value
-    });
+    };
+
+    const response: ApiResponse = await new AuthClass().restorePassword(params);
+
+    if (response.data?.exito) {
+        notify.success(response.data.message);
+    }
 
     DeshabilitarBotonPass.value = true;
 }
@@ -159,14 +165,15 @@ async function btnLogin_OnClick(): Promise<void> {
 
     if (UserForm1.email.error || UserForm1.password.error) return;
     loading.value = true;
-    const data: any = {
+
+    const params: ILogin = {
         email: UserForm1.email.value,
-        password: UserForm1.password.value,
+        password: UserForm1.password.value
     };
 
-    responseLogin.value = await s_auth.loginUser({ email: data.email, password: data.password });
- 
-    if (!responseLogin.value) {
+    const responseLogin: ApiResponse = await new AuthClass().Login(params);
+
+    if (!responseLogin.data) {
         FormLogin.Reset();
         loading.value = false;
         return;
@@ -174,42 +181,43 @@ async function btnLogin_OnClick(): Promise<void> {
 
     site.setCookies(
         {
-            "e.t": responseLogin.value.token,
-            "r.t": responseLogin.value.refresh_token,
-            "s.t": responseLogin.value.session_token,
+            "e.t": responseLogin.data.token,
+            "r.t": responseLogin.data.refresh_token,
+            "s.t": responseLogin.data.session_token,
         },
         false,
         1
     );
 
-    const response: any = await s_auth.secretKey();
+    const response: ApiResponse = await new AuthClass().secretKey();
 
-    if (response.secretKey) {
-        site.setCookies(
-            {
-                "e.k": response.secretKey,
-            },
-            false
-        );
-
-        site.setCookies({
-            "e.u.d": JSON.stringify(responseLogin.value.user_data),
-            "e.c.d": JSON.stringify(responseLogin.value.client_data),
-        });
-
-        site.LocalStorage("set", {
-            logged_in_successfully: false
-        });
-
-        const userData = site.getCookie("e.u.d");
-
-        if (userData) {
-            await s_costumers.shoppingCartClient();
-            loading.value = false;
-            site.RedirectPage({ name: 'home' });
-        }
+    if (!response) {
+        return;
     }
 
+    site.setCookies(
+        {
+            "e.k": response.data.secretKey,
+        },
+        false
+    );
+
+    site.setCookies({
+        "e.u.d": JSON.stringify(responseLogin.data.user_data),
+        "e.c.d": JSON.stringify(responseLogin.data.client_data),
+    });
+
+    site.LocalStorage("set", {
+        logged_in_successfully: false
+    });
+
+    const userData = site.getCookie("e.u.d");
+
+    if (userData) {
+        await new CostumersClass().shoppingCartClient();
+        loading.value = false;
+        site.RedirectPage({ name: 'home' });
+    }
 }
 
 onUnmounted(() => {

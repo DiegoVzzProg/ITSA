@@ -4,25 +4,29 @@ import logo from '../../assets/svg/logo.svg'
 import logoWhite from '../../assets/svg/logo_white.svg'
 import { useRoute } from 'vue-router';
 import { site } from '../../utils/site';
-import { s_auth } from '../auth/services/s_auth';
 import stores from '../stores/GeneralStores';
+import { AuthClass } from '../auth/services/auth-service';
+import { ApiResponse } from '../../utils/Api.interface';
 
 const id_usuario = ref<number>(0);
 const router = useRoute();
 
 const LogOut = async () => {
-    const response: any = s_auth.logoutUser();
-    if (response) {
-        site.allDeleteCookies();
-        stores.echoStore().leave();
-        localStorage.clear();
-        sessionStorage.clear();
-        if (router.name == 'home') {
-            window.location.reload();
-        } else {
-            site.RedirectPage({ name: 'home' });
-            id_usuario.value = 0;
-        }
+    const response: ApiResponse = await new AuthClass().logoutUser();
+
+    if (!response.data) {
+        return;
+    }
+
+    site.allDeleteCookies();
+    stores.echoStore().leave();
+    localStorage.clear();
+    sessionStorage.clear();
+    if (router.name == 'home') {
+        window.location.reload();
+    } else {
+        site.RedirectPage({ name: 'home' });
+        id_usuario.value = 0;
     }
 }
 
@@ -53,17 +57,21 @@ onMounted(() => {
             </button>
             <nav class="flex flex-row justify-between gap-3 w-[min(300px,100%)]">
                 <button @click="site.RedirectPage({ name: 'login' })"
-                    class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all" v-if="id_usuario == 0">
+                    class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all"
+                    v-if="id_usuario == 0">
                     <span class="text-[1rem]">
                         login/join
                     </span>
                 </button>
-                <button @click="LogOut()" class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all" v-else>
+                <button @click="LogOut()"
+                    class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all"
+                    v-else>
                     <span class="text-[1rem]">
                         logout
                     </span>
                 </button>
-                <button @click="GoCheckOut()" :class="['flex flex-row items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all']">
+                <button @click="GoCheckOut()"
+                    :class="['flex flex-row items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all']">
                     cart(<span class="text-[.7rem] font-semibold translate-y-[1px]"
                         v-text="stores.echoStore().total_productos"></span>)
                 </button>

@@ -173,9 +173,10 @@ import File from '../components/File.vue';
 import Loading from '../../components/Loading.vue';
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import { notify, site } from "../../../utils/site";
-import { s_costumers } from "../services/s_costumers";
-import { s_products } from "../services/s_products";
 import stores from "../../stores/GeneralStores";
+import { ProductsClass } from "../services/products-service";
+import { ApiResponse } from "../../../utils/Api.interface";
+import { CostumersClass, IDeleteProductFromShoppingCart, IEditCustomer, IProceedToCheckout } from "../services/costumers-service";
 
 const LoadingHabilitado = ref<boolean>(false);
 const ocultarBoton = ref<boolean>(false);
@@ -272,8 +273,8 @@ function verificarCarrito(carrito?: any): boolean {
 }
 
 async function Productos(): Promise<any> {
-    const response = await s_costumers.shoppingCartClient();
-    if (!verificarCarrito(response)) {
+    const response: ApiResponse = await new CostumersClass().shoppingCartClient();
+    if (!verificarCarrito(response.data)) {
         return;
     }
 }
@@ -324,24 +325,16 @@ function ValidateName(value: string) {
 }
 
 function ValidateVatNumber(value: string) {
+    const regex: any = /^(?:(?:[A-Z&Ñ]{3,4}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[A-Z\d]{3})|(?:ATU\d{8}|BE0\d{9}|BG\d{9,10}|HR\d{11}|CY\d{8}[A-Z]|CZ\d{8,10}|DE\d{9}|DK\d{8}|EE\d{9}|EL\d{9}|ES[A-Z]\d{7}[A-Z]|FI\d{8}|FR[A-HJ-NP-Z0-9]{2}\d{9}|GB(?:\d{9}|\d{12}|GD\d{3}|HA\d{3})|HU\d{8}|IE\d{7}[A-W]|IT\d{11}|LT(?:\d{9}|\d{12})|LU\d{8}|LV\d{11}|MT\d{8}|NL\d{9}B\d{2}|PL\d{10}|PT\d{9}|RO\d{2,10}|SE\d{12}|SI\d{8}|SK\d{10}))$/;
     const vat_number: any = FormCostumer.Customer.Form1.vat_number;
-
-    if (value == "") return;
-
-    if (value.length < 8 || value.length > 12) {
-        vat_number.error = "VAT number must be between 8 and 12 characters.";
-        return;
-    }
-    if (!/^[A-Z]{2}/.test(value)) {
+    if (site.IsNullOrEmpty(value)) {
+        vat_number.error = "";
+    } else if (!regex.test(value)) {
         vat_number.error =
-            "VAT number must start with a country code (e.g., ES, DE, FR).";
-        return;
+            "Please enter a valid RFC or VAT number.";
+    } else {
+        vat_number.error = "";
     }
-    if (!/^[A-Z]{2}[0-9A-Z]+$/.test(value)) {
-        vat_number.error = "VAT number can only contain letters and numbers.";
-        return;
-    }
-    vat_number.error = "";
 }
 
 function ValidateAddress(value: string) {
@@ -434,25 +427,30 @@ function ValidatePhone(value: string): void {
 async function CheckoutSession(elemento: any): Promise<any> {
     LoadingHabilitado.value = true;
     ocultarBoton.value = true;
-    
+
     if (!verificarCarrito()) {
         return;
     }
 
     if (parseFloat(stores.echoStore().totales.total) == 0) {
-        const response: any = await s_products.addProductDownloadList();
+        const response: ApiResponse = await new ProductsClass().addProductDownloadList();
 
-        if (!response)
+        if (!response.data)
             return;
 
-        site.RedirectPage({ name: response.redirectToDownload });
+        site.RedirectPage({ name: response.data.redirectToDownload });
     } else {
-        const response: any = await s_costumers.proceedToCheckout(stores.guid().value);
 
-        if (!response)
+        const params: IProceedToCheckout = {
+            key: stores.guid().value
+        }
+
+        const response: ApiResponse = await new CostumersClass().proceedToCheckout(params);
+
+        if (!response.data)
             return;
 
-        const url: any = response.redirectStripePayment;
+        const url: any = response.data.redirectStripePayment;
 
         if (site.IsNullOrEmpty(url)) return;
         window.location.href = url;
@@ -501,7 +499,7 @@ async function FunctionEditClient(): Promise<any> {
     )
         return;
 
-    const response: any = await s_costumers.editCustomer({
+    const params: IEditCustomer = {
         id_cliente: ClientData.value.id_cliente,
         nombre: CustomerForm1.name.value,
         numero_de_iva_empresa: CustomerForm1.vat_number.value,
@@ -510,14 +508,16 @@ async function FunctionEditClient(): Promise<any> {
         estado: CustomerForm2.state.value,
         id_pais: CustomerForm3.country.id_pais,
         telefono: CustomerForm1.phone.value,
-    });
+    }
 
-    if (response) {
+    const response: ApiResponse = await new CostumersClass().editCustomer(params);
+
+    if (response.data) {
         notify.success("your billing information has been saved.");
 
-        ClientData.value = response;
+        ClientData.value = response.data;
         site.setCookies({
-            "e.c.d": JSON.stringify(response),
+            "e.c.d": JSON.stringify(response.data),
         });
         Editar.value = false;
     }
@@ -529,11 +529,14 @@ function FunctionFinish(): void {
 
 async function DeleteProduct(id_producto: string) {
     deleteProduct.value = false;
-    const response: any = await s_costumers.deleteProductFromShoppingCart({
-        id_producto: Number(id_producto),
-    });
 
-    if (response) {
+    const params: IDeleteProductFromShoppingCart = {
+        id_producto: Number(id_producto),
+    };
+
+    const response: ApiResponse = await new CostumersClass().deleteProductFromShoppingCart(params);
+
+    if (response.data) {
 
         notify.success("Product deleted");
 

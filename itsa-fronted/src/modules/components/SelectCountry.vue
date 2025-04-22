@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, computed, watch } from 'vue';
-import { s_general } from '../services/s_general';
+import { GeneralClass } from '../services/general-service';
+import { ApiResponse } from '../../utils/Api.interface';
 
 interface Country {
     id_pais: number;
@@ -48,10 +49,13 @@ watch(countries, () => {
 });
 
 const fetchCountries = async () => {
-    const response = await s_general.countries();
-    if (response.data_pais) {
-        countries.value = response.data_pais;
+    const response: ApiResponse = await new GeneralClass().countries();
+    if (!response.data) {
+        return;
     }
+
+    countries.value = response.data.data_pais;
+
 };
 
 const filteredCountries = computed(() => {

@@ -11,8 +11,12 @@ import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
 //import { numberCartShopping } from "./modules/home/stores/CustomerStore";
 import { site } from "./utils/site";
 import stores from "./modules/stores/GeneralStores";
-import { s_general } from "./modules/services/s_general";
 import ForgotPassword from "./modules/auth/UI/ForgotPassword.vue";
+import {
+  GeneralClass,
+  IvalidateSessionStripe,
+} from "./modules/services/general-service";
+import { ApiResponse } from "./utils/Api.interface";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
@@ -74,23 +78,20 @@ router.beforeEach(async (to, _from, next) => {
     (String(to.name).toLowerCase() == "checkout" ||
       String(to.name).toLowerCase() == "paymentcompleted")
   ) {
-    const response: any = await s_general.validateSessionStripe(
-      to.query.session?.toString() ?? ""
-    );
+    const params: IvalidateSessionStripe = {
+      session: to.query.session?.toString() ?? "",
+    };
 
-    if (!response) {
+    const response: ApiResponse =
+      await new GeneralClass().validateSessionStripe(params);
+
+    if (!response.data || !response.data.valid) {
       return next({
         name: "home",
       });
     }
 
-    if (response.valid) {
-      return next();
-    } else {
-      return next({
-        name: "home",
-      });
-    }
+    return next();
   }
 
   if (

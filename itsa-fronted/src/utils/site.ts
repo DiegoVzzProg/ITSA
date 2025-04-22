@@ -1,4 +1,3 @@
-import api from "../services/api";
 import Cookies from "js-cookie";
 import router from "../router";
 import { Notyf } from "notyf";
@@ -7,139 +6,12 @@ import CryptoJS from "crypto-js";
 import { RouteLocationRaw, RouteRecordName } from "vue-router";
 import stores from "../modules/stores/GeneralStores";
 
-//#region  dgavClass
-
-interface DatabaseState {
-  status: number;
-  message: string;
-  isLoading: boolean;
-}
-
 interface RouterParams {
   name: RouteRecordName;
   params?: Record<string, string>;
   functionOn?: () => void;
   query?: Record<string, string>;
 }
-
-const httpMethods = {
-  GET: "GET",
-  POST: "POST",
-  PUT: "PUT",
-  DELETE: "DELETE",
-  DOWNLOAD: "DOWNLOAD",
-} as const;
-
-type httpMethod = (typeof httpMethods)[keyof typeof httpMethods];
-
-const REQUEST_TIMEOUT = 30000;
-
-export class dgav {
-  public static httpMethod = httpMethods;
-  public static dataBase: DatabaseState = {
-    status: 200,
-    message: "",
-    isLoading: false,
-  };
-
-  public static async apiRequest<T = any>(
-    endPoint: string,
-    method: httpMethod,
-    body?: Record<string, any>
-  ): Promise<any> {
-    this.dataBase.isLoading = true;
-    this.dataBase.status = 200;
-    this.dataBase.message = "";
-
-    const controller = new AbortController();
-
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-    }, REQUEST_TIMEOUT);
-
-    try {
-      const response: any = await this.handleRequest<T>(
-        method,
-        endPoint,
-        body,
-        controller.signal
-      );
-
-      if (!response) {
-        throw new Error("Invalid server response");
-      }
-
-      const { data, status } = response;
-      this.dataBase.status = status;
-
-      if (response.message) {
-        this.handleError(response.message);
-        return;
-      }
-
-      return JSON.parse(atob(data));
-    } catch (error: any) {
-      if (error.name === "AbortError") {
-        this.handleError("Request timeout - please try again");
-      } else if (error.response) {
-        const message = error.response.data?.message || "Server error occurred";
-        this.handleError(message, error.response.status);
-      } else if (error.request) {
-        this.handleError("No response from server - check your connection");
-      } else {
-        this.handleError(error.message || "An unexpected error occurred");
-      }
-    } finally {
-      this.dataBase.isLoading = false;
-      clearTimeout(timeoutId);
-    }
-  }
-
-  private static async handleRequest<T>(
-    method: httpMethod,
-    endPoint: string,
-    body?: Record<string, any>,
-    signal?: AbortSignal
-  ): Promise<T | null> {
-    const config = { signal };
-
-    switch (method) {
-      case this.httpMethod.GET:
-        return (await api.get(endPoint, config)).data;
-      case this.httpMethod.POST:
-        if (!body) {
-          throw new Error("Body is required for POST requests");
-        }
-        return (await api.post(endPoint, body, config)).data;
-      case this.httpMethod.PUT:
-        if (!body) {
-          throw new Error("Body is required for PUT requests");
-        }
-        return (await api.put(endPoint, body, config)).data;
-      case this.httpMethod.DELETE:
-        return (await api.delete(endPoint, config)).data;
-      case this.httpMethod.DOWNLOAD:
-        return (
-          await api.get(endPoint, {
-            ...config,
-            responseType: "blob",
-          })
-        ).data;
-      default:
-        throw new Error(`Unsupported HTTP method: ${method}`);
-    }
-  }
-
-  private static handleError(message: string, status: number = 500): void {
-    this.dataBase.status = status;
-    this.dataBase.message = message;
-  }
-
-  public static rowsCounts(data: any[]): number {
-    return Array.isArray(data) ? data.length : 0;
-  }
-}
-//#endregion
 
 export class site {
   public static userData(): any {
