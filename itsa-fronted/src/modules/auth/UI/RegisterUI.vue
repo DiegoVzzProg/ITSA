@@ -159,9 +159,9 @@ const FormRegister = reactive({
             vat_number: {
                 id: "vat_number",
                 value: "",
-                placeholder: "Vat number",
+                placeholder: "Vat number (optional)",
                 error: "",
-                maxLength: 12,
+                maxLength: 255,
             },
             address: {
                 id: "address",
@@ -374,16 +374,13 @@ function ValidateName(value: string) {
 }
 
 function ValidateVatNumber(value: string) {
+    const regex: any = /^(?:(?:[A-Z&Ñ]{3,4}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[A-Z\d]{3})|(?:ATU\d{8}|BE0\d{9}|BG\d{9,10}|HR\d{11}|CY\d{8}[A-Z]|CZ\d{8,10}|DE\d{9}|DK\d{8}|EE\d{9}|EL\d{9}|ES[A-Z]\d{7}[A-Z]|FI\d{8}|FR[A-HJ-NP-Z0-9]{2}\d{9}|GB(?:\d{9}|\d{12}|GD\d{3}|HA\d{3})|HU\d{8}|IE\d{7}[A-W]|IT\d{11}|LT(?:\d{9}|\d{12})|LU\d{8}|LV\d{11}|MT\d{8}|NL\d{9}B\d{2}|PL\d{10}|PT\d{9}|RO\d{2,10}|SE\d{12}|SI\d{8}|SK\d{10}))$/;
     const vat_number: any = FormRegister.Customer.Form1.vat_number;
     if (site.IsNullOrEmpty(value)) {
         vat_number.error = "";
-    } else if (value.length < 8 || value.length > 12) {
-        vat_number.error = "VAT number must be between 8 and 12 characters.";
-    } else if (!/^[A-Z]{2}/.test(value)) {
+    } else if (!regex.test(value)) {
         vat_number.error =
-            "VAT number must start with a country code (e.g., ES, DE, FR).";
-    } else if (!/^[A-Z]{2}[0-9A-Z]+$/.test(value)) {
-        vat_number.error = "VAT number can only contain letters and numbers.";
+            "Please enter a valid RFC or VAT number.";
     } else {
         vat_number.error = "";
     }
@@ -505,7 +502,9 @@ async function btnRegisterUser_OnClick() {
     responseRegister.value = await s_auth.registerUser(data);
 
     if (!responseRegister.value) {
+        ContinueRegistration.value = 0;
         FormRegister.Reset();
+        loading.value = false;
         return;
     }
 

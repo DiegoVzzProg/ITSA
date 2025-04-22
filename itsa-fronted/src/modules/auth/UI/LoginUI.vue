@@ -152,23 +152,23 @@ function ValidatePassword(value: string): void {
 }
 
 async function btnLogin_OnClick(): Promise<void> {
-    loading.value = true;
     const UserForm1: any = FormLogin.User;
     Object.keys(UserForm1).forEach((key) => {
         ValidateForm(UserForm1[key]);
     });
 
     if (UserForm1.email.error || UserForm1.password.error) return;
-
+    loading.value = true;
     const data: any = {
         email: UserForm1.email.value,
         password: UserForm1.password.value,
     };
 
     responseLogin.value = await s_auth.loginUser({ email: data.email, password: data.password });
-
+ 
     if (!responseLogin.value) {
         FormLogin.Reset();
+        loading.value = false;
         return;
     }
 

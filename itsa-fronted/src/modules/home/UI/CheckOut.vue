@@ -209,7 +209,7 @@ const FormCostumer = reactive({
             vat_number: {
                 id: "vat_number",
                 value: "",
-                placeholder: "Vat number",
+                placeholder: "Vat number (optional)",
                 error: "",
                 maxLength: 12,
             },
