@@ -145,17 +145,14 @@ class CProductos extends Controller
             $cliente = TClientes::where('id_usuario', $id_usuario)
                 ->firstOrFail();
 
-            // Obtener compras no descargadas
+            // Obtener productos
             $compras = TProductosCompradosCliente::with('producto')
                 ->where('id_cliente', $cliente->id_cliente)
-                ->where('pago_confirmado', true);
-
-            if ($id_producto > 0) {
-                $compras
-                    ->where('id_producto', $id_producto);
-            }
-
-            $compras = $compras->get();
+                ->where('pago_confirmado', true)
+                ->where('descargado', $id_producto > 0)
+                ->when($id_producto > 0, function ($q) use ($id_producto) {
+                    return $q->where('id_producto', $id_producto);
+                })->get();
 
             $descargas = collect();
             $errores = collect();

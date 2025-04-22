@@ -7,7 +7,7 @@ import { site } from "../../utils/site";
 const stores = reactive({
   guid: defineStore("GeneralStores", {
     state: () => ({
-      value: localStorage.getItem("guid") || uuidv4().toUpperCase(),
+      value: uuidv4().toUpperCase(),
     }),
     actions: {
       updateGuid() {

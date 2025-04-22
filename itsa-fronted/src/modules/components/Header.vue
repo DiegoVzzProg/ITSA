@@ -47,23 +47,23 @@ onMounted(() => {
         class="flex min-w-[320px] w-full px-[clamp(18px,5vw,68px)] h-[76px] items-center justify-center sticky top-0 left-0 bg-white z-[9999]">
         <div class="flex flex-row items-center justify-between w-full h-full border-b border-black gap-5"
             id="headerSection">
-            <button @click="site.RedirectPage({ name: 'home' })" class="flex w-full h-full items-center max-w-[165px]">
+            <button @click="site.RedirectPage({ name: 'home' })" class="flex w-full items-center max-w-[165px]">
                 <img id="logoBlack" :src="logo" alt="" srcset="" class="select-none block">
                 <img id="logoWhite" :src="logoWhite" alt="" srcset="" class="select-none hidden">
             </button>
-            <nav class="flex flex-row justify-between h-full gap-3 w-[min(300px,100%)]">
+            <nav class="flex flex-row justify-between gap-3 w-[min(300px,100%)]">
                 <button @click="site.RedirectPage({ name: 'login' })"
-                    class="flex flex-col items-center justify-center text-center h-full" v-if="id_usuario == 0">
+                    class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all" v-if="id_usuario == 0">
                     <span class="text-[1rem]">
                         login/join
                     </span>
                 </button>
-                <button @click="LogOut()" class="flex flex-col items-center justify-center text-center h-full" v-else>
+                <button @click="LogOut()" class="flex flex-col items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all" v-else>
                     <span class="text-[1rem]">
                         logout
                     </span>
                 </button>
-                <button @click="GoCheckOut()" class="flex flex-row items-center justify-center text-center h-full">
+                <button @click="GoCheckOut()" :class="['flex flex-row items-center justify-center text-center hover:bg-[rgb(0,0,0)] hover:text-white transition-all']">
                     cart(<span class="text-[.7rem] font-semibold translate-y-[1px]"
                         v-text="stores.echoStore().total_productos"></span>)
                 </button>

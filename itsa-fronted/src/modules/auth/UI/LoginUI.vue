@@ -40,7 +40,7 @@
         </div>
         <div class="flex w-full flex-col gap-3 pt-6">
             <p class="px-[clamp(18px,3vw,28px)]">
-                need an account
+                need an account?
             </p>
             <button type="button" v-on:click="site.RedirectPage({ name: 'register' })"
                 class="bg-white border border-black py-5 px-3 rounded-full text-center">

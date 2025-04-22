@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col grow shrink-0 min-h-screen w-full">
     <div class="min-h-screen flex flex-col justify-center items-center" ref="section1">
-      <div class="flex flex-col max-h-[40px] overflow-hidden text-center">
+      <div class="flex flex-col max-h-[clamp(40px,4vw,60px)] overflow-hidden text-center">
         <span v-for="(item, index) in texts" :key="index" :class="[
           item.class,
-          'text-[clamp(1.7rem,4vw,3rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
+          'text-[clamp(2.1em,4vw,6rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
         ]">
           {{ item.texto }}
         </span>
@@ -92,7 +92,7 @@ const texts = ref<any>([
     class: "",
   },
   {
-    texto: "templates useful and pretty",
+    texto: "practical templates",
     class: "",
   },
 ]);
