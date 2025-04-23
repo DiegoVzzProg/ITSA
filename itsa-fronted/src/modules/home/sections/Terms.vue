@@ -8,7 +8,7 @@ import File from '../components/File.vue';
     <div class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7">
         <div class="flex flex-col w-full text-balance">
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] times">
+                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-regular">
                     condition of use
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -21,7 +21,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] times-new-roman-font">
+                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
                     applicable law
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -32,7 +32,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] times-new-roman-font">
+                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
                     disputes
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -42,7 +42,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] times-new-roman-font">
+                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
                     indemnification
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -52,7 +52,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] times-new-roman-font">
+                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
                     limitation on liability
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">

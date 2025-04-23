@@ -13,7 +13,7 @@ import File from '../components/File.vue';
         </section>
         <div class="flex flex-col w-full h-full max-w-[900px]">
             <section class="flex flex-col pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] times-new-roman-font">
+                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
                     we will glad to help you
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">

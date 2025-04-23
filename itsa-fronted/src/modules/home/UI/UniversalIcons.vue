@@ -83,7 +83,7 @@
                     <br />
                     <p>aviable as:illustrator, svg & pdf</p>
                 </div>
-                <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
+                <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
                     <File file="Ai.png" class="w-full max-w-[44px]" type="img">
                     </File>
                     <File file="SVG.png" class="w-full max-w-[34px]" type="img">
@@ -144,7 +144,7 @@
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
             v-if="!site.IsNullOrEmpty(products)">
-            <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon pack"
+            <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon <br/> pack"
                 descripcion="524 items <br/> available as: <br/> illustrator, figma, svg & pdf <br/> commercial & personal use"
                 :precio="`${products.precio}`">
             </CardProduct>

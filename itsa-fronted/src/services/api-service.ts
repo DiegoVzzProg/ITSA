@@ -21,9 +21,10 @@ const setAuthTokens = (access: string, refresh: string) => {
 
 const handleLogout = (): void => {
   site.allDeleteCookies();
+  localStorage.clear();
+  sessionStorage.clear();
   notify.error("Session expired. Redirecting...");
   setTimeout(() => site.RedirectPage({ name: "home" }), 2000);
-  setTimeout(() => window.location.reload(), 3000);
 };
 
 const apiInstance: AxiosInstance = axios.create({
@@ -85,7 +86,7 @@ apiInstance.interceptors.response.use(
         );
 
         if (!newAccessToken.data) {
-          return;
+          throw new Error("Invalid refresh token");
         }
 
         const { access_token, refresh_token } = newAccessToken.data;
@@ -147,7 +148,7 @@ export class Api {
       }
       const { data } = axiosResponse.data;
 
-      return { data: JSON.parse(atob(data)) };
+      return { data: JSON.parse(atob(data ?? "{}")) };
     } catch (error: any) {
       if (error.response) {
         notify.error(error.response.data?.message || "Server error occurred");

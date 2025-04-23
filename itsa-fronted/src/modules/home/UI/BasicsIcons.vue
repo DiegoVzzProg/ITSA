@@ -76,7 +76,7 @@
                         aviable as:illustrator, svg & pdf
                     </p>
                 </div>
-                <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-0 gap-4">
+                <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
                     <File file="Ai.png" type="img" class="w-full max-w-[44px]"></File>
                     <File file="SVG.png" type="img" class="w-full max-w-[34px]"></File>
                     <File file="PDF.png" type="img" class="w-full max-w-[34px]"></File>
@@ -99,12 +99,12 @@
                 social media, weather, store and much more.
             </p>
             <div
-                class="flex items-center justify-center h-screen max-h-[530px] max-w-[1536px] relative overflow-hidden">
+                class="flex items-center justify-center h-screen max-h-[530px] max-w-[1536px] relative overflow-hidden pt-5 max-[768px]:pt-3">
                 <File file="video2-basicicon.gif" type="img" class="translate-x-[10px]" />
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
-            <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="basics icons pack"
+            <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="basics icons <br/> pack"
                 descripcion="57 items <br/> available as: <br/> illustrator, figma & svg <br/> commercial & personal use"
                 precio="0">
             </CardProduct>

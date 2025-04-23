@@ -14,6 +14,13 @@ interface RouterParams {
 }
 
 export class site {
+  /**
+   * Retorna el objeto de usuario que se encuentra en una cookie.
+   * Este objeto se guarda en una cookie con el nombre "e.u.d".
+   * La cookie se crea cuando se inicia sesión y se elimina cuando se cierra la sesión.
+   *
+   * @returns {any} El objeto de usuario o undefined si no se encuentra la cookie.
+   */
   public static userData(): any {
     const data: any = site.getCookie("e.u.d");
     return data ? JSON.parse(data) : undefined;

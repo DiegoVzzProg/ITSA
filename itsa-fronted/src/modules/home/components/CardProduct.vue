@@ -22,7 +22,7 @@ const AddCartCostumer = async () => {
 
         const params: IAddProduct = {
             id_producto: props.id_producto,
-            descripcion: props.subtitulo
+            descripcion: props.subtitulo.replace(/<[^>]*>/g, '').trim()
         }
 
         const response: ApiResponse = await new CostumersClass().addProduct(params);
@@ -100,8 +100,7 @@ onUnmounted(() => {
         <p>
             {{ titulo }}
         </p>
-        <p class="font-itsa-bold text-[clamp(1.6rem,4vw,3.5rem)]">
-            {{ subtitulo }}
+        <p class="font-itsa-bold text-[clamp(1.6rem,4vw,3.5rem)]" v-html="subtitulo">
         </p>
         <p class="font-itsa-bold text-[clamp(1.6rem,4vw,3.5rem)]">
             ${{ site.formatNumber(parseFloat(precio)) }} mxn
@@ -120,7 +119,7 @@ onUnmounted(() => {
             <button @click="AddCartCostumer"
                 class=" border border-black hover:bg-black hover:text-white transtion-all px-[48px] rounded-full py-5"
                 v-else-if="!existeArticuloEnCarrito">
-                {{ Number(precio) > 0 ? "Buy" : "Add to cart" }}
+                Add to cart
             </button>
         </div>
         <Loading v-else />
