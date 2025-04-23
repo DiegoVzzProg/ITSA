@@ -261,37 +261,37 @@ function btnToBack() {
 function ValidateRegistrationForm(item: any) {
     switch (item.id) {
         case "username":
-            ValidateUserName(item.value);
+            ValidateUserName(item.value.trim());
             break;
         case "email":
-            ValidateEmail(item.value);
+            ValidateEmail(item.value.trim());
             break;
         case "password":
-            ValidatePassword(item.value);
+            ValidatePassword(item.value.trim());
             break;
         case "passwordconfirmation":
-            ValidatePasswordConfirm(item.value);
+            ValidatePasswordConfirm(item.value.trim());
             break;
         case "name":
-            ValidateName(item.value);
+            ValidateName(item.value.trim());
             break;
         case "address":
-            ValidateAddress(item.value);
+            ValidateAddress(item.value.trim());
             break;
         case "vat_number":
-            ValidateVatNumber(item.value);
+            ValidateVatNumber(item.value.trim());
             break;
         case "postal_code":
-            ValidatePostalCode(item.value);
+            ValidatePostalCode(item.value.trim());
             break;
         case "state":
-            ValidateState(item.value);
+            ValidateState(item.value.trim());
             break;
         case "country":
             ValidateCountry();
             break;
         case "phone":
-            ValidatePhone(item.value);
+            ValidatePhone(item.value.trim());
             break;
     }
 }
@@ -488,8 +488,8 @@ async function btnRegisterUser_OnClick() {
 
     const data: IRegister = {
         user_name: UserForm1.user_name.value,
-        email: UserForm1.email.value,
-        password: UserForm1.password.value,
+        email: UserForm1.email.value.trim(),
+        password: UserForm1.password.value.trim(),
         leyo_terms: FormLeyoTerms.value,
         nombre: CustomerForm1.name.value,
         numero_de_iva_empresa: CustomerForm1.vat_number.value,

@@ -12,7 +12,7 @@ class NotForgotPassword extends Notification
     use Queueable;
 
     public $token;
-    private $urlHostFrontend = "http://localhost:5173";
+    private $urlHostFrontend = "http://localhost:5173"; // https://pruebas.itsastudiomx.com
     /**
      * Create a new notification instance.
      */

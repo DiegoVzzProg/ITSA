@@ -97,7 +97,7 @@ async function RetrievePassword(): Promise<any> {
     DeshabilitarBotonPass.value = false;
 
     const params: IRestorePassword = {
-        email: FormLogin.User.email.value
+        email: FormLogin.User.email.value.trim()
     };
 
     const response: ApiResponse = await new AuthClass().restorePassword(params);
@@ -127,7 +127,7 @@ function ValidateEmail(value: string): void {
 
     ForgotPassword.value = false;
 
-    if (!emailRegex.test(value)) {
+    if (!emailRegex.test(value.trim())) {
         email.error = "The email is invalid";
         return;
     }
@@ -167,8 +167,8 @@ async function btnLogin_OnClick(): Promise<void> {
     loading.value = true;
 
     const params: ILogin = {
-        email: UserForm1.email.value,
-        password: UserForm1.password.value
+        email: UserForm1.email.value.trim(),
+        password: UserForm1.password.value.trim()
     };
 
     const responseLogin: ApiResponse = await new AuthClass().Login(params);

@@ -268,7 +268,7 @@ class CUsuarios extends Controller
 
             Mail::to($usuario->email)->send(new ForgotPasswordMail($url));
 
-            return CGeneral::CreateMessage('A message will be sent to reset the password', 200, ["exito" => true]);
+            return CGeneral::CreateMessage('', 200, ["exito" => true, "message" => "A message will be sent to reset the password"]);
         }, $request);
     }
 
