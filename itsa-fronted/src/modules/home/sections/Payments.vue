@@ -7,7 +7,7 @@ import File from '../components/File.vue';
     <div class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7">
         <div class="flex flex-col w-full text-balance">
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-regular">
+                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-bold">
                     purchase and delivery
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)] ">
@@ -20,7 +20,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     payment methods
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)] ">
@@ -32,7 +32,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     invocing
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -41,11 +41,11 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     refunds
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
-                    all sales of files are final. sorry, but we can neither refund money nor swap
+                    all sales files are final. but we can neither refund money nor swap
                     incorrect asset license purchases. there is no way for us to verify that you no longer
                     hold copies of the asset. if the asset is defective it shall be replaced by the same
                     asset if accompained with purchase receipt and we are notified within 7 days of

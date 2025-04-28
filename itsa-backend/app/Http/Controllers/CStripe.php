@@ -7,6 +7,7 @@ use App\Models\TClientes;
 use App\Models\TProductosCompradosCliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Stripe\Webhook;
@@ -18,13 +19,17 @@ class CStripe extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request, $guid) {
             $user = $request->user();
 
+            if (!$user) {
+                return CGeneral::CreateMessage('Unauthorized', 401, null);
+            }
+
             $carritoItems = TCarritoCliente::with('producto')
                 ->where('id_usuario', $user->id_usuario)
                 ->where('borrado', false)
                 ->get();
 
             if ($carritoItems->isEmpty()) {
-                return CGeneral::CreateMessage('Products not found', 599, null);
+                return CGeneral::CreateMessage('Cart is empty', 404, null);
             }
 
             Stripe::setApiKey(config('services.stripe.secret'));
@@ -33,12 +38,17 @@ class CStripe extends Controller
             $totalSinImpuesto = 0;
 
             foreach ($carritoItems as $item) {
+
                 if (!$item->producto) {
+                    Log::warning('Product not found for cart item: ' . $item->id_carrito_cliente);
                     continue;
                 }
-                $producto = $item->producto;
 
-                $subtotal = round($producto->precio * 1, 2);
+                $producto = $item->producto;
+                $unitPrice = round($producto->precio, 2);
+                $quantity = 1;
+                $subtotal = $unitPrice * $quantity;
+
                 $totalSinImpuesto += $subtotal;
 
                 $lineItems[] = [
@@ -48,9 +58,9 @@ class CStripe extends Controller
                             'description' => $producto->subtitulo,
                         ],
                         'currency' => 'mxn',
-                        'unit_amount' => (int) round($producto->precio * 100),
+                        'unit_amount' => (int) round($unitPrice * 100),
                     ],
-                    'quantity' => 1,
+                    'quantity' => $quantity,
                 ];
             }
 
@@ -69,13 +79,12 @@ class CStripe extends Controller
                 'quantity' => 1,
             ];
 
-            $checkoutSession = [];
-
             $cliente = TClientes::where('id_usuario', $user->id_usuario)->firstOrFail();
 
             $checkoutSession = Session::create([
                 'line_items' => $lineItems,
                 'mode' => 'payment',
+                'customer_email' => $user->email,
                 'metadata' => [
                     'user_id' => $user->id_usuario,
                 ],
@@ -107,11 +116,12 @@ class CStripe extends Controller
     public static function fn_stripe_success(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
-            // Construir y verificar el evento de Stripe
-            $payload = $request->getContent();
-            $signature = $request->header('Stripe-Signature');
             $webhookSecret = config('services.stripe.webhook_secret');
-            $event = Webhook::constructEvent($payload, $signature, $webhookSecret);
+            $event = Webhook::constructEvent(
+                $request->getContent(),
+                $request->header('Stripe-Signature'),
+                $webhookSecret
+            );
 
             if ($event->type !== 'checkout.session.completed') {
                 throw new \Exception("Tipo de evento no válido: {$event->type}");
@@ -125,8 +135,8 @@ class CStripe extends Controller
             }
 
             // Iniciar la transacción
-            DB::beginTransaction();
             try {
+                DB::beginTransaction();
                 // Buscar el cliente basado en el usuario
                 $cliente = TClientes::where('id_usuario', $userId)->firstOrFail();
 
@@ -139,7 +149,7 @@ class CStripe extends Controller
                 TCarritoCliente::where('id_usuario', $userId)
                     ->where('borrado', false)
                     ->update(['borrado' => true]);
-                    
+
                 if ($productosQuery === 0) {
                     throw new \Exception("No se encontraron registros para confirmar");
                 }

@@ -8,6 +8,7 @@ use App\Models\TUsuarios;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Pusher\Pusher;
 
 class CGeneral extends Controller
@@ -78,16 +79,12 @@ class CGeneral extends Controller
                 $usuario_defualt = $user == null ? 0 : $user->id_usuario;
                 return self::CreateTicketError($ex, $usuario_defualt);
             } catch (Exception $ex) {
+                Log::error($ex);
                 return response()->json(data: [
                     'message' => "Contact support",
                     'data' => null
                 ], status: 599);
             }
-
-            return response()->json(data: [
-                'message' => "Contact support",
-                'data' => null
-            ], status: 599);
         }
     }
 

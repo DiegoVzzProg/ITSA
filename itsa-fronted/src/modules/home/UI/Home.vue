@@ -22,13 +22,13 @@
           producto.hover_efecto,
           'w-full max-w-[clamp(408px,40vw,508px)] lg:min-h-[clamp(208px,40vw,508px)] min-h-[408px] transition-all duration-300 ease-in-out',
           'bg-[rgb(244,242,239)] rounded-[12px] cursor-pointer p-5 flex-auto',
-        ]">
+        ]" @click="site.RedirectPage({ name: String(producto.url) })">
           <div class="flex flex-col w-full">
             <div class="flex flex-row w-full justify-between items-center gap-2">
               <p class="font-itsa-bold text-[clamp(2rem,2.3vw,2.4rem)] leading-7 w-full">
                 {{ producto.titulo }}
               </p>
-              <button @click="site.RedirectPage({ name: String(producto.url) })"
+              <button
                 :class="`text-white bg-black py-2 text-nowrap rounded-full px-[clamp(15px,3vw,28px)] text-[1.2rem] md:text-[1.4rem] lg:text-[1.2rem] xl:text-[1.8rem] tracking-wide`">
                 <p class="translate-y-[3px] font-itsa-bold">
                   {{

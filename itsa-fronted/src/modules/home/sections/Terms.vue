@@ -8,7 +8,7 @@ import File from '../components/File.vue';
     <div class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7">
         <div class="flex flex-col w-full text-balance">
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-regular">
+                <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-bold">
                     condition of use
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -21,18 +21,18 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     applicable law
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
-                    by visiting this website, you agree that the laws of the mexico, without regard to
+                    by visiting this website, you agree that the laws of mexico, without regard to
                     principles of conflict laws, will govern these terms and conditions, or any dispute
                     of any sort that might come between itsa studio® and you, or its business partners
                     and associates
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     disputes
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -42,7 +42,7 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     indemnification
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
@@ -52,17 +52,15 @@ import File from '../components/File.vue';
                 </p>
             </section>
             <section class="flex flex-col seccion-1-app-license pb-[4rem]">
-                <p class="text-[1.2rem] py-[15px] font-itsa-regular">
+                <p class="text-[1.2rem] py-[15px] font-itsa-bold">
                     limitation on liability
                 </p>
                 <p class="text-[clamp(.8rem,3vw,.9rem)]">
                     itsa studio® is not liable for any damages tha may occur to you as a result of
-                    your misuse of our website. atipo° reserves the right to edit, modify, and change
+                    your misuse of our website. itsa studio® reserves the right to edit, modify, and change
                     this agreement at any time. we shall let our users know of these changes through
                     electronic mail. this agreement is an understanding between [name] and the user,
-                    and this supersedes and replaces all prior agreements regarding the use of this website.
-
-
+                    this supersedes and replaces all prior agreements regarding the use of this website.
                     if you have any questions about these terms and conditions, please contact us
                 </p>
             </section>

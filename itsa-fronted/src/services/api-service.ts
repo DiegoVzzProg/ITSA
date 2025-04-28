@@ -24,7 +24,7 @@ const handleLogout = (): void => {
   localStorage.clear();
   sessionStorage.clear();
   notify.error("Session expired. Redirecting...");
-  setTimeout(() => site.RedirectPage({ name: "home" }), 2000);
+  setTimeout(() => window.location.reload(), 2000);
 };
 
 const apiInstance: AxiosInstance = axios.create({

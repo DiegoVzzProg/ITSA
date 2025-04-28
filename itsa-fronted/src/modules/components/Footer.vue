@@ -17,8 +17,8 @@ onMounted(() => {
                 IN THE SAME AGENCY <sub class="align-super text-[.55rem] font-black">TM</sub>
                 team that provides high quality, useful, affordable and extrem
                 unique resources. our passion is
-                to create digital products to hep to students, designers,
-                agencies and anyone person creative.
+                to create digital products to help to students, designers,
+                agencies and anyone creative.
             </p>
         </div>
         <div
@@ -50,7 +50,8 @@ onMounted(() => {
             </section>
             <section
                 class="flex flex-row max-[768px]:flex-col w-full md:max-w-[230px] lg:max-w-[230px] min-h-full gap-[7px]">
-                <p class="times-new-roman-font md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4 text-[1.1rem]">
+                <p
+                    class="times-new-roman-font md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4 text-[1.1rem]">
                     folow us
                 </p>
                 <div class="flex flex-col find-us-description gap-[5px] ps-1">
@@ -58,8 +59,8 @@ onMounted(() => {
                         class="hover:bg-[rgb(0,0,0)] hover:text-white transition-all" target="_blank">
                         instagram
                     </a>
-                    <a href="https://www.behance.net/itsastudio" class="hover:bg-[rgb(0,0,0)] hover:text-white transition-all"
-                        target="_blank">
+                    <a href="https://www.behance.net/itsastudio"
+                        class="hover:bg-[rgb(0,0,0)] hover:text-white transition-all" target="_blank">
                         behance
                     </a>
                     <a href="https://www.tiktok.com/@itsa.studio?lang=es"
@@ -70,7 +71,8 @@ onMounted(() => {
             </section>
             <section
                 class="flex flex-row max-[768px]:flex-col w-full md:max-w-[230px] lg:max-w-[230px] min-h-full gap-[7px]">
-                <p class="times-new-roman-font md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4 text-[1.1rem]">
+                <p
+                    class="times-new-roman-font md:border-e md:border-e-black md:border-b-0 border-b-black border-b pe-4 text-[1.1rem]">
                     support
                 </p>
                 <div class="flex flex-col find-us-description items-start hover:bg-[rgb(244, 242, 239)]">
