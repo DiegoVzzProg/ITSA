@@ -3,16 +3,14 @@ import File from "../components/File.vue";
 </script>
 
 <template>
-  <div
-    class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7"
-  >
+  <div class="flex max-[768px]:flex-col-reverse min-h-[calc(100vh-86px)] justify-end grow shrink-0 max-[768px]:py-7">
     <div class="flex flex-col w-full text-balance">
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
         <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-bold">
           privacy policy
         </p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
-          this website is owned and operated by Itsa Studio Graphic Design
+          this website is owned and operated by itsa studio graphic design
           (“we,” “our,” “us”). <br />
           <br />
           below is itsa studio®’s privacy policy. it is our policy to respect
@@ -37,7 +35,7 @@ import File from "../components/File.vue";
           any personal information requested will be used only to process your
           order or provide support. under no circumstances will we sell or give
           away your information. <br />
-          ee will not collect your personal information on this site unless you
+          we will not collect your personal information on this site unless you
           choose to provide it to us.
           <br />
           <br />
@@ -53,9 +51,9 @@ import File from "../components/File.vue";
           <br />
           when yonaitsa studio® privacy policy. it is our policy to respect your
           privacy regarding any information we may collect from you across our
-          websitto respect your privacy regarding any information we may collect
-          from you across our websit respect your privacy regarding any
-          information we may collect from you across our websitto respect your
+          website to respect your privacy regarding any information we may collect
+          from you across our website respect your privacy regarding any
+          information we may collect from you across our website to respect your
           privacy regarding any information we may collect from you across our
           website, https://www.itsastudiomx.com, and other sites we own and
           operate. <br />
@@ -68,11 +66,7 @@ import File from "../components/File.vue";
           applicable law. <br />
           we use Stripe as the payment provider for our website. you can view
           their privacy policy at
-          <a
-            href="https://stripe.com/privacy"
-            class="underline underline-offset-1"
-            >https://stripe.com/privacy</a
-          >.
+          <a href="https://stripe.com/privacy" class="underline underline-offset-1">https://stripe.com/privacy</a>.
         </p>
       </section>
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
@@ -92,13 +86,8 @@ import File from "../components/File.vue";
       </section>
     </div>
     <div
-      class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]"
-    >
-      <File
-        file="privacy_policy.png"
-        type="img"
-        class="w-full max-w-[410px] h-full max-h-[300px]"
-      ></File>
+      class="flex w-full min-h-[calc(100vh-86px)] max-[768px]:min-h-full items-center justify-center max-[500px]:pb-[2rem]">
+      <File file="privacy_policy.png" type="img" class="w-full max-w-[410px] h-full max-h-[300px]"></File>
     </div>
   </div>
 </template>

@@ -9,7 +9,7 @@ import File from "../components/File.vue";
     <div class="flex flex-col w-full text-balance">
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
         <p class="text-[clamp(1.2rem,3vw,2.2rem)] py-[15px] font-itsa-bold">
-          terms and conditions
+          terms & conditions
         </p>
         <p
           class="text-[1.2rem] py-[15px] font-itsa-bold w-full border-t border-t-black"
@@ -20,7 +20,7 @@ import File from "../components/File.vue";
           by using this website, you certify that you have read and reviewed
           this agreement and that you agree to comply with its terms. if you do
           not wish to be bound by the terms of this agreement, you are advised
-          to leave the website. Itsa Studio® grants use of and access to this
+          to leave the website. itsa studio® grants use of and access to this
           website, its products, and its services only to those who have
           accepted its terms.
         </p>
@@ -49,7 +49,7 @@ import File from "../components/File.vue";
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           you agree to indemnify itsa studio® and its affiliates and to hold
           itsa studio® harmless against any legal claims and demands that may
-          arise from your use or misuse of our services. We reserve the right to
+          arise from your use or misuse of our services. we reserve the right to
           select our own legal counsel.
         </p>
       </section>

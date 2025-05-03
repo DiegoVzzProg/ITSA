@@ -13,7 +13,7 @@
         <div class="min-h-screen"></div>
     </div>
     <div
-        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full grow shrink-0 top-0 left-0 transition-all duration-500">
+        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full grow shrink-0 top-0 left-0 transition-all duration-500 gap-3">
         <div class="w-full h-screen flex justify-center items-center z-20">
             <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
                 <p
@@ -29,7 +29,7 @@
             <div id="children_elemento2_scroll" class="flex flex-col w-full justify-center items-center">
                 <p
                     class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] font-bold flex text-white z-10">
-                    +50 elements
+                    +130 elements
                 </p>
                 <p
                     class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(50px,10vw,150px)] text-center font-bold flex text-white z-10">
@@ -92,20 +92,20 @@
         </div>
         <div class="min-h-screen justify-center grow shrink-0 flex flex-col text-center">
             <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
-                57 items
+                134 items
             </p>
             <p>
                 a large library of basic elements including <br>
                 social media, weather, store and much more.
             </p>
             <div
-                class="flex items-center justify-center h-screen max-h-[530px] max-w-[1536px] relative overflow-hidden pt-5 max-[768px]:pt-3">
-                <File file="video2-basicicon.gif" type="img" class="translate-x-[10px]" />
+                class="flex justify-center h-screen max-h-[530px] max-w-[1536px] relative overflow-hidden translate-y-[clamp(0px,5vw,30px)]">
+                <File file="video2-basicicon.gif" type="img" class="translate-x-[10px] items-start  " />
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
-            <CardProduct :id_producto="1" titulo="basics icon set" subtitulo="basics icons <br/> pack"
-                descripcion="57 items <br/> available as: <br/> illustrator, figma & svg <br/> commercial & personal use"
+            <CardProduct :id_producto="1" titulo="basic icon set" subtitulo="basic icons <br/> pack"
+                descripcion="134 items <br/> available as: <br/> illustrator, pdf, svg & png <br/> commercial & personal use"
                 precio="0">
             </CardProduct>
         </div>

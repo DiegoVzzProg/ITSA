@@ -27,7 +27,7 @@ import File from "../components/File.vue";
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           the easiest and fastest way to pay is by credit or debit card. the
           itsa studio® website uses Stripe to securely process card information.
-          ee accept Visa, Mastercard, and American Express. if you don’t have a
+          we accept Visa, Mastercard, and American Express. if you don’t have a
           credit card or prefer not to pay by debit card, you can use Apple Pay
           or Google Wallet. if you encounter any problems with payment, please
           email us at info@itsastudiomx.com.
@@ -36,18 +36,18 @@ import File from "../components/File.vue";
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
         <p class="text-[1.2rem] py-[15px] font-itsa-bold">invocing</p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
-          ee issue invoices in PDF format only upon request. A copy will be
-          emailed to you after the purchase process is complete. ee send
+          we issue invoices in PDF format only upon request. a copy will be
+          emailed to you after the purchase process is complete. we send
           purchase receipts for all orders; they will also be emailed to you
-          after completing the purchase process. Please note that the email may
-          end up in your spam folder. For any questions or to request a missing
+          after completing the purchase process. please note that the email may
+          end up in your spam folder. for any questions or to request a missing
           invoice or receipt, please email us at info@itsastudiomx.com.
         </p>
       </section>
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
         <p class="text-[1.2rem] py-[15px] font-itsa-bold">refunds</p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
-          all sales are final. ee cannot refund money or exchange incorrectly
+          all sales are final. we cannot refund money or exchange incorrectly
           purchased asset licenses, as there is no way for us to verify that you
           no longer have copies of the asset. if the asset is defective, it will
           be replaced with the same asset, provided that you submit your
