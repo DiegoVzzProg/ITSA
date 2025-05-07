@@ -5,8 +5,8 @@
 @font-face {
   font-family: "silkaregular";
   src: url("./assets/font/silka-regular-webfont.eot");
-  src: url("./assets/font/silka-regular-webfont.eot?#iefix")
-      format("embedded-opentype"),
+  src:
+    url("./assets/font/silka-regular-webfont.eot?#iefix") format("embedded-opentype"),
     url("./assets/font/silka-regular-webfont.woff2") format("woff2"),
     url("./assets/font/silka-regular-webfont.woff") format("woff"),
     url("./assets/font/silka-regular-webfont.ttf") format("truetype");
@@ -17,8 +17,8 @@
 @font-face {
   font-family: "silkaregular_italic";
   src: url("./assets/font/silka-regularitalic-webfont.eot");
-  src: url("./assets/font/silka-regularitalic-webfont.eot?#iefix")
-      format("embedded-opentype"),
+  src:
+    url("./assets/font/silka-regularitalic-webfont.eot?#iefix") format("embedded-opentype"),
     url("./assets/font/silka-regularitalic-webfont.woff2") format("woff2"),
     url("./assets/font/silka-regularitalic-webfont.woff") format("woff"),
     url("./assets/font/silka-regularitalic-webfont.ttf") format("truetype");
@@ -28,7 +28,8 @@
 
 @font-face {
   font-family: "Itsa Bold";
-  src: url("./assets/font/itsa-Regular.30422c880-Bold.woff2") format("woff2"),
+  src:
+    url("./assets/font/itsa-Regular.30422c880-Bold.woff2") format("woff2"),
     url("./assets/font/itsa-Regular.30422c880-Bold.woff") format("woff"),
     url("./assets/font/itsa-Regular.30422c880-Bold.ttf") format("truetype");
   font-weight: bold;
@@ -37,7 +38,8 @@
 
 @font-face {
   font-family: "Itsa Regular";
-  src: url("./assets/font/itsa-Regular.30422c880-Regular.woff2") format("woff2"),
+  src:
+    url("./assets/font/itsa-Regular.30422c880-Regular.woff2") format("woff2"),
     url("./assets/font/itsa-Regular.30422c880-Regular.woff") format("woff"),
     url("./assets/font/itsa-Regular.30422c880-Regular.ttf") format("truetype");
   font-weight: normal;
@@ -114,4 +116,12 @@ body {
 
 .scroll-none::-webkit-scrollbar {
   display: none;
+}
+
+@media (max-width: 48rem) {
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    overflow: hidden;
+  }
 }

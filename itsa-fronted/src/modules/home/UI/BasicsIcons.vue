@@ -73,13 +73,14 @@
                     </p>
                     <br>
                     <p>
-                        aviable as:illustrator, svg & pdf
+                        aviable as:illustrator, svg, pdf & png
                     </p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
                     <File file="Ai.png" type="img" class="w-full max-w-[44px]"></File>
                     <File file="SVG.png" type="img" class="w-full max-w-[34px]"></File>
                     <File file="PDF.png" type="img" class="w-full max-w-[34px]"></File>
+                    <File file="icon_png.png" type="img" class="w-full max-w-[44px]"></File>
                 </div>
             </div>
             <div
