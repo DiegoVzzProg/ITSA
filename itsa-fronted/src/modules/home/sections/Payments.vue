@@ -17,7 +17,7 @@ import File from "../components/File.vue";
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           to purchase products from itsastudiomx.com, select the resource you
           wish to purchase and complete the payment. once your purchase is
-          confirmed, you will be able to download it, and your invoice will be
+          confirmed, you will be able to download it and your invoice will be
           sent to the email address you provided when creating your account. for
           any questions or comments, please contact us at info@itsastudiomx.com.
         </p>
@@ -50,7 +50,7 @@ import File from "../components/File.vue";
           all sales are final. we cannot refund money or exchange incorrectly
           purchased asset licenses, as there is no way for us to verify that you
           no longer have copies of the asset. if the asset is defective, it will
-          be replaced with the same asset, provided that you submit your
+          be replaced with the same asset provided that you submit your
           purchase receipt and notify us within 7 days of purchase.
         </p>
       </section>

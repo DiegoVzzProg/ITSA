@@ -13,7 +13,7 @@ import File from "../components/File.vue";
         </p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           all files available for download from itsastudiomx.com and itsa studio
-          on Behance belong to the owner of the site and the IN THE SAME AGENCY®
+          on Behance belong to the owner of the site and IN THE SAME AGENCY®
           brand. By downloading, purchasing, and/or installing the design assets
           created by Itsa Studio®, you agree to the following user license
           terms:
@@ -39,7 +39,7 @@ import File from "../components/File.vue";
           included on merchandising items (posters, prints, mugs, caps, or
           t-shirts) if you are using them as the primary design element. this
           applies to both modified and unmodified files. you cannot claim
-          authorship as your own. you only receive a license that allows you to
+          authorship as your own. you can only receive a license that allows you to
           use the asset as specified in these license agreement terms. you
           cannot compile the assets to replicate a similar or competing service.
         </p>

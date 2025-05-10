@@ -21,7 +21,7 @@
                     universal <br> icon pack
                 </p>
                 <p class="text-[clamp(1em,3vw,2em)] text-center text-white times-new-roman-font">
-                    a essential collection solid <br /> & minimalist style icons
+                    an essential collection solid <br /> & minimalist style icons
                 </p>
             </div>
         </div>
@@ -77,7 +77,7 @@
                 </p>
                 <div class="flex flex-col">
                     <p class="flex w-full">
-                        they are ready be used and will help <br />
+                        they are ready to be used and will help <br />
                         you hive your new project a great look
                     </p>
                     <br />
@@ -86,9 +86,9 @@
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
                     <File file="Ai.png" class="w-full max-w-[44px]" type="img">
                     </File>
-                    <File file="SVG.png" class="w-full max-w-[34px]" type="img">
+                    <File file="SVG.png" class="w-full max-w-[43px]" type="img">
                     </File>
-                    <File file="PDF.png" class="w-full max-w-[34px]" type="img">
+                    <File file="PDF.png" class="w-full max-w-[43px]" type="img">
                     </File>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                 <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
                     all files are royalty-free and one time fee. you can use them in any
                     number of personal and commercial projects for yourself or a client
-                    and you can do any ind of design work with them.
+                    any kind of work design with them.
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
@@ -134,7 +134,7 @@
                 <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
                     all files are royalty-free and one time fee. you can use them in any
                     number of personal and commercial projects for yourself or a client
-                    and you can do any ind of design work with them.
+                    any kind of work design with them.
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">

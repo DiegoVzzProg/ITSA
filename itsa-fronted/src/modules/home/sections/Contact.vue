@@ -27,7 +27,7 @@ import File from "../components/File.vue";
 
           <br />
           <br />
-          info@itsastudiomx.com
+          <a href="mailto:info@itsastudiomx.com">info@itsastudiomx.com</a>
         </p>
       </section>
     </div>

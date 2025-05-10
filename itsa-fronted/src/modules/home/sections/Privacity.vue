@@ -23,8 +23,7 @@ import File from "../components/File.vue";
           <br />
           <br />
           before continuing to use our website, we advise you to read our
-          privacy policy regarding our user data collection practices. it will
-          help you better understand our practices.
+          privacy policy regarding our user data collection practices. it will help you understand our practices better.
         </p>
       </section>
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
@@ -33,7 +32,7 @@ import File from "../components/File.vue";
         </p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           any personal information requested will be used only to process your
-          order or provide support. under no circumstances will we sell or give
+          order or provide support. under no circumstances we'll sell or give
           away your information. <br />
           we will not collect your personal information on this site unless you
           choose to provide it to us.
@@ -49,14 +48,10 @@ import File from "../components/File.vue";
           unsubscribe request to info@itsastudiomx.com.
           <br />
           <br />
-          when yonaitsa studio® privacy policy. it is our policy to respect your
+          when yona itsa studio® privacy policy. it is our policy to respect your
           privacy regarding any information we may collect from you across our
-          website to respect your privacy regarding any information we may collect
-          from you across our website respect your privacy regarding any
-          information we may collect from you across our website to respect your
-          privacy regarding any information we may collect from you across our
-          website, https://www.itsastudiomx.com, and other sites we own and
-          operate. <br />
+          website https://www.itsastudiomx.com and any other sites we own and operate.
+          <br />
           <br />
           please read carefully, and feel free to contact us if you have any
           questions. <br />

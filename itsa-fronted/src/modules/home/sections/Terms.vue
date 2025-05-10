@@ -28,8 +28,8 @@ import File from "../components/File.vue";
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">
         <p class="text-[1.2rem] py-[15px] font-itsa-bold">applicable law</p>
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
-          by visiting this website, you agree that the laws of Mexico, without
-          regard to principles of conflict of laws, will govern these terms and
+          by visiting this website, you agree that to the laws of Mexico, without
+          regard to principles of conflict of laws will govern these terms and
           conditions, as well as any dispute that might arise between itsa
           studio® and you, or between you and its business partners and
           associates.
@@ -60,9 +60,9 @@ import File from "../components/File.vue";
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           itsa studio® is not liable for any damages that may occur to you as a
           result of your misuse of our website. itsa studio® reserves the right
-          to edit, modify, and change this agreement at any time. we will notify
+          to edit, modify and change this agreement at any time. we will notify
           our users of these changes via email. this agreement constitutes an
-          understanding between itsa studio® and the user, and it supersedes and
+          understanding between itsa studio® and the user and it supersedes and
           replaces all prior agreements regarding the use of this website. if
           you have any questions about these terms and conditions, please
           contact us.

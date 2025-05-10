@@ -18,7 +18,7 @@
             <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
                 <p
                     class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
-                    basics icon set
+                    basic icon pack
                 </p>
                 <p class="text-[clamp(1em,3vw,2em)] text-center text-white times-new-roman-font">
                     a sleek & minimalist collection <br> of geometric-style icons.
@@ -68,7 +68,7 @@
                 </p>
                 <div class="flex flex-col">
                     <p class="flex w-full">
-                        they are ready be used and will help <br>
+                        they are ready to be used and will help <br>
                         you hive your new project a great look
                     </p>
                     <br>
@@ -78,9 +78,9 @@
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
                     <File file="Ai.png" type="img" class="w-full max-w-[44px]"></File>
-                    <File file="SVG.png" type="img" class="w-full max-w-[34px]"></File>
-                    <File file="PDF.png" type="img" class="w-full max-w-[34px]"></File>
-                    <File file="icon_png.png" type="img" class="w-full max-w-[44px]"></File>
+                    <File file="SVG.png" type="img" class="w-full max-w-[43px]"></File>
+                    <File file="PDF.png" type="img" class="w-full max-w-[43px]"></File>
+                    <File file="icon_png.png" type="img" class="w-full max-w-[43px]"></File>
                 </div>
             </div>
             <div
@@ -105,7 +105,7 @@
             </div>
         </div>
         <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section">
-            <CardProduct :id_producto="1" titulo="basic icon set" subtitulo="basic icons <br/> pack"
+            <CardProduct :id_producto="1" titulo="basic icon pack" subtitulo="basic icons <br/> pack"
                 descripcion="134 items <br/> available as: <br/> illustrator, pdf, svg & png <br/> commercial & personal use"
                 precio="0">
             </CardProduct>

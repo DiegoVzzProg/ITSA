@@ -100,7 +100,7 @@ onUnmounted(() => {
         <p>
             {{ titulo }}
         </p>
-        <p class="font-itsa-bold text-[clamp(1.6rem,4vw,3.5rem)]" v-html="subtitulo">
+        <p class="font-itsa-bold text-[clamp(2.8rem,4vw,3.5rem)] leading-[clamp(37px,3vw,62px)]" v-html="subtitulo">
         </p>
         <p class="font-itsa-bold text-[clamp(1.6rem,4vw,3.5rem)]">
             ${{ site.formatNumber(parseFloat(precio)) }} mxn
