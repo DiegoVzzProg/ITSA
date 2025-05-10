@@ -16,6 +16,10 @@ class CClientes extends Controller
 
         $cliente = TClientes::where('id_usuario', $id_usuario)->first();
 
+        if ($cliente == null) {
+            return null;
+        }
+
         $paises = TPaises::where('activo', true)
             ->where('id_pais', $cliente->id_pais)->first();
 
@@ -37,8 +41,15 @@ class CClientes extends Controller
     public static function fn_a_clientes(Request $request)
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
+            $user = $request->user();
+            $exite_cliente = TClientes::where('telefono', $request->input('telefono'))->firstOrFail();
+
+            if ($exite_cliente) {
+                return CGeneral::CreateMessage('The details you provided already exist.', 599, null);
+            }
+
             $cliente = TClientes::create([
-                'id_usuario' => $request->input('id_usuario'),
+                'id_usuario' => $user->id_usuario,
                 'nombre' => $request->input('nombre'),
                 'telefono' => $request->input('telefono'),
                 'direccion' => $request->input('direccion'),
@@ -48,7 +59,7 @@ class CClientes extends Controller
             ]);
 
             $paises = TPaises::where('activo', true)
-                ->where('id_pais', $cliente->id_pais)->first();
+                ->where('id_pais', $cliente->id_pais)->firstOrFail();
 
             $dt_cliente = [
                 "id_cliente" => $cliente->id_cliente,
@@ -61,7 +72,9 @@ class CClientes extends Controller
                 "id_pais" => $paises->id_pais
             ];
 
-            return CGeneral::CreateMessage('', 200, $dt_cliente);
+            return CGeneral::CreateMessage('', 200, [
+                "client_data" => $dt_cliente
+            ]);
         }, $request);
     }
 

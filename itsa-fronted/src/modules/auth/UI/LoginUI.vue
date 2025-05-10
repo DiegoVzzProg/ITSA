@@ -171,9 +171,9 @@ async function btnLogin_OnClick(): Promise<void> {
         password: UserForm1.password.value.trim()
     };
 
-    const responseLogin: ApiResponse = await new AuthClass().Login(params);
+    const response: ApiResponse = await new AuthClass().Login(params);
 
-    if (!responseLogin.data) {
+    if (!response.data) {
         FormLogin.Reset();
         loading.value = false;
         return;
@@ -181,43 +181,27 @@ async function btnLogin_OnClick(): Promise<void> {
 
     site.setCookies(
         {
-            "e.t": responseLogin.data.token,
-            "r.t": responseLogin.data.refresh_token,
-            "s.t": responseLogin.data.session_token,
+            "e.t": response.data.token,
+            "r.t": response.data.refresh_token,
+            "s.t": response.data.session_token,
+            "e.k": response.data.secretKey,
         },
         false,
         1
     );
 
-    const response: ApiResponse = await new AuthClass().secretKey();
-
-    if (!response) {
-        return;
-    }
-
-    site.setCookies(
-        {
-            "e.k": response.data.secretKey,
-        },
-        false
-    );
-
     site.setCookies({
-        "e.u.d": JSON.stringify(responseLogin.data.user_data),
-        "e.c.d": JSON.stringify(responseLogin.data.client_data),
+        "e.u.d": JSON.stringify(response.data.user_data),
+        "e.c.d": JSON.stringify(response.data.client_data),
     });
 
     site.LocalStorage("set", {
         logged_in_successfully: false
     });
 
-    const userData = site.getCookie("e.u.d");
-
-    if (userData) {
-        await new CostumersClass().shoppingCartClient();
-        loading.value = false;
-        site.RedirectPage({ name: 'home' });
-    }
+    await new CostumersClass().shoppingCartClient();
+    loading.value = false;
+    site.RedirectPage({ name: 'home' });
 }
 
 onUnmounted(() => {

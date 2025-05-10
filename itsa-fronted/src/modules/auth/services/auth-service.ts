@@ -12,13 +12,6 @@ export interface IRegister {
   email: string;
   password: string;
   leyo_terms: boolean;
-  nombre: string;
-  numero_de_iva_empresa: string;
-  direccion: string;
-  codigo_postal: string;
-  estado: string;
-  id_pais: number;
-  telefono: string;
 }
 
 export interface IRefreshToken {

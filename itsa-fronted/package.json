@@ -12,6 +12,7 @@
     "@midudev/tailwind-animations": "^0.1.0",
     "@stripe/stripe-js": "^5.6.0",
     "@types/gsap": "^3.0.0",
+    "@types/yup": "^0.32.0",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
     "gsap": "^3.12.7",
@@ -22,8 +23,10 @@
     "pinia-plugin-persistedstate": "^4.2.0",
     "pusher-js": "^8.4.0",
     "uuid": "^11.0.5",
+    "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@types/aos": "^3.0.7",

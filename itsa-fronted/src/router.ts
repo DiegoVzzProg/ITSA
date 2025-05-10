@@ -17,6 +17,8 @@ import {
   IvalidateSessionStripe,
 } from "./modules/services/general-service";
 import { ApiResponse } from "./utils/Api.interface";
+import RegisterUI2 from "./modules/auth/UI/RegisterUI2.vue";
+import CheckOut2 from "./modules/home/UI/CheckOut2.vue";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
@@ -38,10 +40,17 @@ const routes: Array<RouteRecordRaw> = [
     component: Information,
     meta: { layout: "Main" },
   },
+  // {
+  //   path: "/checkout",
+  //   name: "checkout",
+  //   component: CheckOut,
+  //   meta: { layout: "Main" },
+  //   props: true,
+  // },
   {
     path: "/checkout",
     name: "checkout",
-    component: CheckOut,
+    component: CheckOut2,
     meta: { layout: "Main" },
     props: true,
   },
@@ -49,9 +58,15 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: "/register",
     name: "register",
-    component: Register,
+    component: RegisterUI2,
     meta: { layout: "Auth" },
   },
+  // {
+  //   path: "/register2",
+  //   name: "register2",
+  //   component: RegisterUI2,
+  //   meta: { layout: "Auth" },
+  // },
   {
     path: "/forgot/password",
     name: "forgotpassword",

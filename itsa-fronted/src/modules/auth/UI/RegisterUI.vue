@@ -16,19 +16,17 @@
             </button>
         </div>
         <div class="flex flex-row w-full justify-center max-w-screen-lg items-center gap-3 max-[1020px]:flex-col">
-            <div class="flex w-full max-w-md flex-col justify-between gap-3 h-[min(500px,100%)]"
+            <Form @submit="btnContinueForm" :validation-schema="schema"
+                class="flex w-full max-w-md flex-col justify-between gap-3 h-[min(500px,100%)]"
                 v-if="ContinueRegistration == 0">
                 <p class="px-[clamp(18px,3vw,28px)]">
                     create a new user
                 </p>
                 <div class="flex flex-col gap-1" v-for="(item, index) in FormRegister.User" :key="index">
-                    <input v-model="item.value" :type="item.type" class="border border-black py-5 px-3 rounded-full"
-                        :placeholder="item.placeholder" :maxlength="item.maxLength"
-                        v-on:input="ValidateRegistrationForm(item)">
-                    <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                        v-if="item.error">
-                        {{ item.error }}
-                    </span>
+                    <Field :name="item.id" :placeholder="item.placeholder" :type="item.type"
+                        class="border border-black py-5 px-3 rounded-full" autocomplete="off" />
+                    <ErrorMessage class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+                        :name="item.id" />
                 </div>
                 <div class="flex flex-col gap-2 w-full ps-5">
                     <div class="flex flex-row gap-1 items-center">
@@ -48,12 +46,11 @@
                     </span>
                 </div>
                 <div class="flex flex-col w-full max-w-screen-lg max-[1020px]:max-w-md">
-                    <button v-on:click="btnContinueForm()" id="btnContinueForm" type="button"
-                        class="bg-black py-5 px-3 rounded-full text-white">
+                    <button id="btnContinueForm" type="submit" class=" bg-black py-5 px-3 rounded-full text-white">
                         continue
                     </button>
                 </div>
-            </div>
+            </Form>
             <div class="flex w-full max-w-md flex-col gap-3 justify-between grow shrink-0" v-else>
                 <p class="px-[clamp(18px,3vw,28px)]">
                     your details
@@ -100,6 +97,9 @@
 </template>
 
 <script setup lang="ts">
+import { Form, Field, ErrorMessage } from 'vee-validate';
+import * as yup from 'yup';
+
 import { onMounted, reactive, ref } from 'vue';
 import Loading from '../../components/Loading.vue';
 import { site } from '../../../utils/site';
@@ -113,10 +113,30 @@ const FormLeyoTerms = reactive({
     error: "",
 });
 
+const schema = yup.object({
+    nombre: yup.string()
+        .required('this field is required')
+        .min(4, 'this field must have at least 4 characters')
+        .max(24, 'this field must have a maximum of 20 characters')
+        .matches(/^[^\s`]+$/, 'the name cannot contain spaces and backticks'),
+    email: yup.string()
+        .required('email is mandatory')
+        .email('you must add a valid email')
+        .max(254, 'this field must have a maximum of 254 characters'),
+    password: yup.string()
+        .required('password is required')
+        .min(8, 'this field must have at least 8 characters')
+        .max(20, 'this field must have a maximum of 254 characters'),
+    passwordconfirmation: yup
+        .string()
+        .required('you must confirm the password')
+        .oneOf([yup.ref('password')], 'passwords must match'),
+});
+
 const FormRegister = reactive({
     User: {
         user_name: {
-            id: "username",
+            id: "nombre",
             placeholder: "user name",
             value: "",
             error: "",
@@ -224,18 +244,9 @@ function btnContinueForm() {
         return;
     }
 
-    const UserForm1: any = FormRegister.User;
-    Object.keys(UserForm1).forEach((key) => {
-        ValidateRegistrationForm(UserForm1[key]);
-    });
-
     ValidateTerms(FormLeyoTerms.value);
 
     if (
-        FormRegister.User.email.error ||
-        FormRegister.User.password.error ||
-        FormRegister.User.passwordConfirm.error ||
-        FormRegister.User.user_name.error ||
         FormLeyoTerms.error
     )
         return;

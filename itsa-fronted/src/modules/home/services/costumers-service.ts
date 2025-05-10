@@ -31,6 +31,16 @@ export interface IEditCustomer {
   telefono: string;
 }
 
+export interface IRegisterClient {
+  nombre: string;
+  numero_de_iva_empresa: string;
+  direccion: string;
+  estado: string;
+  codigo_postal: string;
+  id_pais: number;
+  telefono: string;
+}
+
 export class CostumersClass {
   public async shoppingCartClient(): Promise<ApiResponse> {
     const response: ApiResponse = await Api.Request({
@@ -90,6 +100,16 @@ export class CostumersClass {
     const response: ApiResponse = await Api.Request({
       method: "PUT",
       endpoint: `${customersUrl}/edit/customer`,
+      body: params,
+    });
+
+    return response;
+  }
+
+  public async registerClient(params: IRegisterClient): Promise<ApiResponse> {
+    const response: ApiResponse = await Api.Request({
+      method: "POST",
+      endpoint: `${customersUrl}/register/customer`,
       body: params,
     });
 

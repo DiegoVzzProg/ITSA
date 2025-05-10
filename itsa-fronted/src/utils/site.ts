@@ -69,6 +69,8 @@ export class site {
     expireDays?: number
   ): void {
     Object.entries(cookies).forEach(([key, value]) => {
+      console.log(key, value);
+
       Cookies.set(key, encrypted ? this.encryptData(value) : value, {
         path: "/",
         sameSite: "Strict",

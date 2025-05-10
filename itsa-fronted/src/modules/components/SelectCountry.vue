@@ -79,7 +79,7 @@ onMounted(() => {
 
 <template>
     <div class="custom-select">
-        <button @click="showCountries = !showCountries" class="select-button" :aria-expanded="showCountries">
+        <button type="button" @click="showCountries = !showCountries" class="select-button" :aria-expanded="showCountries">
             <span :class="['selected-value', !selectedCountry && 'placeholder']">
                 {{ selectedCountry || placeholder }}
             </span>
