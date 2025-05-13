@@ -45,7 +45,7 @@ class CUsuarios extends Controller
         // Si planeas soportar múltiples sesiones, considera una tabla dedicada.
         TUsuarios::where('id_usuario', $usuario->id_usuario)
             ->update([
-                'remember_token'   => $refreshToken,
+                'remember_token' => $refreshToken,
                 'expires_at_token' => now()->addDays(7)
             ]);
 
@@ -85,11 +85,11 @@ class CUsuarios extends Controller
                 return CGeneral::CreateMessage('Invalid or expired refresh token', 599, null);
             }
 
-            $accessToken  = self::generateAccessToken($usuario);
+            $accessToken = self::generateAccessToken($usuario);
             $newRefreshToken = self::generateRefreshToken($usuario);
 
             return CGeneral::CreateMessage('', 200, [
-                "access_token"  => $accessToken,
+                "access_token" => $accessToken,
                 "refresh_token" => $newRefreshToken,
             ]);
         }, $request);
@@ -99,14 +99,14 @@ class CUsuarios extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $validator = Validator::make($request->all(), [
-                'email'    => 'required|email|max:254',
+                'email' => 'required|email|max:254',
                 'password' => 'required|string|min:8',
             ], [
-                'email.required'    => 'The email is required.',
-                'email.email'       => 'The email must be a valid email address.',
-                'email.max'         => 'The email should not exceed 254 characters.',
+                'email.required' => 'The email is required.',
+                'email.email' => 'The email must be a valid email address.',
+                'email.max' => 'The email should not exceed 254 characters.',
                 'password.required' => 'The password is required.',
-                'password.min'      => 'Password must be at least 8 characters long.',
+                'password.min' => 'Password must be at least 8 characters long.',
             ]);
 
             if ($validator->fails()) {
@@ -120,7 +120,7 @@ class CUsuarios extends Controller
                 ->first();
 
             if (!$usuario) {
-                return CGeneral::CreateMessage('User not found', 599,  null);
+                return CGeneral::CreateMessage('User not found', 599, null);
             }
 
             if (!Hash::check($credentials['password'], $usuario->password)) {
@@ -130,7 +130,7 @@ class CUsuarios extends Controller
             $usuario->update(['ultima_conexion' => now()]);
 
 
-            $accessToken  = self::generateAccessToken($usuario);
+            $accessToken = self::generateAccessToken($usuario);
             $refreshToken = self::generateRefreshToken($usuario);
             $sessionToken = self::generateSessionToken($usuario);
 
@@ -139,14 +139,14 @@ class CUsuarios extends Controller
             return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
                     'id_usuario' => $usuario->id_usuario,
-                    'email'      => $usuario->email,
-                    'nombre'     => $usuario->nombre,
+                    'email' => $usuario->email,
+                    'nombre' => $usuario->nombre,
                 ],
-                "token"          => $accessToken,
-                "refresh_token"  => $refreshToken,
-                "session_token"  => $sessionToken,
+                "token" => $accessToken,
+                "refresh_token" => $refreshToken,
+                "session_token" => $sessionToken,
                 'secretKey' => bin2hex(random_bytes(10)),
-                "client_data"    => $dt_cliente
+                "client_data" => $dt_cliente
             ]);
         }, $request);
     }
@@ -178,7 +178,7 @@ class CUsuarios extends Controller
                     'expires_at_token' => now(),
                 ]);
 
-                $accessToken  = self::generateAccessToken($usuario);
+                $accessToken = self::generateAccessToken($usuario);
                 $refreshToken = self::generateRefreshToken($usuario);
                 $sessionToken = self::generateSessionToken($usuario);
 
@@ -190,19 +190,6 @@ class CUsuarios extends Controller
                 ];
             });
 
-            $dt_cliente = CClientes::ObtenerDatosCiente($transaccion['usuario']->id_usuario);
-            Log::info([
-                "user_data" => [
-                    'id_usuario' => $transaccion['usuario']->id_usuario,
-                    'email' => $transaccion['usuario']->email,
-                    'nombre' => $transaccion['usuario']->nombre,
-                ],
-                "token" => $transaccion['accessToken'],
-                "refresh_token" => $transaccion['refreshToken'],
-                "session_token" => $transaccion['sessionToken'],
-                'secretKey' => bin2hex(random_bytes(10)),
-                "client_data"    => $dt_cliente
-            ]);
             return CGeneral::CreateMessage('', 200, [
                 "user_data" => [
                     'id_usuario' => $transaccion['usuario']->id_usuario,
@@ -212,8 +199,7 @@ class CUsuarios extends Controller
                 "token" => $transaccion['accessToken'],
                 "refresh_token" => $transaccion['refreshToken'],
                 "session_token" => $transaccion['sessionToken'],
-                'secretKey' => bin2hex(random_bytes(10)),
-                "client_data"    => $dt_cliente
+                'secretKey' => bin2hex(random_bytes(10))
             ]);
         });
     }
@@ -232,11 +218,11 @@ class CUsuarios extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $validator = Validator::make($request->all(), [
-                'email'    => 'required|email|max:254'
+                'email' => 'required|email|max:254'
             ], [
-                'email.required'    => 'The email is required.',
-                'email.email'       => 'The email must be a valid email address.',
-                'email.max'         => 'The email should not exceed 254 characters.'
+                'email.required' => 'The email is required.',
+                'email.email' => 'The email must be a valid email address.',
+                'email.max' => 'The email should not exceed 254 characters.'
             ]);
 
             if ($validator->fails()) {

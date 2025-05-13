@@ -4,8 +4,6 @@ import Information from "./modules/home/UI/Information.vue";
 import Login from "./modules/auth/UI/LoginUI.vue";
 import BasicsIcons from "./modules/home/UI/BasicsIcons.vue";
 import UniversalIcons from "./modules/home/UI/UniversalIcons.vue";
-import CheckOut from "./modules/home/UI/CheckOut.vue";
-import Register from "./modules/auth/UI/RegisterUI.vue";
 //import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
 import PaymentCompleted from "./modules/home/UI/PaymentCompleted.vue";
 //import { numberCartShopping } from "./modules/home/stores/CustomerStore";
@@ -19,6 +17,7 @@ import {
 import { ApiResponse } from "./utils/Api.interface";
 import RegisterUI2 from "./modules/auth/UI/RegisterUI2.vue";
 import CheckOut2 from "./modules/home/UI/CheckOut2.vue";
+// import { CostumersClass } from "./modules/home/services/costumers-service";
 
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
@@ -40,13 +39,6 @@ const routes: Array<RouteRecordRaw> = [
     component: Information,
     meta: { layout: "Main" },
   },
-  // {
-  //   path: "/checkout",
-  //   name: "checkout",
-  //   component: CheckOut,
-  //   meta: { layout: "Main" },
-  //   props: true,
-  // },
   {
     path: "/checkout",
     name: "checkout",
@@ -61,12 +53,6 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterUI2,
     meta: { layout: "Auth" },
   },
-  // {
-  //   path: "/register2",
-  //   name: "register2",
-  //   component: RegisterUI2,
-  //   meta: { layout: "Auth" },
-  // },
   {
     path: "/forgot/password",
     name: "forgotpassword",
@@ -88,6 +74,17 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, _from, next) => {
+
+  // if (String(to.name).toLowerCase() == "checkout") {
+  //   await new CostumersClass().shoppingCartClient();
+
+  //   if (stores.echoStore().carrito.length == 0) {
+  //     return next({
+  //       name: "home",
+  //     });
+  //   }
+  // }
+
   if (
     to.query.session &&
     (String(to.name).toLowerCase() == "checkout" ||

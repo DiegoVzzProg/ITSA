@@ -1,11 +1,20 @@
 <template>
   <div class="flex flex-col grow shrink-0 min-h-screen w-full">
-    <div class="min-h-screen flex flex-col justify-center items-center" ref="section1">
-      <div class="flex flex-col max-h-[clamp(40px,4vw,60px)] overflow-hidden text-center">
-        <span v-for="(item, index) in texts" :key="index" :class="[
-          item.class,
-          'text-[clamp(2.1em,4vw,6rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
-        ]">
+    <div
+      class="min-h-screen flex flex-col justify-center items-center"
+      ref="section1"
+    >
+      <div
+        class="flex flex-col max-h-[clamp(40px,4vw,60px)] overflow-hidden text-center"
+      >
+        <span
+          v-for="(item, index) in texts"
+          :key="index"
+          :class="[
+            item.class,
+            'text-[clamp(2.1em,4vw,6rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
+          ]"
+        >
           {{ item.texto }}
         </span>
       </div>
@@ -13,12 +22,15 @@
         that make your stories look better
       </p>
     </div>
-    <div id="gallery"
-      class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in">
+    <div
+      id="gallery"
+      class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in"
+    >
       <div
         class="flex flex-row-reverse w-full justify-end gap-3 py-5 transition-all flex-wrap max-[1024px]:justify-center"
-        v-if="productos">
-        <div v-for="(producto, index) in productos" :key="index" :class="[
+        v-if="productos"
+      >
+        <!-- <div v-for="(producto, index) in productos" :key="index" :class="[
           producto.hover_efecto,
           'w-full max-w-[clamp(408px,40vw,508px)] lg:min-h-[clamp(208px,40vw,508px)] min-h-[408px] transition-all duration-300 ease-in-out',
           'bg-[rgb(244,242,239)] rounded-[12px] cursor-pointer p-5 flex-auto',
@@ -49,12 +61,19 @@
               </p>
             </div>
           </div>
-          <div class="flex items-center justify-center w-full h-[calc(100%-100px)]">
+          <div class="flex items-center justify-center w-full h-[calc(100%-100px)] border">
             <span class="flex w-[320px]">
               <File :file="`${String(producto.imagen)}`" type="img" />
             </span>
           </div>
-        </div>
+        </div> -->
+
+        <ProductContainer
+          v-for="(producto, index) in productos"
+          :page-redirect="producto.url"
+          :titulo="producto.titulo"
+          :precio="parseFloat(producto.precio)"
+        />
       </div>
       <Loading v-else></Loading>
     </div>
@@ -67,6 +86,7 @@ import File from "../components/File.vue";
 import Loading from "../../components/Loading.vue";
 import { ApiResponse } from "../../../utils/Api.interface";
 import { IListProducts, ProductsClass } from "../services/products-service";
+import ProductContainer from "../components/ProductContainer.vue";
 //import { numberCartShopping } from "../stores/CustomerStore";
 
 const productos = ref<any>([]);
@@ -120,21 +140,22 @@ onMounted(async () => {
   }, 4200);
 });
 
-onBeforeUnmount(() => { });
+onBeforeUnmount(() => {});
 
 const Productos = async () => {
   const parameters: IListProducts = {
-    id_producto: 0
-  }
+    id_producto: 0,
+  };
 
-  const response: ApiResponse = await new ProductsClass().listProducts(parameters);
+  const response: ApiResponse = await new ProductsClass().listProducts(
+    parameters
+  );
 
   if (!response.data) {
     return;
   }
   productos.value = response.data;
-}
-
+};
 </script>
 
 <style scoped>

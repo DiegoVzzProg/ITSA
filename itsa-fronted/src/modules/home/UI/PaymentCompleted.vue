@@ -11,16 +11,22 @@ import { GeneralClass, IvalidateSessionStripe } from '../../services/general-ser
 const route = useRoute();
 
 const downloadProduct = async () => {
+
+    if(!site.userData()){
+        site.RedirectPage({ name: "home" });
+        return;
+    }
+    
     let response: ApiResponse;
 
     if (site.IsNullOrEmpty(route.query.idprod)) {
         const data: IDownloadFiles = {
-            id_usuario: btoa(site.userData().id_usuario)
+            id_usuario: btoa(site.userData()?.id_usuario || 0)
         }
         response = await new ProductsClass().downloadFiles(data);
     } else {
         const data: IDownloadFile = {
-            id_usuario: btoa(site.userData().id_usuario),
+            id_usuario: btoa(site.userData()?.id_usuario || 0),
             id_producto: String(route.query.idprod)
         }
         response = await new ProductsClass().downloadFile(data);

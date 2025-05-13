@@ -18,26 +18,28 @@ const props = defineProps<{
 
 const AddCartCostumer = async () => {
     const userData = site.userData();
-    if (userData) {
 
-        const params: IAddProduct = {
-            id_producto: props.id_producto,
-            descripcion: props.subtitulo.replace(/<[^>]*>/g, '').trim()
-        }
-
-        const response: ApiResponse = await new CostumersClass().addProduct(params);
-
-        if (response.data) {
-            site.RedirectPage({ name: 'home' });
-        }
-
-    } else {
+    if(!userData){
         site.RedirectPage({ name: 'login' });
     }
+
+    loadingHabilitado.value = true;
+    const params: IAddProduct = {
+        id_producto: props.id_producto,
+        descripcion: props.subtitulo.replace(/<[^>]*>/g, '').trim()
+    }
+
+    const response: ApiResponse = await new CostumersClass().addProduct(params);
+
+    if (response.data) {
+        site.RedirectPage({ name: 'home' });
+    }
+
+    loadingHabilitado.value = false;
 }
 
 function GoCheckOut() {
-    const userData = site.getCookie('e.u.d');
+    const userData = site.userData();
     if (userData) {
         site.RedirectPage({ name: 'checkout' });
     }

@@ -21,9 +21,10 @@ export class site {
    *
    * @returns {any} El objeto de usuario o undefined si no se encuentra la cookie.
    */
-  public static userData(): any {
-    const data: any = site.getCookie("e.u.d");
-    return data ? JSON.parse(data) : undefined;
+  public static userData(): Record<string, any> | undefined {
+    const data: any = site.LocalStorage("get", ["e.u.d"]);
+
+    return data["e.u.d"] ? JSON.parse(data["e.u.d"]) : undefined;
   }
 
   /**
@@ -69,8 +70,6 @@ export class site {
     expireDays?: number
   ): void {
     Object.entries(cookies).forEach(([key, value]) => {
-      console.log(key, value);
-
       Cookies.set(key, encrypted ? this.encryptData(value) : value, {
         path: "/",
         sameSite: "Strict",

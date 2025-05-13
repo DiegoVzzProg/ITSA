@@ -224,7 +224,13 @@ class CProductos extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
 
             $usuario = $request->user();
-            $cliente = TClientes::where('id_usuario', $usuario->id_usuario)->firstOrFail();
+            $cliente = TClientes::where('id_usuario', $usuario->id_usuario)->first();
+
+            if (!$cliente) {
+                return CGeneral::CreateMessage('', 200, [
+                    "producto_comprado" => null
+                ]);
+            }
 
             $compra = TProductosCompradosCliente::where('id_cliente', $cliente->id_cliente)
                 ->where('id_producto', $request->id_producto)

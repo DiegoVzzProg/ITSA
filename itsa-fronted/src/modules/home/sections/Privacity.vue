@@ -30,6 +30,7 @@ import File from "../components/File.vue";
         <p class="text-[1.2rem] py-[15px] font-itsa-bold">
           information we collect
         </p>
+        
         <p class="text-[clamp(.8rem,3vw,.9rem)]">
           any personal information requested will be used only to process your
           order or provide support. under no circumstances we'll sell or give
@@ -48,20 +49,24 @@ import File from "../components/File.vue";
           unsubscribe request to info@itsastudiomx.com.
           <br />
           <br />
-          when yona itsa studio® privacy policy. it is our policy to respect your
-          privacy regarding any information we may collect from you across our
-          website https://www.itsastudiomx.com and any other sites we own and operate.
+          Below is itsa studio&reg;’s privacy policy. it is our policy to respect your privacy regarding any information we may collect from you across our website, 
+          https://www.itsastudiomx.com, and other sites we own and operate.
+          please read carefully, and feel free to contact us if you have any questions.
           <br />
           <br />
-          please read carefully, and feel free to contact us if you have any
-          questions. <br />
-          itsa studio® shall not make any personal data of the customer
-          available to third parties without the express consent of the
-          customer, except to the extent that disclosure is required under
-          applicable law. <br />
-          we use Stripe as the payment provider for our website. you can view
-          their privacy policy at
-          <a href="https://stripe.com/privacy" class="underline underline-offset-1">https://stripe.com/privacy</a>.
+        </p>
+        <p class="text-[clamp(.8rem,3vw,.9rem)]">
+          when you purchase products from our shop, as part of the buying and selling process, we will ask you to provide certain personal information. the information we collect includes: <br>
+        </p>
+        <ul class="list-disc list-inside text-[clamp(.8rem,3vw,.9rem)]">
+          <li>Your name</li>
+          <li>Your email address</li>
+          <li>Your billing address</li>
+          <li>Your VAT number (if applicable)</li>
+        </ul>
+        <p class="text-[clamp(.8rem,3vw,.9rem)]">
+          itsa studio&reg; shall not make any personal data of the customer available to third parties without the express consent of the customer, except to the extent that disclosure is required under applicable law.
+          we use Stripe as the payment provider for our website. You can view their privacy policy at <a href="https://stripe.com/privacy" class="underline underline-offset-1">https://stripe.com/privacy</a>.
         </p>
       </section>
       <section class="flex flex-col seccion-1-app-license pb-[4rem]">

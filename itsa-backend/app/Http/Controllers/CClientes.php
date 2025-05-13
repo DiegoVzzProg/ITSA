@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\TClientes;
 use App\Models\TPaises;
 use Illuminate\Http\Request;
+use Log;
 
 class CClientes extends Controller
 {
@@ -42,7 +43,7 @@ class CClientes extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $user = $request->user();
-            $exite_cliente = TClientes::where('telefono', $request->input('telefono'))->firstOrFail();
+            $exite_cliente = TClientes::where('telefono', $request->input('telefono'))->first();
 
             if ($exite_cliente) {
                 return CGeneral::CreateMessage('The details you provided already exist.', 599, null);
@@ -56,21 +57,25 @@ class CClientes extends Controller
                 'estado' => $request->input('estado'),
                 'id_pais' => $request->input('id_pais'),
                 'codigo_postal' => $request->input('codigo_postal'),
+                "numero_de_iva_empresa" => $request->input('numero_de_iva_empresa'),
             ]);
 
             $paises = TPaises::where('activo', true)
                 ->where('id_pais', $cliente->id_pais)->firstOrFail();
 
             $dt_cliente = [
-                "id_cliente" => $cliente->id_cliente,
+                "id_cliente" => $cliente->id,
                 "nombre" => $cliente->nombre,
                 "numero_de_iva_empresa" => $cliente->numero_de_iva_empresa,
                 "direccion" => $cliente->direccion,
                 "estado" => $cliente->estado,
                 "codigo_postal" => $cliente->codigo_postal,
                 "pais" => $paises->nombre,
-                "id_pais" => $paises->id_pais
+                "id_pais" => $paises->id_pais,
+                "telefono" => $cliente->telefono
             ];
+
+            Log::info($dt_cliente);
 
             return CGeneral::CreateMessage('', 200, [
                 "client_data" => $dt_cliente
