@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "silkaregular";
+  src: url("./assets/font/silka-regular-webfont.eot");
+  src:
+    url("./assets/font/silka-regular-webfont.eot?#iefix") format("embedded-opentype"),
+    url("./assets/font/silka-regular-webfont.woff2") format("woff2"),
+    url("./assets/font/silka-regular-webfont.woff") format("woff"),
+    url("./assets/font/silka-regular-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "silkaregular_italic";
+  src: url("./assets/font/silka-regularitalic-webfont.eot");
+  src:
+    url("./assets/font/silka-regularitalic-webfont.eot?#iefix") format("embedded-opentype"),
+    url("./assets/font/silka-regularitalic-webfont.woff2") format("woff2"),
+    url("./assets/font/silka-regularitalic-webfont.woff") format("woff"),
+    url("./assets/font/silka-regularitalic-webfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Itsa Bold";
+  src:
+    url("./assets/font/itsa-Regular.30422c880-Bold.woff2") format("woff2"),
+    url("./assets/font/itsa-Regular.30422c880-Bold.woff") format("woff"),
+    url("./assets/font/itsa-Regular.30422c880-Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Itsa Regular";
+  src:
+    url("./assets/font/itsa-Regular.30422c880-Regular.woff2") format("woff2"),
+    url("./assets/font/itsa-Regular.30422c880-Regular.woff") format("woff"),
+    url("./assets/font/itsa-Regular.30422c880-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+*,
+*::after,
+*::before {
+  font-family: "silkaregular";
+
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+
+  outline: none;
+}
+
+html,
+body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: white;
+  color: black;
+}
+
+.poppins-font {
+  font-family: "Poppins", sans-serif;
+}
+
+.font-itsa-bold {
+  font-family: "Itsa Bold", sans-serif;
+}
+
+.font-itsa-regular {
+  font-family: "Itsa Regular", sans-serif;
+}
+
+.times-new-roman-font {
+  font-family: "adriane";
+  font-weight: 400;
+  font-style: italic;
+}
+.bd {
+  border: 1px solid black;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.scroll-none::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    overflow: hidden;
+  }
+}
