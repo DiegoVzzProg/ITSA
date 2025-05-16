@@ -6,11 +6,13 @@ use App\Models\TCarritoCliente;
 use App\Models\TClientes;
 use App\Models\TProducto;
 use App\Models\TProductosCompradosCliente;
+use App\Models\TTokensParaArchivos;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 use ZipStream\ZipStream;
@@ -36,25 +38,37 @@ class CProductos extends Controller
     {
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $token = $request->query('token');
-
-            if (!$token || !Cache::has("download_token_$token")) {
+            $data = TTokensParaArchivos::where('token',  $token)->where('borrado', false)->first();
+            
+            if (!$token || !$data) {
                 throw new \Exception('Enlace inválido o expirado');
             }
+            Log::info($data);
+            // $cache = Cache::get("download_token_$token");
+            // $productos = Crypt::decrypt($cache['productos']); // Todos los archivos
+            // $type = $cache['type'];
 
-            $cache = Cache::get("download_token_$token");
-            $productos = Crypt::decrypt($cache['productos']); // Todos los archivos
-            $type = $cache['type'];
+            $productos = collect(explode('|', $data->archivos_cadena))
+                ->map(fn($archivo) => [
+                    'archivo'              => $archivo,
+                    'nombre_personalizado' => self::generarNombrePersonalizado($archivo),
+                ])
+                ->all();
 
             // Eliminar token (una sola descarga)
-            Cache::forget("download_token_$token");
+            // Cache::forget("download_token_$token");
 
             // Descarga directa
-            if ($type === 'direct') {
+            if ($data->tipo === 'direct') {
                 return Storage::disk('private')->download($productos[0]['archivo']);
             }
 
             // Generar ZIP
             $zipName = 'ITSA - ' . now()->format('Y-m-d_H-i-s') . '.zip';
+
+            $data->update([
+                'borrado'          => true,
+            ]);
 
             return response()->streamDownload(function () use ($productos) {
                 $zip = new ZipStream(outputName: 'productos.zip', sendHttpHeaders: false);
@@ -190,22 +204,37 @@ class CProductos extends Controller
                     }
                 }
 
-
                 // Paso 2: Generar URL única
+                Log::info($productosParaZIP);
                 if (!empty($productosParaZIP)) {
                     $generarZIP = count($productosParaZIP) > 1;
-                    $token = \Illuminate\Support\Str::random(40);
+                    // $token = \Illuminate\Support\Str::random(40);
 
+                    // Unir sólo el campo 'archivo':
+                    $coleccion = collect($productosParaZIP);
+
+                    // Pluck + join en un solo paso
+                    $cadenaArchivos = $coleccion
+                        ->pluck('archivo')  // obtiene ['file1','file2',...]
+                        ->join('|');        // une: "file1|file2|..."
+
+                    Log::info($cadenaArchivos);
+                    $data = TTokensParaArchivos::create([
+                        'id_usuario' => $id_usuario,
+                        'tipo' => $generarZIP ? 'zip' : 'direct',
+                        'archivos_cadena' => $cadenaArchivos
+                    ]);
+                    $data->refresh();
                     // Almacenar en caché
-                    Cache::put("download_token_$token", [
-                        'type' => $generarZIP ? 'zip' : 'direct',
-                        'productos' => Crypt::encrypt($productosParaZIP),
-                        'user_id' => Crypt::encrypt(base64_decode($id_usuario))
-                    ], now()->addMinutes(30));
-
+                    // Cache::put("download_token_$token", [
+                    //     'type' => $generarZIP ? 'zip' : 'direct',
+                    //     'productos' => Crypt::encrypt($productosParaZIP),
+                    //     'user_id' => Crypt::encrypt(base64_decode($id_usuario))
+                    // ], now()->addMinutes(30));
+                    Log::info($data);
                     // Generar URL
                     $url = route('private.download', [
-                        'token' => $token,
+                        'token' => $data->token,
                         'single' => !$generarZIP // Solo aplica si es un archivo único
                     ]);
 
