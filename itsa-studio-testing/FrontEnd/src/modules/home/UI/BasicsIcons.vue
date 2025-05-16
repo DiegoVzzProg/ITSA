@@ -69,7 +69,7 @@
                 <div class="flex flex-col">
                     <p class="flex w-full">
                         they are ready to be used and will help <br>
-                        you hive your new project a great look
+                        you have your new project a great look
                     </p>
                     <br>
                     <p>

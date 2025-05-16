@@ -47,10 +47,10 @@ onMounted(() => { });
           <button @click="
             site.RedirectPage({
               name: 'info',
-              params: { select: 'privacity' },
+              params: { select: 'privacy' },
             })
             " class="hover:bg-[rgb(0,0,0)] hover:text-white transition-all text-nowrap">
-            privacity policy
+            privacy policy
           </button>
         </div>
       </section>

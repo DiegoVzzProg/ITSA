@@ -18,7 +18,7 @@ import { ApiResponse } from "./utils/Api.interface";
 import RegisterUI2 from "./modules/auth/UI/RegisterUI2.vue";
 import CheckOut2 from "./modules/home/UI/CheckOut2.vue";
 // import { CostumersClass } from "./modules/home/services/costumers-service";
-
+// Hola
 const routes: Array<RouteRecordRaw> = [
   { path: "/", name: "home", component: Home, meta: { layout: "Main" } },
   {

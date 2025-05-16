@@ -14,7 +14,7 @@ const route = useRoute();
         <License v-if="route.params.select == 'license'" />
         <Payments v-if="route.params.select == 'payments'" />
         <Terms v-if="route.params.select == 'terms'" />
-        <Privacity v-if="route.params.select == 'privacity'" />
+        <Privacity v-if="route.params.select == 'privacy'" />
         <Contact v-if="route.params.select == 'contact'" />
     </div>
 </template>

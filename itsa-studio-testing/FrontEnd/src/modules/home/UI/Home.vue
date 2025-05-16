@@ -66,11 +66,11 @@ const texts = ref<any>([
     class: "",
   },
   {
-    texto: "coll illustration",
+    texto: "cool illustration",
     class: "",
   },
   {
-    texto: "lovely type",
+    texto: "lovely typefaces",
     class: "",
   },
   {

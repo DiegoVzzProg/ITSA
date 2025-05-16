@@ -11,8 +11,7 @@
           <p>hi user,</p>
           <p v-if="site.userData()">{{ site.userData()?.nombre || "" }}!</p>
         </div>
-        <p>your details</p>
-        <p>biling</p>
+        <p>your biling details</p>
       </div>
       <FormToCreateClient
         v-if="!ClientData || Editar"
@@ -230,9 +229,9 @@ function FunctionEdit(): void {
 }
 
 const successEditClient = (_cambiar: boolean) => {
-    Editar.value = false;
+  Editar.value = false;
 
-      if (site.getCookie("e.c.d"))
+  if (site.getCookie("e.c.d"))
     ClientData.value = JSON.parse(site.getCookie("e.c.d"));
 };
 
