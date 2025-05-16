@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <svg id="Capa_2" class="w-[200px]" data-name="Capa 2" xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 511.37 80.63">
     <g id="Page_3" data-name="Page 3">

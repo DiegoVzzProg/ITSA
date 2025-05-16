@@ -23,17 +23,8 @@
             <x-itsa-studio-icon />
         </nav>
     </header>
-    <main class="flex flex-col w-full container h-full overflow-auto p-[clamp(.9rem,3vw,1.2rem)]">
-        <nav class="flex flex-col w-full max-w-3xs h-full">
-            <p class="italic font-light text-md border-b py-1 select-none">
-                Menu
-            </p>
-            <div class="flex flex-col">
-                <button>
-
-                </button>
-            </div>
-        </nav>
+    <main class="flex flex-row gap-1 w-full container h-full overflow-auto p-[clamp(.9rem,3vw,1.2rem)]">
+        <x-user-options-navigation />
         <section class="flex flex-col w-full h-full">
             @yield('content')
         </section>
