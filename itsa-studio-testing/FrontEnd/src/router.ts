@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "./modules/home/UI/Home.vue";
 import Information from "./modules/home/UI/Information.vue";
-import Login from "./modules/auth/UI/LoginUI.vue";
 import BasicsIcons from "./modules/home/UI/BasicsIcons.vue";
 import UniversalIcons from "./modules/home/UI/UniversalIcons.vue";
 //import ForgotPassword from "./views/ForgotPassword/ForgotPassword.vue";
@@ -17,6 +16,7 @@ import {
 import { ApiResponse } from "./utils/Api.interface";
 import RegisterUI2 from "./modules/auth/UI/RegisterUI2.vue";
 import CheckOut2 from "./modules/home/UI/CheckOut2.vue";
+import LoginUI2 from "./modules/auth/UI/LoginUI2.vue";
 // import { CostumersClass } from "./modules/home/services/costumers-service";
 // Hola
 const routes: Array<RouteRecordRaw> = [
@@ -46,7 +46,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { layout: "Main" },
     props: true,
   },
-  { path: "/login", name: "login", component: Login, meta: { layout: "Auth" } },
+  {
+    path: "/login",
+    name: "login",
+    component: LoginUI2,
+    meta: { layout: "Auth" },
+  },
   {
     path: "/register",
     name: "register",
@@ -74,7 +79,6 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, _from, next) => {
-
   // if (String(to.name).toLowerCase() == "checkout") {
   //   await new CostumersClass().shoppingCartClient();
 

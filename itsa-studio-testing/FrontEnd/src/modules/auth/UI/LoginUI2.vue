@@ -14,16 +14,25 @@
         <Form @submit="btnLogin_OnClick" :validation-schema="validationSchema" class="flex flex-col gap-3 pb-6">
             <p class="px-[clamp(18px,3vw,28px)]">log in to your account</p>
             <div class="flex flex-col gap-3">
-                <div class="flex flex-col gap-1" v-for="(item, index) in FormLogin.User" :key="index">
-                    <Field :name="item.id" :placeholder="item.placeholder" :type="item.type"
+                <div class="flex flex-col gap-1">
+                    <Field name="email" v-slot="{ field, meta, errorMessage }">
+                        <input v-bind="field" type="email" placeholder="email" v-model="email"
+                            class="border border-black py-5 px-3 rounded-full" @blur="onEmailBlur(meta)"
+                            autocomplete="off" />
+                        <span class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold">{{
+                            errorMessage }}</span>
+                    </Field>
+                </div>
+                <div class="flex flex-col gap-1">
+                    <Field name="password" placeholder="password" type="password"
                         class="border border-black py-5 px-3 rounded-full" autocomplete="off" />
                     <ErrorMessage class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-                        :name="item.id" />
+                        name="password" />
                 </div>
             </div>
             <div class="flex flex-row justify-end w-full px-[clamp(18px,3vw,28px)]">
-                <button class="underline underline-offset-2" v-on:click="RetrievePassword()"
-                    v-if="DeshabilitarBotonPass">
+                <button class="underline underline-offset-2" v-show="visibleRecovery" v-on:click="RetrievePassword()"
+                    v-if="enableRecovery">
                     forgot password?
                 </button>
                 <Loading v-else />
@@ -44,34 +53,18 @@
 </template>
 
 <script setup lang="ts">
-import { Form, Field, ErrorMessage, useField } from "vee-validate";
+import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { notify, site } from "../../../utils/site";
 import Loading from "../../components/Loading.vue";
 import { CostumersClass } from "../../home/services/costumers-service";
 import { AuthClass, ILogin, IRestorePassword } from "../services/auth-service";
 import { ApiResponse } from "../../../utils/Api.interface";
-const DeshabilitarBotonPass = ref<boolean>(true);
+const enableRecovery = ref<boolean>(true);
+const visibleRecovery = ref<boolean>(false);
+const email = ref<string>('');
 const loading = ref<boolean>(false);
-const FormLogin = reactive({
-    User: {
-        email: {
-            id: "email",
-            placeholder: "email",
-            maxLength: 254,
-            type: "email",
-        },
-        password: {
-            id: "password",
-            placeholder: "password",
-            maxLength: 20,
-            type: "password",
-        },
-    }
-});
-
-const { value: email } = useField<string>('email')
 
 const validationSchema = yup.object({
     email: yup
@@ -91,10 +84,14 @@ onMounted(() => {
 });
 
 async function RetrievePassword(): Promise<any> {
-    DeshabilitarBotonPass.value = false;
+
+    if (!email.value)
+        return;
+
+    enableRecovery.value = false;
 
     const params: IRestorePassword = {
-        email: email.value.trim() ?? '',
+        email: email.value?.trim() ?? '',
     };
 
     const response: ApiResponse = await new AuthClass().restorePassword(params);
@@ -103,7 +100,7 @@ async function RetrievePassword(): Promise<any> {
         notify.success(response.data.message);
     }
 
-    DeshabilitarBotonPass.value = true;
+    enableRecovery.value = true;
 }
 
 
@@ -148,6 +145,11 @@ async function btnLogin_OnClick(data: any): Promise<void> {
     site.RedirectPage({ name: "home" });
 }
 
+async function onEmailBlur(meta: { valid: boolean; touched: boolean }) {
+    if (meta.valid && meta.touched) {
+        visibleRecovery.value = true;
+    }
+}
 onUnmounted(() => { });
 </script>
 

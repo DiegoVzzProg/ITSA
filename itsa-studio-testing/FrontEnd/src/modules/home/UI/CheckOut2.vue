@@ -5,10 +5,10 @@
     <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0 max-[1060px]:pt-6">
       <div class="flex flex-col gap-1 text-[1rem]">
         <div class="flex flex-row w-full gap-2 font-semibold">
-          <p>hi user,</p>
+          <p>hi,</p>
           <p v-if="site.userData()">{{ site.userData()?.nombre || "" }}!</p>
         </div>
-        <p>your biling details</p>
+        <p>your billing details</p>
       </div>
       <FormToCreateClient v-if="!ClientData || Editar" @cambiar="successEditClient" />
       <div class="flex flex-col w-full min-h-full grow shrink-0" v-else>

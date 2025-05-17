@@ -28,7 +28,7 @@ const handleLogout = (): void => {
 };
 
 const apiInstance: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_LOCAL_O_RESPALDO == "R" ? import.meta.env.VITE_API_URL : import.meta.env.VITE_API_URL_LOCAL,
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -45,10 +45,10 @@ apiInstance.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
-    const sessionToken = site.getCookie("s.t", false);
-    if (sessionToken) {
-      config.headers["X-Session-Token"] = `${sessionToken}`;
-    }
+    // const sessionToken = site.getCookie("s.t", false);
+    // if (sessionToken) {
+    //   config.headers["X-Session-Token"] = `${sessionToken}`;
+    // }
     return config;
   },
   (error) => {
