@@ -1,105 +1,48 @@
 <template>
-  <div
-    class="flex flex-col w-full justify-center max-w-screen-lg items-center gap-3 max-[1020px]:flex-col"
-  >
-    <button type="button" v-if="ClientData"
-    @click="btnToBack"
-    class="w-full flex flex-row justify-end"
-    >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left"
-    >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M5 12l14 0" />
-      <path d="M5 12l6 6" />
-      <path d="M5 12l6 -6" />
-    </svg>
-    <p>to back</p>
+  <div class="flex flex-col w-full justify-center max-w-screen-lg items-center gap-3 max-[1020px]:flex-col">
+    <button type="button" v-if="ClientData" @click="btnToBack" class="w-full flex flex-row justify-end">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-left">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M5 12l14 0" />
+        <path d="M5 12l6 6" />
+        <path d="M5 12l6 -6" />
+      </svg>
+      <p>to back</p>
     </button>
-    <Form
-      @submit="btnEditClient"
-      class="flex w-full max-w-md flex-col gap-3 justify-between grow shrink-0"
-      :initial-values="GetRecords()"
-    >
+    <Form @submit="btnEditClient" class="flex w-full max-w-md flex-col gap-3 justify-between grow shrink-0"
+      :initial-values="GetRecords()">
       <div class="flex flex-col gap-2 w-full">
-        <div
-          class="flex flex-col gap-1"
-          v-for="(item, index) in FormRegister.Customer.Form1"
-          :key="index"
-        >
-          <Field
-            :name="item.id"
-            :placeholder="item.placeholder"
-            :type="item.type"
-            class="border border-black py-5 px-3 rounded-full"
-            autocomplete="off"
-            :rules="item.validations"
-          />
-          <ErrorMessage
-            class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-            :name="item.id"
-          />
+        <div class="flex flex-col gap-1" v-for="(item, index) in FormRegister.Customer.Form1" :key="index">
+          <Field :name="item.id" :placeholder="item.placeholder" :type="item.type"
+            class="border border-black py-5 px-3 rounded-full" autocomplete="off" :rules="item.validations" />
+          <ErrorMessage class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold" :name="item.id" />
         </div>
         <div class="flex flex-row max-[680px]:flex-col w-full gap-2">
-          <div
-            class="flex flex-col w-full gap-1"
-            v-for="item in FormRegister.Customer.Form2"
-          >
-            <Field
-              :name="item.id"
-              :placeholder="item.placeholder"
-              :type="item.type"
-              class="border border-black py-5 px-3 rounded-full"
-              autocomplete="off"
-              :rules="item.validations"
-            />
-            <ErrorMessage
-              class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-              :name="item.id"
-            />
+          <div class="flex flex-col w-full gap-1" v-for="item in FormRegister.Customer.Form2">
+            <Field :name="item.id" :placeholder="item.placeholder" :type="item.type"
+              class="border border-black py-5 px-3 rounded-full" autocomplete="off" :rules="item.validations" />
+            <ErrorMessage class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+              :name="item.id" />
           </div>
         </div>
         <div class="flex flex-col gap-1">
-          <Field
-            :rules="FormRegister.Customer.Form3.country.validations"
-            :name="FormRegister.Customer.Form3.country.id"
-            v-slot="{ field }"
-          >
-            <SelectCountry
-              :model-value="field.value"
-              @update:model-value="value => field.onChange(value)"
-              :placeholder="FormRegister.Customer.Form3.country.placeholder"
-            />
+          <Field :rules="FormRegister.Customer.Form3.country.validations" :name="FormRegister.Customer.Form3.country.id"
+            v-slot="{ field }">
+            <SelectCountry :model-value="field.value" @update:model-value="value => field.onChange(value)"
+              :placeholder="FormRegister.Customer.Form3.country.placeholder" />
           </Field>
-          <ErrorMessage
-            class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
-            :name="FormRegister.Customer.Form3.country.id"
-          />
+          <ErrorMessage class="text-[rgb(216,70,70)] text-sm px-[clamp(18px,3vw,28px)] font-semibold"
+            :name="FormRegister.Customer.Form3.country.id" />
         </div>
       </div>
       <div class="flex flex-col w-full max-w-screen-lg max-[1020px]:max-w-md">
         <Loading v-if="loading" />
-        <button
-          v-else-if="!loading && !ClientData"
-          type="submit"
-          class="bg-black py-5 px-3 rounded-full text-white"
-        >
+        <button v-else-if="!loading && !ClientData" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
           Add my info
         </button>
-        <button
-          v-else-if="!loading && ClientData"
-          type="submit"
-          class="bg-black py-5 px-3 rounded-full text-white"
-        >
+        <button v-else-if="!loading && ClientData" type="submit" class="bg-black py-5 px-3 rounded-full text-white">
           edit my info
         </button>
       </div>
@@ -166,6 +109,7 @@ const FormRegister = reactive({
           excludeEmptyString: true,
         }),
         type: "text",
+        class: "uppercase"
       },
       address: {
         id: "direccion",

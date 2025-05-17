@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { v4 as uuidv4 } from "uuid";
 import echo from "../../services/echo";
 import { reactive } from "vue";
-import { site } from "../../utils/site";
+//import { site } from "../../utils/site";
 
 const stores = reactive({
   guid: defineStore("GeneralStores", {
@@ -56,9 +56,9 @@ const stores = reactive({
           this.totales = data.totales;
           this.total_productos = data.total_productos;
 
-          if (data.carrito.length == 0) {
-             site.RedirectPage({ name: "home" });
-          }
+          // if (data.carrito.length == 0) {
+          //   site.RedirectPage({ name: "home" });
+          // }
         });
       },
       checkProduct() {
@@ -72,6 +72,11 @@ const stores = reactive({
         echo.leave("check-product-channel");
         echo.leave("cart-channel");
       },
+      add(data: any[]) {
+        //console.log(data);
+        
+        this.carrito = data;
+      }
     },
   }),
 });

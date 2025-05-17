@@ -154,7 +154,7 @@ async function btnRegisterUser_OnClick(values: any) {
 
   loading.value = true;
   const data: IRegister = {
-    user_name: values.nombre,
+    user_name: values.nombre.trim(),
     email: values.email.trim(),
     password: values.password.trim(),
     leyo_terms: FormLeyoTerms.value,

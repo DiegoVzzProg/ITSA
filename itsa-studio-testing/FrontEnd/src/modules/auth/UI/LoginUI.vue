@@ -191,6 +191,7 @@ async function btnLogin_OnClick(): Promise<void> {
   });
 
   await new CostumersClass().shoppingCartClient();
+
   loading.value = false;
   site.RedirectPage({ name: "home" });
 }

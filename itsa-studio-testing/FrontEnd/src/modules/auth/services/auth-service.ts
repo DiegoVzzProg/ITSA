@@ -66,7 +66,7 @@ export class AuthClass {
       body: { asd: 0 },
     });
 
-    console.log(response);
+    //console.log(response);
 
     return response;
   }

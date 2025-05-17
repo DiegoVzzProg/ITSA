@@ -1,11 +1,8 @@
 <template>
   <div class="min-h-[200px] mb-6 max-[1060px]:min-h-[100px]"></div>
   <div
-    class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center"
-  >
-    <div
-      class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0 max-[1060px]:pt-6"
-    >
+    class="flex flex-row gap-4 max-[1060px]:pb-20 justify-evenly w-full min-h-screen grow shrink-0 max-[1060px]:flex-col-reverse max-[1060px]:items-center">
+    <div class="flex flex-col w-full max-w-md max-[1060px]:max-w-2xl gap-4 min-h-full grow shrink-0 max-[1060px]:pt-6">
       <div class="flex flex-col gap-1 text-[1rem]">
         <div class="flex flex-row w-full gap-2 font-semibold">
           <p>hi user,</p>
@@ -13,14 +10,9 @@
         </div>
         <p>your biling details</p>
       </div>
-      <FormToCreateClient
-        v-if="!ClientData || Editar"
-        @cambiar="successEditClient"
-      />
+      <FormToCreateClient v-if="!ClientData || Editar" @cambiar="successEditClient" />
       <div class="flex flex-col w-full min-h-full grow shrink-0" v-else>
-        <div
-          class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]"
-        >
+        <div class="flex flex-col gap-4 w-full justify-between h-[min(500px,100%)]">
           <div class="flex flex-col leading-1">
             <p><strong>Name:</strong> {{ ClientData.nombre }}</p>
             <p><strong>Phone:</strong> {{ ClientData.telefono }}</p>
@@ -33,28 +25,18 @@
               <p><strong>State:</strong> {{ ClientData.estado }}</p>
             </div>
             <p><strong>Country:</strong> {{ ClientData.pais }}</p>
-            <span
-              class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
-              @click="FunctionEdit()"
-            >
+            <span class="mt-3 text-[rgb(209,207,206)] underline underline-offset-1 cursor-pointer"
+              @click="FunctionEdit()">
               edit
             </span>
           </div>
           <div class="flex flex-col gap-3">
             <p>click on finish</p>
-            <button
-              v-on:click="FunctionFinish()"
-              v-if="!Finish"
-              class="bg-black py-5 px-3 rounded-full text-white"
-            >
+            <button v-on:click="FunctionFinish()" v-if="!Finish" class="bg-black py-5 px-3 rounded-full text-white">
               finish
             </button>
-            <button
-              v-if="Finish"
-              v-show="!ocultarBoton"
-              v-on:click="CheckoutSession($event)"
-              class="bg-black py-5 px-3 rounded-full text-white animate-fade-in"
-            >
+            <button v-if="Finish" v-show="!ocultarBoton" v-on:click="CheckoutSession($event)"
+              class="bg-black py-5 px-3 rounded-full text-white animate-fade-in">
               continue to download
             </button>
             <Loading v-if="LoadingHabilitado" />
@@ -66,54 +48,27 @@
     <div class="flex flex-col w-full max-w-2xl gap-2">
       <p class="opacity-0 max-[1060px]:hidden before:content-['itsa']"></p>
       <p>cart</p>
-      <div
-        class="flex flex-col gap-2 border border-black py-5 px-10 sm:px-20 rounded-lg"
-      >
-        <div
-          class="flex flex-row justify-between text-[clamp(1.2rem,3vw,2rem)] pb-2 border-b border-b-black"
-        >
+      <div class="flex flex-col gap-2 border border-black py-5 px-10 sm:px-20 rounded-lg">
+        <div class="flex flex-row justify-between text-[clamp(1.2rem,3vw,2rem)] pb-2 border-b border-b-black">
           <p class="font-itsa-bold">item</p>
           <p class="font-itsa-bold">total</p>
         </div>
         <div class="flex flex-col h-[120px] overflow-auto gap-2 py-2">
-          <div
-            class="flex relative flex-row items-center gap-2"
-            v-for="item in stores.echoStore().carrito"
-            :key="item.id_producto"
-          >
-            <div
-              class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded"
-            >
-              <File
-                v-if="item.foto_producto"
-                :file="item.foto_producto"
-                type="img"
-              />
+          <div class="flex relative flex-row items-center gap-2" v-for="item in stores.echoStore().carrito"
+            :key="item.id_producto">
+            <div class="min-w-[100px] h-[100px] flex overflow-hidden bg-black rounded">
+              <File v-if="item.foto_producto" :file="item.foto_producto" type="img" />
               <Loading v-else />
             </div>
-            <div
-              class="flex flex-row w-full justify-between gap-4 text-[clamp(.85rem,3vw,1rem)]"
-            >
+            <div class="flex flex-row w-full justify-between gap-4 text-[clamp(.85rem,3vw,1rem)]">
               <p class="truncate">{{ item.descripcion }}</p>
               <p>${{ item.precio }}</p>
             </div>
-            <button
-              class="sticky right-0 rounded-s-full bg-white"
-              :disabled="!deleteProduct"
-              v-on:click="DeleteProduct(item.id_producto)"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-x"
-              >
+            <button class="sticky right-0 rounded-s-full bg-white" :disabled="!deleteProduct"
+              v-on:click="DeleteProduct(item.id_producto)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-x">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M18 6l-12 12" />
                 <path d="M6 6l12 12" />
@@ -121,9 +76,7 @@
             </button>
           </div>
         </div>
-        <div
-          class="flex flex-row justify-between items-center gap-2 border-y border-y-black py-2"
-        >
+        <div class="flex flex-row justify-between items-center gap-2 border-y border-y-black py-2">
           <p class="font-itsa-bold text-[clamp(1.2rem,3vw,2rem)]">tax(16%)</p>
           <p class="text-[1rem]">${{ stores.echoStore().totales.impuesto }}</p>
         </div>
@@ -164,7 +117,7 @@ onMounted(() => {
   Productos();
 });
 
-onUnmounted(() => {});
+onUnmounted(() => { });
 
 const ClientData = ref<any>(null);
 const Finish = ref<boolean>(false);

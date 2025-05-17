@@ -6,17 +6,18 @@ import stores from '../../stores/GeneralStores';
 import { IDownloadFile, IDownloadFiles, ProductsClass } from '../services/products-service';
 import { ApiResponse } from '../../../utils/Api.interface';
 import { GeneralClass, IvalidateSessionStripe } from '../../services/general-service';
+import { CostumersClass } from '../services/costumers-service';
 
 
 const route = useRoute();
 
 const downloadProduct = async () => {
 
-    if(!site.userData()){
+    if (!site.userData()) {
         site.RedirectPage({ name: "home" });
         return;
     }
-    
+
     let response: ApiResponse;
 
     if (site.IsNullOrEmpty(route.query.idprod)) {
@@ -34,6 +35,9 @@ const downloadProduct = async () => {
 
     if (!response.data)
         return;
+
+
+    await new CostumersClass().shoppingCartClient();
 
     response.data.urls.forEach((element: any) => {
         const url = element.url;

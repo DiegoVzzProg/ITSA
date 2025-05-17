@@ -24,7 +24,7 @@ const AddCartCostumer = async () => {
         return;
     }
     
-    console.log(userData);
+    //console.log(userData);
     loadingHabilitado.value = true;
     const params: IAddProduct = {
         id_producto: props.id_producto,

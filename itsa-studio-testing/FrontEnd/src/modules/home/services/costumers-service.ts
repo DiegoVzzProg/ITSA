@@ -1,5 +1,6 @@
 import { Api } from "../../../services/api-service";
 import { ApiResponse } from "../../../utils/Api.interface";
+import stores from "../../stores/GeneralStores";
 const shoppingCartUrl = "/shopping-cart";
 const customersUrl = "/customers";
 
@@ -47,6 +48,9 @@ export class CostumersClass {
       method: "GET",
       endpoint: `${shoppingCartUrl}/client`,
     });
+
+    if (response.data.carrito_cliente)
+      stores.echoStore().add(response.data.carrito_cliente);
 
     return response;
   }
