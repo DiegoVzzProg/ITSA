@@ -39,7 +39,7 @@ class CProductos extends Controller
         return CGeneral::invokeFunctionAPI(function () use ($request) {
             $token = $request->query('token');
             $data = TTokensParaArchivos::where('token',  $token)->where('borrado', false)->first();
-            
+
             if (!$token || !$data) {
                 throw new \Exception('Enlace inválido o expirado');
             }
@@ -60,17 +60,20 @@ class CProductos extends Controller
 
             // Descarga directa
             if ($data->tipo === 'direct') {
-                return Storage::disk('private')->download($productos[0]['archivo']);
+                $downloadLink = Storage::disk('private')
+                    ->download($productos[0]['archivo']);
+
+                if ($downloadLink) {
+                    $data->update([
+                        'borrado' => true,
+                    ]);
+                }
+                return $downloadLink;
             }
 
             // Generar ZIP
             $zipName = 'ITSA - ' . now()->format('Y-m-d_H-i-s') . '.zip';
-
-            $data->update([
-                'borrado'          => true,
-            ]);
-
-            return response()->streamDownload(function () use ($productos) {
+            $zipFin = response()->streamDownload(function () use ($productos) {
                 $zip = new ZipStream(outputName: 'productos.zip', sendHttpHeaders: false);
 
                 foreach ($productos as $producto) {
@@ -85,6 +88,12 @@ class CProductos extends Controller
             }, $zipName, [
                 'Content-Type' => 'application/zip'
             ]);
+
+            $data->update([
+                'borrado' => true,
+            ]);
+
+            return $zipFin;
         }, $request);
     }
 
