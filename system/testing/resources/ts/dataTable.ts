@@ -4,5 +4,5 @@ import "datatables.net";
 
 // Inicializa tus tablas
 $(document).ready(() => {
-    $("#my-table").DataTable();
+    $(".dataTableLoad").DataTable();
 });

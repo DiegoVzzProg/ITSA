@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>System - Testing - ITSA Studio</title>
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.1/css/dataTables.tailwindcss.css">
+    @vite(['resources/css/app.css', 'resources/ts/app.ts'])
 
     <style>
         :root {
@@ -20,10 +20,12 @@
 <body>
     <header class="flex w-full h-(--height-header) min-h-(--height-header) justify-center sticky top-0 bg-[#59A5D8]">
         <nav class="container flex flex-row items-center justify-between h-full px-[clamp(.9rem,3vw,1.2rem)]">
-            <x-itsa-studio-icon />
+            <a href="{{ route('home') }}">
+                <x-itsa-studio-icon />
+            </a>
         </nav>
     </header>
-    <main class="flex flex-row gap-1 w-full container h-full overflow-auto p-[clamp(.9rem,3vw,1.2rem)]">
+    <main class="flex flex-row gap-2 w-full container h-full overflow-auto p-[clamp(.9rem,3vw,1.2rem)]">
         <x-user-options-navigation />
         <section class="flex flex-col w-full h-full">
             @yield('content')

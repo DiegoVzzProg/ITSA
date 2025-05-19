@@ -8,6 +8,6 @@ class AddOptionsController extends Controller
 {
     public static function view()
     {
-        return view('pages.user_options.add_options');
+        return view('pages.user.user_options.catalog_user_options');
     }
 }
