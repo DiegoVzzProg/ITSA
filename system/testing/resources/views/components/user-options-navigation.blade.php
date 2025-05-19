@@ -10,7 +10,7 @@
                 Route::currentRouteName() === 'home.user.options',
             'border-e-transparent' => Route::currentRouteName() !== 'home.user.options',
         ])>
-            User options
+            Opciones de Usuarios
         </a>
     </div>
 </nav>
