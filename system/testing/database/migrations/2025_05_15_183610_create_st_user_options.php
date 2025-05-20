@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('route');
             $table->string('description');
-            $table->boolean('erased')->default(true);
+            $table->boolean('erased')->default(false);
         });
     }
 

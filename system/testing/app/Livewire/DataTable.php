@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -9,19 +10,35 @@ class DataTable extends Component
 {
     use WithPagination;
 
-    public array  $columns;      // ['Nombre', 'Email', 'Fecha']
-    public array  $fields;       // ['name', 'email', 'created_at']
-    public string $model;        // \\App\\Models\\User::class
-    public string $search = '';  // término de búsqueda
-    public int    $perPage = 10; // items por página
+    // Definición de columnas: label, field, type
+    public array $columns;
+
+    /**
+     * Datos a mostrar: array de arrays u objetos
+     * @var array
+     */
+    public array $data = [];
+
+    public string $search = '';
+    public int    $perPage = 10;
+    public int    $page = 1;
 
     protected $updatesQueryString = ['search', 'page'];
 
-    public function mount(array $columns, array $fields, string $model, int $perPage = 10)
+    /**
+     * Inicializa el componente
+     *
+     * @param array $columns [
+     *     [ 'label' => 'Nombre', 'field' => 'name', 'type' => 'text' ],
+     *     ...
+     * ]
+     * @param array $data
+     * @param int   $perPage
+     */
+    public function mount(array $columns, array $data = [], int $perPage = 10)
     {
         $this->columns = $columns;
-        $this->fields  = $fields;
-        $this->model   = $model;
+        $this->data    = $data;
         $this->perPage = $perPage;
     }
 
@@ -30,20 +47,34 @@ class DataTable extends Component
         $this->resetPage();
     }
 
-
     public function render()
     {
-        $query = ($this->model)::query();
+        $collection = collect($this->data);
 
         if ($this->search) {
-
-            $query->where(function ($q) {
-                foreach ($this->fields as $field) {
-                    $q->orWhere($field, 'like', "%$this->search%");
+            $collection = $collection->filter(function ($item) {
+                foreach (array_column($this->columns, 'field') as $field) {
+                    $value = data_get($item, $field);
+                    if (stripos((string) $value, $this->search) !== false) {
+                        return true;
+                    }
                 }
+                return false;
             });
         }
-        $rows = $query->paginate($this->perPage);
+
+        $page    = $this->page ?: 1;
+        $total   = $collection->count();
+        $results = $collection->forPage($page, $this->perPage)->values()->all();
+
+        $rows = new LengthAwarePaginator(
+            $results,
+            $total,
+            $this->perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
         return view('livewire.data-table', [
             'rows' => $rows,
         ]);
