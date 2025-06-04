@@ -1,0 +1,60 @@
+@import url("https://fonts.googleapis.com/css2?family=Asta+Sans:wght@300..800&family=Edu+VIC+WA+NT+Hand+Pre:wght@400..700&display=swap");
+@import "tailwindcss";
+
+:root {
+    /** Base colors */
+    --clr-dark-a0: #000000;
+    --clr-light-a0: #ffffff;
+
+    /** Theme primary colors */
+    --clr-primary-a0: #3a80d6;
+    --clr-primary-a10: #598ddb;
+    --clr-primary-a20: #729be0;
+    --clr-primary-a30: #88a8e4;
+    --clr-primary-a40: #9db6e9;
+    --clr-primary-a50: #b1c4ee;
+
+    /** Theme surface colors */
+    --clr-surface-a0: #121212;
+    --clr-surface-a10: #282828;
+    --clr-surface-a20: #3f3f3f;
+    --clr-surface-a30: #575757;
+    --clr-surface-a40: #717171;
+    --clr-surface-a50: #8b8b8b;
+
+    /** Theme tonal surface colors */
+    --clr-surface-tonal-a0: #191c23;
+    --clr-surface-tonal-a10: #2e3138;
+    --clr-surface-tonal-a20: #45474d;
+    --clr-surface-tonal-a30: #5c5f64;
+    --clr-surface-tonal-a40: #75777c;
+    --clr-surface-tonal-a50: #8f9195;
+}
+
+* {
+    box-sizing: border-box;
+    outline: none;
+    font-family: "Asta Sans", sans-serif;
+}
+
+html,
+body {
+    display: flex;
+    flex-direction: column;
+    min-width: 370px;
+    height: 100vh;
+    background-color: var(--clr-surface-tonal-a0);
+    color: #f3f3f3;
+}
+
+.edu-vic-wa-nt-hand-pre-font {
+    font-family: "Edu VIC WA NT Hand Pre", cursive;
+}
+
+button {
+    cursor: pointer;
+}
+
+.title-view {
+    @apply font-black text-[clamp(1.5rem,3vw,2rem)] select-none border-b border-b-[var(--clr-surface-tonal-a30)] mb-4;
+}

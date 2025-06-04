@@ -1,0 +1,33 @@
+{
+  "name": "front",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
+    "axios": "^1.9.0",
+    "datatables.net": "^2.3.1",
+    "datatables.net-dt": "^2.3.1",
+    "jquery": "^3.7.1",
+    "lucide-vue-next": "^0.513.0",
+    "postcss": "^8.5.4",
+    "tailwindcss": "^4.1.8",
+    "vee-validate": "^4.15.0",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "@types/jquery": "^3.5.32",
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.8"
+  }
+}
