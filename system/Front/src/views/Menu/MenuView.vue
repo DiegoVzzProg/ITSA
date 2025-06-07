@@ -11,7 +11,7 @@
             </span>
             <div class="flex flex-col text-[clamp(.95rem,3vw,1rem)] text-balance">
                 <p class="text-[#121212] font-bold" v-text="item.name"></p>
-                <p class="text-[#121212b0]" v-text="item.description"></p>
+                <small class="text-[#121212b0]" v-text="item.description"></small>
             </div>
         </button>
     </div>
@@ -32,7 +32,7 @@ onMounted(async () => {
 
 const getMenu = async () => {
     const entities: IMenu = {
-        menu_id: 0,
+        option_id: 0,
     }
     const response: ApiResponse = await new MenusService().getMenus(entities);
 

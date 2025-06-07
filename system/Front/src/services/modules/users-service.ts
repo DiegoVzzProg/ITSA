@@ -1,17 +1,16 @@
 import type { ApiResponse } from "../../interfaces/api-response-interface";
 import { ApiService } from "../api-service";
-
-export interface IUsersOptions {
-  user_id: number;
-}
-
-export interface IUsers {
-  user_id: number;
-}
+import type {
+  IAddUser,
+  IGetUsers,
+  IGetUsersOptions,
+} from "../interfaces/user-interface";
 
 export class UserService {
   private prefix: string = "/users";
-  public async getUsersOptions(entities: IUsersOptions): Promise<ApiResponse> {
+  public async getUsersOptions(
+    entities: IGetUsersOptions
+  ): Promise<ApiResponse> {
     const response: ApiResponse = await new ApiService(null).Request({
       endpoint: `${this.prefix}/options/list/${entities.user_id}`,
       method: "GET",
@@ -20,10 +19,29 @@ export class UserService {
     return response.data;
   }
 
-  public async getUsers(entities: IUsers): Promise<ApiResponse> {
+  public async getUsers(entities: IGetUsers): Promise<ApiResponse> {
     const response: ApiResponse = await new ApiService(null).Request({
       endpoint: `${this.prefix}/list/${entities.user_id}`,
       method: "GET",
+    });
+
+    return response.data;
+  }
+
+  public async getRoles(): Promise<ApiResponse> {
+    const response: ApiResponse = await new ApiService(null).Request({
+      endpoint: `${this.prefix}/roles`,
+      method: "GET",
+    });
+
+    return response.data;
+  }
+
+  public async addUser(entities: IAddUser): Promise<ApiResponse> {
+    const response: ApiResponse = await new ApiService(null).Request({
+      endpoint: `${this.prefix}/add`,
+      method: "POST",
+      body: entities,
     });
 
     return response.data;

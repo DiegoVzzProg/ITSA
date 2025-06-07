@@ -16,17 +16,17 @@ class OptionsUserPermissionsModel extends Model
 
     public $incrementing = true;
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'role_id',
         'option_id',
         'is_active'
     ];
     /**
      * Get the menu option associated with the permission
      */
-    public function sys_options(): BelongsTo
+    public function options(): BelongsTo
     {
         return $this->belongsTo(OptionsModel::class, 'option_id', 'option_id');
     }
@@ -34,8 +34,8 @@ class OptionsUserPermissionsModel extends Model
     /**
      * Get the user associated with the permission
      */
-    public function users(): BelongsTo
+    public function userRoles(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(UserRolesModel::class, 'role_id', 'role_id');
     }
 }

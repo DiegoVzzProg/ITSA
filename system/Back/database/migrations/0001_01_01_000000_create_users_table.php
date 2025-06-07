@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
-            $table->timestamps();
             $table->boolean('is_active')->default(true);
+            $table->integer('role_id');
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -37,10 +39,15 @@ return new class extends Migration
 
         Schema::create('sys_option_user_permissions', function (Blueprint $table) {
             $table->id('permission_id');
-            $table->integer('user_id');
+            $table->integer('role_id');
             $table->integer('option_id');
             $table->boolean('is_active')->default(true);
-            $table->timestamps();
+        });
+
+        Schema::create('sys_user_roles', function (Blueprint $table) {
+            $table->id('role_id');
+            $table->string('role_name');
+            $table->boolean('is_active')->default(true);
         });
     }
 

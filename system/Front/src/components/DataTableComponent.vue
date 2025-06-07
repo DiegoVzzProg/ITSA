@@ -3,6 +3,10 @@
         <table id="dataTable" class="table-auto w-full divide-y divide-[var(--clr-surface-a40)] text-white">
             <thead class="bg-[var(--clr-surface-a10)]">
                 <tr>
+                    <th class="px-6 py-3 text-center text-xs font-medium uppercase w-[150px]"
+                        v-if="hasAccionesSlot && props.data.length > 0">
+                        Actions
+                    </th>
                     <th v-for="(col, idx) in props.columns" :key="idx"
                         class="px-6 py-3 text-center text-xs font-medium uppercase">
                         {{ col.label }}
@@ -11,6 +15,11 @@
             </thead>
             <tbody class="bg-[var(--clr-surface-a10)] divide-y divide-[var(--clr-surface-a40)]">
                 <tr v-for="(row, rowIndex) in props.data" :key="rowIndex" class="hover:bg-[var(--clr-surface-a20)]">
+                    <td class="px-4 py-2" v-if="hasAccionesSlot">
+                        <div class="flex flex-row gap-1 w-full justify-around flex-wrap">
+                            <slot name="acciones" :row="row" />
+                        </div>
+                    </td>
                     <td v-for="(col, colIndex) in props.columns" :key="colIndex" :class="cellClasses(col.type)"
                         class="px-6 py-4 whitespace-nowrap text-sm">
                         <template v-if="col.type === 'boolean'">
@@ -44,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onBeforeUnmount, onMounted, ref } from 'vue'
+import { defineProps, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import type { ColumnDef } from '../interfaces/dataTable-interface';
 import CheckBoxComponent from './CheckBoxComponent.vue';
 
@@ -56,7 +65,8 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
+const slots = useSlots();
+const hasAccionesSlot = !!slots.acciones;
 onMounted(() => {
 
 });
@@ -75,6 +85,8 @@ function cellClasses(type: string): string {
     switch (type) {
         case 'decimal':
             return 'text-right font-mono'
+        case 'integer':
+            return 'text-right font-mono'
         case 'boolean':
             return 'text-center'
         default:
@@ -84,6 +96,4 @@ function cellClasses(type: string): string {
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

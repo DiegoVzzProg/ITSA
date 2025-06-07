@@ -5,7 +5,11 @@
                 In The Same Agency
             </p>
             <nav class="flex flex-row gap-2">
-                <button type="button" class="bg-[#121212] p-[10px] rounded-full">
+                <button type="button" v-on:click="Functions.RedirectPage('menu')"
+                    class="button-menu-fast">
+                    <House />
+                </button>
+                <button type="button" class="button-menu-fast">
                     <Settings />
                 </button>
             </nav>
@@ -19,8 +23,15 @@
 </template>
 
 <script setup lang="ts">
-import { Settings } from 'lucide-vue-next';
+import { House, Settings } from 'lucide-vue-next';
+import { Functions } from '../utilities/functions';
 
 </script>
 
-<style scoped></style>
+<style scoped>
+@reference "tailwindcss";
+
+.button-menu-fast {
+    @apply bg-[#121212] p-[10px] rounded-full opacity-80 hover:opacity-100 transition-all duration-500
+}
+</style>
