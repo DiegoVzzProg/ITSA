@@ -4,6 +4,7 @@ import { site } from '../../../utils/site';
 const props = defineProps<{
     file: string;
     type: string;
+    class?: string;
 }>();
 
 const archivo = ref<string>('');
@@ -25,12 +26,12 @@ onBeforeMount(() => {
 
 <template>
 
-    <div class="flex" v-if="props.type == 'img' && !site.IsNullOrEmpty(archivo)">
-        <img :src="archivo" alt="_" loading="lazy" class="object-contain" />
-    </div>
-    <div v-else-if="props.type == 'video' && !site.IsNullOrEmpty(archivo)">
-        <video :src="archivo" loop autoplay muted alt="_" loading="lazy" class="w-full h-full"></video>
-    </div>
+    <img :src="archivo" alt="_" loading="lazy" :class="['object-contain', props.class]"
+        v-if="props.type == 'img' && !site.IsNullOrEmpty(archivo)" />
+
+    <video :src="archivo" loop autoplay muted alt="_" loading="lazy" class="w-full h-full"
+        v-else-if="props.type == 'video' && !site.IsNullOrEmpty(archivo)"></video>
+
 </template>
 
 <style scoped></style>

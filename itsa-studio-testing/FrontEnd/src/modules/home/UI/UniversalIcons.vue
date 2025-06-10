@@ -13,11 +13,11 @@
         <div class="min-h-screen"></div>
     </div>
     <div
-        class="flex flex-col min-h-screen scroll-section overflow-hidden absolute w-full grow shrink-0 top-0 left-0 transition-all duration-500">
-        <div class="w-full h-screen flex justify-center items-center z-20">
-            <div id="children_elemento1_scroll" class="flex flex-col w-full justify-center items-center">
+        class="flex overflow-hidden absolute top-0 left-0 flex-col w-full min-h-screen transition-all duration-500 scroll-section grow shrink-0">
+        <div class="flex z-20 justify-center items-center w-full h-screen">
+            <div id="children_elemento1_scroll" class="flex flex-col justify-center items-center w-full">
                 <p
-                    class="font-itsa-bold text-[clamp(45px,10vw,208px)] leading-[clamp(30px,7vw,130px)] flex text-white z-10">
+                    class="font-itsa-bold text-[clamp(70px,10vw,208px)] leading-[clamp(55px,7vw,130px)] flex text-white z-10">
                     universal <br> icon pack
                 </p>
                 <p class="text-[clamp(1em,3vw,2em)] text-center text-white times-new-roman-font">
@@ -25,24 +25,22 @@
                 </p>
             </div>
         </div>
-        <div class="w-full h-screen flex justify-center items-center z-20">
-            <div id="children_elemento2_scroll" class="flex flex-col w-full justify-center items-center">
-                <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] font-bold flex text-white z-10">
+        <div class="flex z-20 justify-center items-center w-full h-screen">
+            <div id="children_elemento2_scroll"
+                class="flex flex-col justify-center items-center w-full text-[clamp(30px,7vw,208px)] leading-[clamp(0px,10vw,150px)] text-white">
+                <p class="z-10 font-itsa-bold">
                     +500 elements
                 </p>
-                <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] text-center font-bold flex text-white z-10">
+                <p class="z-10 font-itsa-bold">
                     fully editable
                 </p>
-                <p
-                    class="font-itsa-bold text-[clamp(25px,7vw,208px)] leading-[clamp(0px,10vw,150px)] text-center font-bold flex text-white z-10">
+                <p class="z-10 font-itsa-bold">
                     personal & comercial use
                 </p>
             </div>
         </div>
-        <div class="w-full flex h-screen justify-center items-center absolute top-0 z-0 sticky-section">
-            <div class="flex flex-row w-full justify-center  items-center">
+        <div class="flex absolute top-0 z-0 justify-center items-center w-full h-screen sticky-section">
+            <div class="flex flex-row justify-center items-center w-full">
                 <div
                     class="flex flex-row justify-between px-[min(10px,50%)] w-full md:max-w-screen-xl max-[1090px]:justify-center items-center">
                     <File file="icon 1 color 2.png" class="w-full max-w-[300px] imagen-icon-1 max-[1090px]:hidden"
@@ -54,9 +52,8 @@
             </div>
         </div>
     </div>
-    <div id="contenedor_gallery_basics"
-        class="flex flex-col w-full min-h-screen grow shrink-0 px-[clamp(18px,5vw,68px)] contenedor_gallery_basics">
-        <div class="flex flex-col items-center justify-center w-full min-h-screen grow shrink-0">
+    <div class="flex flex-col w-full px-[clamp(18px,3vw,68px)]">
+        <div class="flex flex-col justify-center items-center w-full h-screen">
             <p class="font-itsa-bold text-[clamp(40px,8vw,108px)]">universal icon</p>
             <p
                 class="w-full text-center translate-y-[-30px] max-[520px]:translate-y-[-20px] py-1 text-[clamp(.8rem,3vw,1rem)] text-pretty">
@@ -64,12 +61,11 @@
                 essential <br />
                 collection fit for you personal and professional projects
             </p>
-            <div class="flex rounded-[2em] w-full max-w-screen-md overflow-hidden">
+            <div class="flex overflow-hidden justify-center w-full max-w-screen-md">
                 <File file="universalicon_02.png" type="img"></File>
             </div>
         </div>
-        <div
-            class="flex flex-row max-[680px]:flex-col-reverse w-full min-h-screen grow shrink-0 items-center max-[680px]:justify-center">
+        <div class="flex flex-row max-[680px]:flex-col-reverse w-full h-screen items-center max-[680px]:justify-center">
             <div
                 class="flex flex-col h-full w-full items-start max-[680px]:justify-start max-[680px]:items-center max-[680px]:text-center justify-center">
                 <p class="font-itsa-bold text-[clamp(40px,8vw,108px)] leading-[100px]">
@@ -84,37 +80,32 @@
                     <p>aviable as:illustrator, svg & pdf</p>
                 </div>
                 <div class="flex flex-row min-w-[300px] max-[680px]:min-w-[0px] max-[680px]:pt-5 pt-4 gap-4">
-                    <File file="Ai.png" class="w-full max-w-[44px]" type="img">
-                    </File>
-                    <File file="SVG.png" class="w-full max-w-[43px]" type="img">
-                    </File>
-                    <File file="PDF.png" class="w-full max-w-[43px]" type="img">
-                    </File>
+                    <File file="Ai.png" class="w-full max-w-[44px]" type="img" />
+                    <File file="SVG.png" class="w-full max-w-[43px]" type="img" />
+                    <File file="PDF.png" class="w-full max-w-[43px]" type="img" />
                 </div>
             </div>
-            <div class="flex flex-col h-full w-full items-center justify-center">
+            <div class="flex flex-col justify-center items-center w-full h-full">
                 <div class="flex items-center justify-center rounded-[1em] w-full max-w-[532px] h-full max-h-[532px]">
-                    <File file="universalicon_03.png" type="img">
-                    </File>
+                    <File file="universalicon_03.png" type="img" />
                 </div>
             </div>
         </div>
-        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
+        <div class="flex flex-col justify-center items-center h-screen text-center grow shrink-0">
             <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">524 items</p>
             <p class="text-[clamp(.8rem,3vw,1rem)] translate-y-[-30px] max-[520px]:translate-y-[-20px]">
                 a large library of basic elements including <br />
                 social media, weather, store and much more.
             </p>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video1-universal icon.gif" type="img">
-                </File>
+                <File file="video1-universal icon.gif" type="img" />
             </div>
         </div>
-        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
-            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
+        <div class="flex flex-col justify-center items-center h-screen text-center">
+            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)] leading-none">
                 print & digital use
             </p>
-            <div class="flex w-full justify-center items-center translate-y-[-30px] max-[520px]:translate-y-[-20px]">
+            <div class="flex justify-center items-center w-full">
                 <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
                     all files are royalty-free and one time fee. you can use them in any
                     number of personal and commercial projects for yourself or a client
@@ -122,15 +113,14 @@
                 </p>
             </div>
             <div class="flex rounded-[1em] w-full justify-center overflow-hidden">
-                <File file="video2-universalicon.gif" type="img">
-                </File>
+                <File file="video2-universalicon.gif" type="img" />
             </div>
         </div>
-        <div class="min-h-screen justify-center items-center grow shrink-0 flex flex-col text-center">
-            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)]">
+        <div class="flex flex-col justify-center items-center h-screen text-center">
+            <p class="font-itsa-bold text-[clamp(3em,10vw,5.5em)] leading-none">
                 universal icon pack
             </p>
-            <div class="flex w-full justify-center items-center translate-y-[-30px] max-[520px]:translate-y-[-20px]">
+            <div class="flex justify-center items-center w-full">
                 <p class="text-[clamp(.8rem,3vw,1rem)] text-center w-full max-w-2xl">
                     all files are royalty-free and one time fee. you can use them in any
                     number of personal and commercial projects for yourself or a client
@@ -142,7 +132,7 @@
                 </File>
             </div>
         </div>
-        <div class="min-h-screen items-center justify-center grow shrink-0 flex flex-col" id="card_section"
+        <div class="flex flex-col justify-center items-center h-screen" id="card_section"
             v-if="!site.IsNullOrEmpty(products)">
             <CardProduct :id_producto="2" titulo="get this pack" subtitulo="universal icon <br/> pack"
                 descripcion="524 items <br/> available as: <br/> illustrator, figma, svg & pdf <br/> commercial & personal use"
