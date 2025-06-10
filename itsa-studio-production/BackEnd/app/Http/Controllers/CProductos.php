@@ -43,10 +43,37 @@ class CProductos extends Controller
             if (!$token || !$data) {
                 throw new \Exception('Enlace inválido o expirado');
             }
-            Log::info($data);
-            // $cache = Cache::get("download_token_$token");
-            // $productos = Crypt::decrypt($cache['productos']); // Todos los archivos
-            // $type = $cache['type'];
+            
+            // Detectar navegador FB interno o petición HEAD
+            $ua      = $request->header('User-Agent', '');
+            $isFb    = str_contains($ua, 'FBAN') || str_contains($ua, 'FBAV');
+            $isHead  = $request->isMethod('HEAD');
+            
+            // Extraemos información del primer archivo para tener un nombre y tipo
+            $partes   = explode('|', $data->archivos_cadena);
+            $first    = $partes[0];
+            $disk     = Storage::disk('private');
+            $mime     = $disk->mimeType($first);
+            Log::info($ua);
+            // Si es HEAD o viene de FB, devolvemos sólo headers
+            if ($isHead || $isFb) {
+                if ($data->tipo === 'direct') {
+                    // Descarga simple: devolvemos headers del primer archivo
+                    return response()->noContent(200, [
+                        'Content-Type'        => $mime,
+                        'Content-Length'      => $disk->size($first),
+                        'Content-Disposition' => 'attachment; filename="'.basename($first).'"',
+                    ]);
+                } else {
+                    // ZIP: devolvemos headers de zip
+                    // Si quieres, puedes pre-generar el ZIP en un tmp y obtener su tamaño,
+                    // o simplemente omitir Content-Length para que el cliente acepte streaming.
+                    return response()->noContent(200, [
+                        'Content-Type'        => 'application/zip',
+                        'Content-Disposition' => 'attachment; filename="productos.zip"',
+                    ]);
+                }
+            }
 
             $productos = collect(explode('|', $data->archivos_cadena))
                 ->map(fn($archivo) => [

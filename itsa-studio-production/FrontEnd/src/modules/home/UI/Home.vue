@@ -1,20 +1,11 @@
 <template>
-  <div class="flex flex-col grow shrink-0 min-h-screen w-full">
-    <div
-      class="min-h-screen flex flex-col justify-center items-center"
-      ref="section1"
-    >
-      <div
-        class="flex flex-col max-h-[clamp(40px,4vw,60px)] overflow-hidden text-center"
-      >
-        <span
-          v-for="(item, index) in texts"
-          :key="index"
-          :class="[
-            item.class,
-            'text-[clamp(2.1em,4vw,6rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
-          ]"
-        >
+  <div class="flex flex-col w-full min-h-screen grow shrink-0">
+    <div class="flex flex-col justify-center items-center min-h-screen" ref="section1">
+      <div class="flex flex-col max-h-[clamp(40px,4vw,60px)] overflow-hidden text-center">
+        <span v-for="(item, index) in texts" :key="index" :class="[
+          item.class,
+          'text-[clamp(2.1em,4vw,6rem)] animate-scroll-down font-itsa-bold translate-y-[-10px]',
+        ]">
           {{ item.texto }}
         </span>
       </div>
@@ -22,20 +13,15 @@
         that make your stories look better
       </p>
     </div>
-    <div
-      id="gallery"
-      class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in"
-    >
+    <div id="gallery"
+      class="flex flex-col pt-[76px] w-full justify-start items-end min-h-screen grow shrink-0 relative animate-fade-in">
       <div
         class="flex flex-row-reverse w-full justify-end gap-3 py-5 transition-all flex-wrap max-[1024px]:justify-center"
-        v-if="productos"
-      >
-        <ProductContainer
-          v-for="(producto, _index) in productos" :key="producto.id_producto"
-          :page-redirect="producto.url" :hover-effect="producto.hover_efecto"
-          :titulo="producto.titulo" :urlImage="producto.imagen" :id="producto.id_producto"
-          :precio="parseFloat(producto.precio)" :subtitulo="producto.subtitulo" :descripcion="producto.descripcion"
-        />
+        v-if="productos">
+        <ProductContainer v-for="(producto, _index) in productos" :key="producto.id_producto"
+          :page-redirect="producto.url" :hover-effect="producto.hover_efecto" :titulo="producto.titulo"
+          :urlImage="producto.imagen" :id="producto.id_producto" :precio="parseFloat(producto.precio)"
+          :subtitulo="producto.subtitulo" :descripcion="producto.descripcion" />
       </div>
       <Loading v-else></Loading>
     </div>
@@ -101,7 +87,7 @@ onMounted(async () => {
   }, 4200);
 });
 
-onBeforeUnmount(() => {});
+onBeforeUnmount(() => { });
 
 const Productos = async () => {
   const parameters: IListProducts = {
